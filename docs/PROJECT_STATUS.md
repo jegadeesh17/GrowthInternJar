@@ -8,6 +8,6 @@
 - [x] Phase 2.3: docs/TASKS.json
 - [x] Phase 3.1: M1 built, verified, reviewed and committed
 - [x] Phase 3.2: M2 built, verified, reviewed and committed
-- [ ] Phase 3.3: M3 built, verified, reviewed and committed
-- [ ] Phase 4: Final test run and handover
+- [x] Phase 3.3: M3 built, verified, reviewed and committed
+- [x] Phase 4: Final test run and handover
 </Project Status>
