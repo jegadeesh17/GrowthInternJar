@@ -58,3 +58,10 @@ Deliver an executive-grade, rigorous Growth Intern assignment submission for Jar
 - Complex Machine Learning / Predictive Forecasting (e.g. ARIMA, Prophet, LSTM) is explicitly out of scope.
 - Full-stack web applications requiring complex backend servers or database management are out of scope (a clean, responsive client-side static site for GitHub Pages with interactive Chart.js/visualizations and offline markdown reports will be used instead).
 
+
+## Scope update (2026-09-29, user direction during M3)
+
+- **Dashboard (`index.html`):** informative and visually clean. Q1 insights and recommendations, all Q2 items, all Q3 opportunities. Restrained pastel accents, no clutter.
+- **PDF, Question 2:** keep simple: 5 strengths and 5 improvements, with reasoning.
+- **PDF, Question 3:** keep unchanged, with full detail (user decision).
+- **General:** avoid over-engineering. Build to the acceptance criteria and skip extra polish.

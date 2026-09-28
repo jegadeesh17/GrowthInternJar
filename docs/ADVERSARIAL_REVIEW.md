@@ -96,3 +96,17 @@ None.
 - **Question 2 (Jar App UX Teardown)**: Exactly 5 effective strengths (`STRENGTH-01` to `05`) and 5 prioritized friction points (`FRICTION-01` to `05`) comprehensively articulated with behavioral psychology frameworks (Mental Accounting, Variable Reward Schedule, Default Effect, Loss Aversion, Goal Gradient Effect), actionable solutions, and impact metrics.
 - **Question 3 (Fintech Product Expansion)**: 5 strategic growth verticals (`VERTICAL-01` to `05`: Jar Cash, Jar Multi-Asset, Jar Family Vaults, Jar Earn, Jar for Work) fully modeled with mathematical market opportunity sizing ($TAM \ge SAM \ge SOM$), unit economics (LTV:CAC 18.7x to 83.9x, payback <3 months), flywheel integration blueprints, and execution risk matrices.
 - **Serialization & CLI Orchestration**: `data/output/ux_teardown.json` (18.4KB) and `growth_strategy.json` (29.7KB) exported with strict RFC 8259 JSON compliance. CLI runner `python -m src.main` successfully renders complete Question 1, 2, and 3 executive tables and exits 0.
+
+## Milestone M3 Review
+
+**Verdict: APPROVED** (light review limited to critical defects, per the user's request to finish fast)
+
+The reviewer checked every figure in the 9-page PDF against `data/output/*.json`. They also checked that the dashboard's Q2, Q3 and Methodology tabs render and that its 10 built-in consistency checks pass. `index.html` has no injection path, since it uses `textContent` only. `generate_pdf.py` exits cleanly with an error message on missing or corrupt input. Scope matches the user's decisions: PDF Q2 is simple, PDF Q3 is unchanged.
+
+### Critical defects
+- None.
+
+### Non-blocking recommendations (applied before commit)
+1. `src/chart_generator.py:778`: the quadrant chart's y-axis tick labels rounded 2.5% steps to whole numbers, which was misleading.
+2. `src/pdf_generator.py:740`: the PDF's furniture achievement (average of monthly %, 94.4%) disagreed with the dashboard (total actual / total target, 95.70%). Aligned to the total ratio.
+3. `src/pdf_generator.py:1024`: singular/plural grammar ("need" → "needs").

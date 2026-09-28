@@ -91,7 +91,7 @@
         {
           "id": "M2-TASK-01",
           "title": "Question 2 Jar App UX audit & evaluation model (Strengths & Frictions)",
-          "description": "Create src/content/ux_teardown.py containing comprehensive, structured product critiques for Question 2. Document exactly 5 key strengths: 1. Frictionless UPI AutoPay Round-ups, 2. Sub-₹10 Micro-Savings Accessibility, 3. Daily Spin Habit Streaks & Variable Rewards, 4. Real-time Liquidity & Buyback Guarantee, 5. 24K Vault Trust & Verification. Document exactly 5 prioritized UX friction points: 1. AutoPay Failure & Mandate Renewal Transparency, 2. Buy-Sell Spread / GST Perception Gap, 3. Notification Fatigue & Alert Granularity, 4. Asset Class Diversification Friction, 5. Family & Goal-Based Vault Separation. For each item, provide detailed feature/friction description, behavioral psychology and growth mechanics rationale (mental accounting, variable rewards, hyperbolic discounting, cognitive friction), actionable UX/product solution, and primary business impact metric (D30 retention, auto-pay conversion, churn reduction, LTV). Create tests/test_content.py to test completeness.",
+          "description": "Create src/content/ux_teardown.py containing comprehensive, structured product critiques for Question 2. Document exactly 5 key strengths: 1. Frictionless UPI AutoPay Round-ups, 2. Sub-\u00e2\u201a\u00b910 Micro-Savings Accessibility, 3. Daily Spin Habit Streaks & Variable Rewards, 4. Real-time Liquidity & Buyback Guarantee, 5. 24K Vault Trust & Verification. Document exactly 5 prioritized UX friction points: 1. AutoPay Failure & Mandate Renewal Transparency, 2. Buy-Sell Spread / GST Perception Gap, 3. Notification Fatigue & Alert Granularity, 4. Asset Class Diversification Friction, 5. Family & Goal-Based Vault Separation. For each item, provide detailed feature/friction description, behavioral psychology and growth mechanics rationale (mental accounting, variable rewards, hyperbolic discounting, cognitive friction), actionable UX/product solution, and primary business impact metric (D30 retention, auto-pay conversion, churn reduction, LTV). Create tests/test_content.py to test completeness.",
           "files_to_create": [
             "src/content/__init__.py",
             "src/content/ux_teardown.py",
@@ -143,7 +143,7 @@
           ],
           "files_to_modify": [],
           "acceptance_criteria": "SPEC AC-4.2: Pytest in tests/test_chart_generator.py checks that category_profitability.png, furniture_target_vs_actual.png, and regional_performance.png are rendered at 300 DPI using soft pastel design tokens in assets/charts/, asserting valid PNG headers, non-zero file sizes, and correct image dimensions.",
-          "status": "pending"
+          "status": "completed"
         },
         {
           "id": "M3-TASK-02",
@@ -156,7 +156,7 @@
           ],
           "files_to_modify": [],
           "acceptance_criteria": "SPEC AC-4.2: Running `python -m src.generate_pdf` generates Jar_Growth_Intern_Assignment_Submission.pdf in workspace root. Pytest in tests/test_pdf_generator.py checks that the file exists, is uncorrupted (valid PDF byte header), has between 6 and 12 pages, and embeds all analytical tables, pastel charts, Q2 UX teardowns, and Q3 growth strategies.",
-          "status": "pending"
+          "status": "completed"
         },
         {
           "id": "M3-TASK-03",
@@ -167,7 +167,7 @@
           ],
           "files_to_modify": [],
           "acceptance_criteria": "SPEC AC-4.1: Opening index.html in a web browser displays the minimal-ui pastel dashboard inspired by material-kit-react, loads Chart.js from CDN, renders all 3 interactive charts (Category Performance, Furniture Target vs Actual, Regional Performance), provides functional tab switching across Q1, Q2, and Q3, and requires zero build steps or server setup.",
-          "status": "pending"
+          "status": "completed"
         },
         {
           "id": "M3-TASK-04",
@@ -181,7 +181,7 @@
             "README.md"
           ],
           "acceptance_criteria": "SPEC AC-E1, AC-E2, AC-E3, AC-E4, AC-E5, AC-E6: Pytest in tests/test_edge_cases.py and full suite `python -m pytest -v` runs with 100% pass rate, testing mixed date strings, negative profits, baseline NaN handling, missing input files, zero-division margin safety, and unmatched order IDs. README.md provides comprehensive setup and verification commands.",
-          "status": "pending"
+          "status": "completed"
         }
       ]
     }
