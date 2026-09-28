@@ -1,0 +1,48 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Caches and Test Artifacts
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+*.log
+
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Build, Packaging & Distribution Artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+
+# IDE and Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Project Output Directories
+data/output/
+assets/charts/
+
+# Generated PDF Documents (exclude source brief)
+*.pdf
+!Jar - Growth Intern Assignment.pdf
+Jar_Growth_Intern_Assignment_Submission.pdf

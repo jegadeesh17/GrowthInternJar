@@ -1,0 +1,189 @@
+{
+  "milestones": [
+    {
+      "milestone_id": "M1",
+      "name": "MVP vertical slice",
+      "tasks": [
+        {
+          "id": "M1-TASK-01",
+          "title": "Project scaffolding, environment configuration, and test infrastructure",
+          "description": "Create project configuration, dependency definitions, and automated testing fixtures. Generate .gitignore ignoring virtual environments, caches, .env files, build artifacts, data/output/, assets/charts/, and generated PDFs. Generate .env.example with default environment variables (APP_ENV, LOG_LEVEL, DATA_DIR, OUTPUT_DATA_DIR, CHART_ASSETS_DIR, OUTPUT_PDF_PATH, FURNITURE_MOM_FLUCTUATION_THRESHOLD, TOP_STATES_COUNT). Create requirements.txt with pinned production and test dependencies (pandas>=2.0.0, numpy>=1.24.0, openpyxl>=3.1.0, fpdf2>=2.7.0, matplotlib>=3.7.0, pytest>=7.4.0). Setup src/__init__.py, tests/__init__.py, and tests/conftest.py with synthetic test fixtures for orders, order details, and sales targets.",
+          "files_to_create": [
+            ".gitignore",
+            ".env.example",
+            "requirements.txt",
+            "src/__init__.py",
+            "tests/__init__.py",
+            "tests/conftest.py"
+          ],
+          "files_to_modify": [],
+          "acceptance_criteria": "SPEC AC-1.1, AC-E4: Pytest discovers test fixtures via conftest.py with `python -m pytest`; .gitignore ignores virtualenvs, build artifacts, .env, and caches; .env.example defines all configuration defaults.",
+          "status": "completed"
+        },
+        {
+          "id": "M1-TASK-02",
+          "title": "Data ingestion and schema normalization module (DataLoader)",
+          "description": "Implement DataLoader in src/data_loader.py to ingest List of Orders.xlsx, Order Details.xlsx, and Sales target.xlsx. Normalize column names to lowercase snake_case, strip whitespace, and coerce heterogeneous date formats (DD-MM-YYYY, YYYY-MM-DD, Excel serials) into pandas datetime objects. Cast numeric columns (amount, profit, quantity, target) to float64 or int64. Validate records using dataclasses (RawOrderRecord, RawOrderDetailRecord, RawSalesTargetRecord) and raise descriptive FileNotFoundError or ValueError when files or mandatory columns are missing. Create tests/test_data_loader.py with unit tests covering successful loads, date coercion, type casting, and schema validation error handling.",
+          "files_to_create": [
+            "src/data_loader.py",
+            "tests/test_data_loader.py"
+          ],
+          "files_to_modify": [],
+          "acceptance_criteria": "SPEC AC-1.1, AC-E1, AC-E4: A test suite in tests/test_data_loader.py checks that raw Excel files are ingested, column names normalized, mixed date formats parsed to datetime, numeric fields typed, and descriptive exceptions raised for missing or corrupt files (`pytest tests/test_data_loader.py -v`).",
+          "status": "completed"
+        },
+        {
+          "id": "M1-TASK-03",
+          "title": "Order dataset merging & Question 1 Part 1 Category Sales & Profitability analysis",
+          "description": "Implement AnalyticsEngine in src/analytics_engine.py with merge_orders() and compute_category_performance(). merge_orders() performs an inner join on order_id between normalized orders and order details, preserving line items and logging cardinality. compute_category_performance() groups by category to calculate total sales, total profit, order-level category average profit (grouped by (order_id, category) then averaged across distinct orders containing that category), and profit margin percentage ((Total Profit / Total Amount) * 100). Preserves negative profits for loss-making items and provides zero-division safety. Returns List[CategoryPerformance]. Implement unit tests in tests/test_analytics_engine.py checking join semantics, margin math, order-level average profit, and negative profit retention.",
+          "files_to_create": [
+            "src/analytics_engine.py",
+            "tests/test_analytics_engine.py"
+          ],
+          "files_to_modify": [],
+          "acceptance_criteria": "SPEC AC-1.2, AC-1.3, AC-E2, AC-E5, AC-E6: Pytest in tests/test_analytics_engine.py::test_category_performance checks inner join cardinality, preserves negative profit line items, computes category total sales, total profit, order-level category average profit grouped by (Order ID, Category), and computes profit margin % with zero-division safety.",
+          "status": "completed"
+        },
+        {
+          "id": "M1-TASK-04",
+          "title": "Question 1 Part 2 Furniture Target MoM Fluctuation & Reconciliation analysis",
+          "description": "Implement compute_furniture_target_mom() in src/analytics_engine.py. Filter Sales target for Category == 'Furniture', sort chronologically from April 2018 (Apr-18) through March 2019 (Mar-19). Compute MoM percentage change as ((Target_t - Target_{t-1}) / Target_{t-1}) * 100, setting the baseline month (Apr-18) to None/NaN. Flag months with |MoM % change| >= 15.0% as significant fluctuations. Aggregate actual Furniture sales per month from merged orders, calculate monthly variance (Actual - Target) and achievement percentage ((Actual / Target) * 100), returning List[FurnitureTargetAchievement]. Add unit tests in tests/test_analytics_engine.py verifying chronological ordering, baseline NaN behavior, fluctuation flags, and variance calculations.",
+          "files_to_create": [],
+          "files_to_modify": [
+            "src/analytics_engine.py",
+            "tests/test_analytics_engine.py"
+          ],
+          "acceptance_criteria": "SPEC AC-1.4, AC-E3: Pytest in tests/test_analytics_engine.py::test_furniture_target_mom checks chronological sorting from Apr-18 to Mar-19, ensures baseline month Apr-18 has NaN/None for MoM % change, computes ((Target_t - Target_{t-1}) / Target_{t-1}) * 100 for subsequent months, flags months where |MoM| >= 15%, and reconciles actual Furniture sales against monthly targets.",
+          "status": "completed"
+        },
+        {
+          "id": "M1-TASK-05",
+          "title": "Question 1 Part 3 Regional Performance & Quadrant Classification",
+          "description": "Implement compute_top_states_performance() in src/analytics_engine.py. Rank states by distinct order_id volume from List of Orders and select the top 5 states. For each top state, calculate distinct orders, total sales, total profit, average profit per distinct order (Total Profit / Distinct Orders), and overall profit margin percentage ((Total Profit / Total Sales) * 100). Classify each state into strategic performance quadrants (e.g., High Volume / High Margin, High Volume / Low Margin) relative to median volume and margin. Return List[StatePerformance]. Add unit tests in tests/test_analytics_engine.py asserting distinct order counting, metric accuracy, and quadrant assignment.",
+          "files_to_create": [],
+          "files_to_modify": [
+            "src/analytics_engine.py",
+            "tests/test_analytics_engine.py"
+          ],
+          "acceptance_criteria": "SPEC AC-1.5: Pytest in tests/test_analytics_engine.py::test_top_states_performance checks ranking of states by distinct order count, selects top 5 states, computes state total sales, total profit, average profit per distinct order (Total Profit / Distinct Orders), profit margin %, and assigns performance quadrant labels.",
+          "status": "completed"
+        },
+        {
+          "id": "M1-TASK-06",
+          "title": "Analytical export service and end-to-end CLI runner",
+          "description": "Implement ExportService in src/export_service.py to serialize analytical results into structured JSON and CSV files under data/output/ (category_performance.json/csv, furniture_targets.json/csv, state_performance.json/csv). Implement CLI entry point src/main.py that orchestrates DataLoader, AnalyticsEngine, and ExportService, prints clean ASCII/tabular summaries of Question 1 results to stdout, and writes export files to data/output/. Add integration test verifying end-to-end execution and output file integrity.",
+          "files_to_create": [
+            "src/export_service.py",
+            "src/main.py"
+          ],
+          "files_to_modify": [
+            "tests/test_analytics_engine.py"
+          ],
+          "acceptance_criteria": "SPEC AC-1.1, AC-1.2, AC-1.3, AC-1.4, AC-1.5: Executing `python -m src.main` runs the complete analytical pipeline, outputs styled tabular summaries to the CLI, and writes validated JSON and CSV files to data/output/. Pytest checks that exported JSON files match dataclass schemas.",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "milestone_id": "M2",
+      "name": "Core flows",
+      "tasks": [
+        {
+          "id": "M2-TASK-01",
+          "title": "Question 2 Jar App UX audit & evaluation model (Strengths & Frictions)",
+          "description": "Create src/content/ux_teardown.py containing comprehensive, structured product critiques for Question 2. Document exactly 5 key strengths: 1. Frictionless UPI AutoPay Round-ups, 2. Sub-₹10 Micro-Savings Accessibility, 3. Daily Spin Habit Streaks & Variable Rewards, 4. Real-time Liquidity & Buyback Guarantee, 5. 24K Vault Trust & Verification. Document exactly 5 prioritized UX friction points: 1. AutoPay Failure & Mandate Renewal Transparency, 2. Buy-Sell Spread / GST Perception Gap, 3. Notification Fatigue & Alert Granularity, 4. Asset Class Diversification Friction, 5. Family & Goal-Based Vault Separation. For each item, provide detailed feature/friction description, behavioral psychology and growth mechanics rationale (mental accounting, variable rewards, hyperbolic discounting, cognitive friction), actionable UX/product solution, and primary business impact metric (D30 retention, auto-pay conversion, churn reduction, LTV). Create tests/test_content.py to test completeness.",
+          "files_to_create": [
+            "src/content/__init__.py",
+            "src/content/ux_teardown.py",
+            "tests/test_content.py"
+          ],
+          "files_to_modify": [],
+          "acceptance_criteria": "SPEC AC-2.1: Pytest in tests/test_content.py::test_ux_teardown_completeness checks that exactly 5 effective features and 5 prioritized UX friction points are documented with descriptions, behavioral psychology / growth mechanics rationale, actionable solutions, and primary impact metrics.",
+          "status": "pending"
+        },
+        {
+          "id": "M2-TASK-02",
+          "title": "Question 3 Fintech Business & Vertical Expansion Strategy",
+          "description": "Create src/content/growth_strategy.py containing detailed strategic growth frameworks for Question 3. Detail 5 new business verticals: 1. Gold-Backed Micro-Lending & Instant Credit Line (Jar Cash: overdraft against vaulted gold collateral without liquidating savings), 2. Micro-SIPs in Silver ETFs & Sovereign Gold Bonds (Jar Multi-Asset: automated precious metal diversification), 3. Jar Family Vaults & Child Savings (Intergenerational habit-building with multi-guardian gifting), 4. Gold Leasing / Yield Generation (Jar Earn: 2-3% annual yield via verified jeweller consortiums), 5. B2B Corporate Wellness & Micro-Benefits SDK (Jar for Work: round-ups and employer matching for gig workers). Include market sizing (TAM/SAM/SOM), unit economics projections (CAC, LTV, take-rate), integration blueprints explaining how Jar's automation and trust flywheel powers each vertical, and execution risk matrix. Update tests/test_content.py to test completeness.",
+          "files_to_create": [
+            "src/content/growth_strategy.py"
+          ],
+          "files_to_modify": [
+            "tests/test_content.py"
+          ],
+          "acceptance_criteria": "SPEC AC-3.1: Pytest in tests/test_content.py::test_growth_strategy_completeness checks that all 5 strategic growth verticals are documented with market opportunity sizing, unit economics projections, and integration flywheel mechanics.",
+          "status": "pending"
+        },
+        {
+          "id": "M2-TASK-03",
+          "title": "Strategy content export and JSON serialization service",
+          "description": "Extend ExportService in src/export_service.py to serialize Q2 UX Teardown and Q3 Growth Strategy into data/output/ux_teardown.json and data/output/growth_strategy.json. Update src/main.py to trigger these exports and display content summary statistics during CLI pipeline execution. Add unit tests in tests/test_content.py verifying exported JSON files are well-formed and schema-compliant.",
+          "files_to_create": [],
+          "files_to_modify": [
+            "src/export_service.py",
+            "src/main.py",
+            "tests/test_content.py"
+          ],
+          "acceptance_criteria": "SPEC AC-2.1, AC-3.1: Running `python -m src.main` serializes both Q2 UX teardown and Q3 growth strategy to data/output/ux_teardown.json and data/output/growth_strategy.json. Pytest in tests/test_content.py::test_content_exports validates file existence, JSON validity, and content structure.",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "milestone_id": "M3",
+      "name": "Polish and edge cases",
+      "tasks": [
+        {
+          "id": "M3-TASK-01",
+          "title": "Publication-grade pastel chart generation module (ChartGenerator)",
+          "description": "Implement ChartGenerator in src/chart_generator.py using Matplotlib to render 300 DPI publication charts utilizing the soft pastel design token palette (Soft Sage #48BB78, Muted Gold #D69E2E, Soft Lavender #805AD5, Warm Coral #E53E3E, Slate #2D3748): 1. category_profitability.png (dual-axis bar and line chart showing sales vs profit margin %), 2. furniture_target_vs_actual.png (monthly target vs actual sales trajectory highlighting months with |MoM| >= 15% fluctuation), 3. regional_performance.png (top 5 states order volume vs profit margin analysis). Persist generated chart images to assets/charts/. Create tests/test_chart_generator.py to assert PNG existence, 300 DPI resolution, and valid image headers.",
+          "files_to_create": [
+            "src/chart_generator.py",
+            "tests/test_chart_generator.py"
+          ],
+          "files_to_modify": [],
+          "acceptance_criteria": "SPEC AC-4.2: Pytest in tests/test_chart_generator.py checks that category_profitability.png, furniture_target_vs_actual.png, and regional_performance.png are rendered at 300 DPI using soft pastel design tokens in assets/charts/, asserting valid PNG headers, non-zero file sizes, and correct image dimensions.",
+          "status": "pending"
+        },
+        {
+          "id": "M3-TASK-02",
+          "title": "Executive PDF submission document generation (PdfGenerator)",
+          "description": "Implement PdfGenerator in src/pdf_generator.py using fpdf2 and standalone CLI runner src/generate_pdf.py. Compile Jar_Growth_Intern_Assignment_Submission.pdf with executive cover page, executive summary, Question 1 Sales Analysis with styled pastel data tables and embedded 300 DPI charts, Question 2 Jar App UX Teardown scorecard (5 strengths & 5 friction points), and Question 3 Fintech Product Expansion Strategy (5 growth verticals with unit economics). Include running headers, footers with dynamic page numbering ('Page X of Y'), clean table typography, and pastel callout boxes. Create tests/test_pdf_generator.py to test PDF creation, uncorrupted header (%PDF), and expected page count (6 to 12 pages).",
+          "files_to_create": [
+            "src/pdf_generator.py",
+            "src/generate_pdf.py",
+            "tests/test_pdf_generator.py"
+          ],
+          "files_to_modify": [],
+          "acceptance_criteria": "SPEC AC-4.2: Running `python -m src.generate_pdf` generates Jar_Growth_Intern_Assignment_Submission.pdf in workspace root. Pytest in tests/test_pdf_generator.py checks that the file exists, is uncorrupted (valid PDF byte header), has between 6 and 12 pages, and embeds all analytical tables, pastel charts, Q2 UX teardowns, and Q3 growth strategies.",
+          "status": "pending"
+        },
+        {
+          "id": "M3-TASK-03",
+          "title": "Minimal-UI interactive pastel web dashboard (index.html)",
+          "description": "Develop a self-contained, responsive single-page web dashboard index.html styled with minimal-ui-kit/material-kit-react aesthetics featuring the soft pastel palette (Soft Sage, Muted Gold, Soft Lavender, Warm Coral, Slate). Embed analytical data, UX teardown, and growth roadmap directly as hydrated JSON objects for zero-latency client-side operation. Include responsive KPI summary cards, interactive Chart.js visualizations (Category Sales & Margin, Furniture Target vs Actual with fluctuation bands, Top 5 States Volume & Margin), tabbed navigation (Overview, Q1 Sales Analytics, Q2 App Teardown, Q3 Expansion Strategy, Methodology), filterable tables, and a PDF download trigger button.",
+          "files_to_create": [
+            "index.html"
+          ],
+          "files_to_modify": [],
+          "acceptance_criteria": "SPEC AC-4.1: Opening index.html in a web browser displays the minimal-ui pastel dashboard inspired by material-kit-react, loads Chart.js from CDN, renders all 3 interactive charts (Category Performance, Furniture Target vs Actual, Regional Performance), provides functional tab switching across Q1, Q2, and Q3, and requires zero build steps or server setup.",
+          "status": "pending"
+        },
+        {
+          "id": "M3-TASK-04",
+          "title": "Comprehensive edge case validation, test suite completion, and deployment audit",
+          "description": "Implement tests/test_edge_cases.py to validate all specified edge cases: AC-E1 (mixed date representations and leap days), AC-E2 (negative profit loss-leader aggregation), AC-E3 (chronological target baseline NaN check), AC-E4 (missing input Excel files or schema mutations), AC-E5 (zero-division safety in margin calculation), and AC-E6 (unmatched order IDs handling in inner join). Update README.md with instructions for running the pipeline, tests, dashboard, and PDF generation. Update docs/PROJECT_STATUS.md to reflect task completion readiness.",
+          "files_to_create": [
+            "tests/test_edge_cases.py"
+          ],
+          "files_to_modify": [
+            "docs/PROJECT_STATUS.md",
+            "README.md"
+          ],
+          "acceptance_criteria": "SPEC AC-E1, AC-E2, AC-E3, AC-E4, AC-E5, AC-E6: Pytest in tests/test_edge_cases.py and full suite `python -m pytest -v` runs with 100% pass rate, testing mixed date strings, negative profits, baseline NaN handling, missing input files, zero-division margin safety, and unmatched order IDs. README.md provides comprehensive setup and verification commands.",
+          "status": "pending"
+        }
+      ]
+    }
+  ]
+}
