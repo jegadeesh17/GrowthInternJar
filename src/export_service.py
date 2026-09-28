@@ -1,8 +1,10 @@
 """Analytical export service for serializing calculations into JSON and CSV artifacts.
 
-Implements M1-TASK-06 (SPEC AC-1.1 to AC-1.5):
+Implements M1-TASK-06 (SPEC AC-1.1 to AC-1.5) and M2-TASK-03 (SPEC AC-2.1, AC-3.1):
 - Serializes CategoryPerformance, FurnitureTargetAchievement, StatePerformance,
   and CityPerformance to structured JSON and CSV files.
+- Serializes Question 2 UX Teardown and Question 3 Growth Strategy reports to
+  data/output/ux_teardown.json and data/output/growth_strategy.json.
 - Persists outputs to data/output/ (configurable via OUTPUT_DATA_DIR env var).
 - Ensures RFC 8259 JSON compliance (NaN guards, ISO timestamps, null mapping).
 - Provides deterministic CSV writing with uniform column schemas.
@@ -24,6 +26,14 @@ from src.analytics_engine import (
     CityPerformance,
     FurnitureTargetAchievement,
     StatePerformance,
+)
+from src.content.growth_strategy import (
+    GrowthStrategyReport,
+    get_growth_strategy_report,
+)
+from src.content.ux_teardown import (
+    UXTeardownReport,
+    get_ux_teardown_report,
 )
 
 logger = logging.getLogger(__name__)
@@ -362,6 +372,92 @@ class ExportService:
         self.export_records_to_csv(records, csv_path, fieldnames=fieldnames)
 
         return {"json": json_path, "csv": csv_path}
+
+    # -----------------------------------------------------------------------
+    # Question 2 & Question 3 Strategy Export Methods
+    # -----------------------------------------------------------------------
+
+    def export_ux_teardown(
+        self,
+        report: Optional[Union[UXTeardownReport, Dict[str, Any]]] = None,
+        output_dir: Optional[Union[str, Path]] = None,
+    ) -> Path:
+        """Serializes Question 2 UX Teardown evaluation to ux_teardown.json.
+
+        Args:
+            report: Optional UXTeardownReport instance or dictionary.
+                    If None, loads canonical report via get_ux_teardown_report().
+            output_dir: Optional destination directory override. Defaults to self.output_dir.
+
+        Returns:
+            Path: Resolved path to the generated ux_teardown.json file.
+
+        Raises:
+            TypeError: If report is not a UXTeardownReport, dict, or None.
+            IOError: If writing to the file fails.
+        """
+        if report is None:
+            data = get_ux_teardown_report().to_dict()
+        elif isinstance(report, UXTeardownReport):
+            data = report.to_dict()
+        elif hasattr(report, "to_dict") and callable(report.to_dict):
+            data = report.to_dict()
+        elif isinstance(report, dict):
+            data = report
+        else:
+            raise TypeError(
+                f"report must be UXTeardownReport, dict, or None, got {type(report).__name__}"
+            )
+
+        if not isinstance(data, dict):
+            raise TypeError(f"Serialized report data must be a dict, got {type(data).__name__}")
+
+        base_dir = Path(output_dir) if output_dir is not None else self._output_dir
+        base_dir.mkdir(parents=True, exist_ok=True)
+        dest = base_dir / "ux_teardown.json"
+
+        return self.export_dict_to_json(data, dest)
+
+    def export_growth_strategy(
+        self,
+        report: Optional[Union[GrowthStrategyReport, Dict[str, Any]]] = None,
+        output_dir: Optional[Union[str, Path]] = None,
+    ) -> Path:
+        """Serializes Question 3 Growth Strategy framework to growth_strategy.json.
+
+        Args:
+            report: Optional GrowthStrategyReport instance or dictionary.
+                    If None, loads canonical report via get_growth_strategy_report().
+            output_dir: Optional destination directory override. Defaults to self.output_dir.
+
+        Returns:
+            Path: Resolved path to the generated growth_strategy.json file.
+
+        Raises:
+            TypeError: If report is not a GrowthStrategyReport, dict, or None.
+            IOError: If writing to the file fails.
+        """
+        if report is None:
+            data = get_growth_strategy_report().to_dict()
+        elif isinstance(report, GrowthStrategyReport):
+            data = report.to_dict()
+        elif hasattr(report, "to_dict") and callable(report.to_dict):
+            data = report.to_dict()
+        elif isinstance(report, dict):
+            data = report
+        else:
+            raise TypeError(
+                f"report must be GrowthStrategyReport, dict, or None, got {type(report).__name__}"
+            )
+
+        if not isinstance(data, dict):
+            raise TypeError(f"Serialized report data must be a dict, got {type(data).__name__}")
+
+        base_dir = Path(output_dir) if output_dir is not None else self._output_dir
+        base_dir.mkdir(parents=True, exist_ok=True)
+        dest = base_dir / "growth_strategy.json"
+
+        return self.export_dict_to_json(data, dest)
 
     # -----------------------------------------------------------------------
     # Comprehensive Batch Export

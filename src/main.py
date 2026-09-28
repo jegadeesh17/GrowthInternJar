@@ -1,9 +1,11 @@
 """Command-line entry point and orchestration runner for the GrowthInternJar analytics pipeline.
 
-Implements M1-TASK-06 (SPEC AC-1.1 to AC-1.5):
-- Orchestrates DataLoader, AnalyticsEngine, and ExportService.
-- Prints clean, publication-grade ASCII tabular summaries of Question 1 results to stdout.
-- Persists structured JSON and CSV artifacts to data/output/.
+Implements M1-TASK-06 (SPEC AC-1.1 to AC-1.5) and M2-TASK-03 (SPEC AC-2.1, AC-3.1):
+- Orchestrates DataLoader, AnalyticsEngine, ExportService, and Strategy Content Models.
+- Prints clean, publication-grade ASCII tabular summaries of Question 1, Question 2,
+  and Question 3 results to stdout.
+- Persists structured JSON and CSV artifacts to data/output/ (including ux_teardown.json
+  and growth_strategy.json).
 - Configurable via environment variables (DATA_DIR, OUTPUT_DATA_DIR,
   FURNITURE_MOM_FLUCTUATION_THRESHOLD, TOP_STATES_COUNT, LOG_LEVEL) or CLI arguments.
 """
@@ -24,6 +26,14 @@ from src.analytics_engine import (
     FurnitureTargetAchievement,
     StatePerformance,
 )
+from src.content.growth_strategy import (
+    GrowthStrategyReport,
+    get_growth_strategy_report,
+)
+from src.content.ux_teardown import (
+    UXTeardownReport,
+    get_ux_teardown_report,
+)
 from src.data_loader import DataLoader
 from src.export_service import ExportService
 
@@ -33,6 +43,11 @@ logger = logging.getLogger("growth_intern_jar")
 # ---------------------------------------------------------------------------
 # ASCII Table Formatting Utility
 # ---------------------------------------------------------------------------
+
+def safe_terminal_text(text: Any) -> str:
+    """Sanitizes text for safe terminal display across all platforms and Windows code pages."""
+    return str(text).replace("\u20b9", "Rs. ")
+
 
 def format_ascii_table(
     headers: List[str],
@@ -50,13 +65,16 @@ def format_ascii_table(
     Returns:
         str: Formatted multi-line ASCII table string.
     """
-    col_count = len(headers)
+    clean_headers = [safe_terminal_text(h) for h in headers]
+    clean_rows = [[safe_terminal_text(cell) for cell in row] for row in rows]
+
+    col_count = len(clean_headers)
     if alignments is None:
         alignments = ["<"] * col_count
 
     # Calculate max width per column
-    col_widths = [len(h) for h in headers]
-    for row in rows:
+    col_widths = [len(h) for h in clean_headers]
+    for row in clean_rows:
         for i, val in enumerate(row):
             if i < col_count:
                 col_widths[i] = max(col_widths[i], len(str(val)))
@@ -80,10 +98,10 @@ def format_ascii_table(
 
     lines = [
         border,
-        render_row(headers),
+        render_row(clean_headers),
         border,
     ]
-    for row in rows:
+    for row in clean_rows:
         lines.append(render_row(row))
     lines.append(border)
 
@@ -258,7 +276,105 @@ def render_state_performance_section(
             print(f"  * Loss-Leader Risk State:    {lowest_margin.state} ({format_currency(lowest_margin.total_profit)} net loss, {format_pct(lowest_margin.profit_margin_pct)} margin)")
 
 
-def render_export_summary(artifacts: Dict[str, Dict[str, Path]]) -> None:
+def render_ux_teardown_section(report: UXTeardownReport) -> None:
+    """Prints Question 2 Jar App UX Audit & Evaluation summary scorecard."""
+    print("\n" + "=" * 108)
+    print("  QUESTION 2: JAR APP UX AUDIT & PRODUCT EVALUATION SCORECARD")
+    print(f"  Audit Target: {report.app_name} ({report.app_version}) | Period: {report.audit_date}")
+    print("=" * 108)
+
+    print("\n  [PART 1: 5 CORE PRODUCT & UX STRENGTHS]")
+    headers_s = ["ID", "Feature / Strength Title", "Behavioral Category", "Primary Impact Metric"]
+    alignments_s = ["^", "<", "<", "<"]
+    rows_s = []
+    for s in report.strengths:
+        rows_s.append([
+            s.id,
+            s.title,
+            s.category,
+            s.primary_impact_metric,
+        ])
+    print(format_ascii_table(headers_s, rows_s, alignments_s))
+
+    print("\n  [PART 2: 5 PRIORITIZED UX FRICTION POINTS & SOLUTIONS]")
+    headers_f = ["ID", "Priority", "Friction Point Title", "Effort", "Primary Impact Metric"]
+    alignments_f = ["^", "^", "<", "^", "<"]
+    rows_f = []
+    for f in report.frictions:
+        rows_f.append([
+            f.id,
+            f.priority,
+            f.title,
+            f.implementation_effort,
+            f.primary_impact_metric,
+        ])
+    print(format_ascii_table(headers_f, rows_f, alignments_f))
+
+    p0_count = sum(1 for f in report.frictions if f.priority.startswith("P0"))
+    p1_count = sum(1 for f in report.frictions if f.priority.startswith("P1"))
+    p2_count = sum(1 for f in report.frictions if f.priority.startswith("P2"))
+
+    print("\n  UX Audit Key Takeaways:")
+    print(f"  * Core Strengths Identified:   {len(report.strengths)} foundational growth & retention loops")
+    print(f"  * Prioritized Friction Areas: {len(report.frictions)} bottlenecks ({p0_count} Critical P0, {p1_count} High P1, {p2_count} Medium P2)")
+    print("  * Top Operational Priorities: Transparent GST pre-purchase breakdown + AutoPay smart retry engine")
+
+
+def render_growth_strategy_section(report: GrowthStrategyReport) -> None:
+    """Prints Question 3 Fintech Business & Vertical Expansion Strategy summary."""
+    print("\n" + "=" * 114)
+    print("  QUESTION 3: FINTECH BUSINESS & VERTICAL EXPANSION STRATEGY")
+    print(f"  Version: {report.strategy_version} | Strategic Scope: 5 High-Impact Business Expansion Verticals")
+    print("=" * 114)
+
+    print("\n  [STRATEGIC GROWTH VERTICALS & UNIT ECONOMICS]")
+    headers_v = [
+        "ID",
+        "Vertical Name",
+        "TAM (INR Cr)",
+        "SAM (INR Cr)",
+        "SOM (INR Cr)",
+        "CAC",
+        "LTV",
+        "LTV/CAC",
+        "Payback",
+    ]
+    alignments_v = ["^", "<", ">", ">", ">", ">", ">", ">", ">"]
+    rows_v = []
+    for v in report.verticals:
+        rows_v.append([
+            v.id,
+            v.name,
+            f"Rs. {v.market_sizing.tam_numeric_cr:,.0f} Cr",
+            f"Rs. {v.market_sizing.sam_numeric_cr:,.0f} Cr",
+            f"Rs. {v.market_sizing.som_numeric_cr:,.0f} Cr",
+            f"Rs. {v.unit_economics.cac_inr:.0f}",
+            f"Rs. {v.unit_economics.ltv_inr:,.0f}",
+            f"{v.unit_economics.ltv_cac_ratio:.1f}x",
+            f"{v.unit_economics.payback_months:.1f} mo",
+        ])
+    print(format_ascii_table(headers_v, rows_v, alignments_v))
+
+    print("\n  Market Opportunity & Economics Highlights:")
+    print(f"  * Combined Addressable TAM:    Rs. {report.total_tam_cr:,.1f} Cr (~${report.total_tam_cr / 83.33 / 100:.2f}B USD)")
+    print(f"  * Serviceable SAM:             Rs. {report.total_sam_cr:,.1f} Cr (~${report.total_sam_cr / 83.33 / 100:.2f}B USD)")
+    print(f"  * 36-Month Target SOM:         Rs. {report.total_som_cr:,.1f} Cr (~${report.total_som_cr / 83.33 / 100:.2f}B USD)")
+
+    avg_cac = sum(v.unit_economics.cac_inr for v in report.verticals) / len(report.verticals)
+    avg_ltv = sum(v.unit_economics.ltv_inr for v in report.verticals) / len(report.verticals)
+    blended_ratio = avg_ltv / avg_cac if avg_cac > 0 else 0
+    print(f"  * Blended Unit Economics:      {blended_ratio:.1f}x LTV/CAC (Avg CAC: Rs. {avg_cac:.1f}, Avg LTV: Rs. {avg_ltv:,.1f})")
+
+    high_risks = sum(1 for r in report.execution_risk_matrix if r.severity == "High")
+    med_risks = sum(1 for r in report.execution_risk_matrix if r.severity == "Medium")
+    low_risks = sum(1 for r in report.execution_risk_matrix if r.severity == "Low")
+    print(f"  * Platform Risk Matrix:        {len(report.execution_risk_matrix)} risks identified ({high_risks} High, {med_risks} Medium, {low_risks} Low severity with mitigations)")
+
+
+def render_export_summary(
+    artifacts: Dict[str, Dict[str, Path]],
+    strategy_artifacts: Optional[Dict[str, Path]] = None,
+) -> None:
     """Prints a summary of all exported data artifacts."""
     print("\n" + "=" * 80)
     print("  EXPORT ARTIFACTS WRITTEN TO DISK")
@@ -272,6 +388,15 @@ def render_export_summary(artifacts: Dict[str, Dict[str, Path]]) -> None:
                 print(f"    - {fmt.upper()}: {path} ({size:,} bytes)")
             else:
                 print(f"    - {fmt.upper()}: {path} (pending)")
+
+    if strategy_artifacts:
+        for name, path in strategy_artifacts.items():
+            print(f"\n  [{name}]")
+            if path.exists():
+                size = path.stat().st_size
+                print(f"    - JSON: {path} ({size:,} bytes)")
+            else:
+                print(f"    - JSON: {path} (pending)")
 
 
 # ---------------------------------------------------------------------------
@@ -338,6 +463,17 @@ def main(cli_args: Optional[Sequence[str]] = None) -> int:
     Returns:
         int: Exit status code (0 for success, 1 for fatal error).
     """
+    if hasattr(sys.stdout, "reconfigure"):
+        try:
+            sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
+    if hasattr(sys.stderr, "reconfigure"):
+        try:
+            sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
+
     start_time = time.time()
     args = parse_args(cli_args)
 
@@ -359,7 +495,7 @@ def main(cli_args: Optional[Sequence[str]] = None) -> int:
         # Step 1: Data Ingestion
         data_dir = Path(args.data_dir)
         if not args.quiet:
-            print(f"\n[1/4] Ingesting datasets from: {data_dir.resolve()} ...")
+            print(f"\n[1/5] Ingesting datasets from: {data_dir.resolve()} ...")
 
         orders_df, details_df, targets_df = DataLoader.load_all(data_dir=data_dir)
 
@@ -370,7 +506,7 @@ def main(cli_args: Optional[Sequence[str]] = None) -> int:
 
         # Step 2: Merging Datasets
         if not args.quiet:
-            print("\n[2/4] Merging order transactions on 'order_id' ...")
+            print("\n[2/5] Merging order transactions on 'order_id' ...")
 
         merged_df = AnalyticsEngine.merge_orders(orders_df, details_df)
 
@@ -379,7 +515,7 @@ def main(cli_args: Optional[Sequence[str]] = None) -> int:
 
         # Step 3: Analytical Computations
         if not args.quiet:
-            print("\n[3/4] Computing analytical models for Question 1 ...")
+            print("\n[3/5] Computing analytical models for Question 1 ...")
 
         # Part 1: Category Sales & Profitability
         category_data = AnalyticsEngine.compute_category_performance(merged_df)
@@ -399,16 +535,28 @@ def main(cli_args: Optional[Sequence[str]] = None) -> int:
         )
         city_data = AnalyticsEngine.compute_city_performance(merged_df)
 
-        # Render Terminal Tables if not in quiet mode
+        # Step 4: Loading Strategy & Product Teardown Models
         if not args.quiet:
+            print("\n[4/5] Loading Question 2 (UX Teardown) & Question 3 (Growth Strategy) models ...")
+
+        ux_report = get_ux_teardown_report()
+        strategy_report = get_growth_strategy_report()
+
+        if not args.quiet:
+            print(f"      - Q2 UX Teardown:       {len(ux_report.strengths)} strengths & {len(ux_report.frictions)} friction points loaded")
+            print(f"      - Q3 Growth Strategy:   {len(strategy_report.verticals)} growth verticals loaded (TAM: Rs. {strategy_report.total_tam_cr:,.0f} Cr)")
+
+            # Render Terminal Tables if not in quiet mode
             render_category_section(category_data)
             render_furniture_target_section(furniture_data, args.fluctuation_threshold)
             render_state_performance_section(state_data, args.top_states)
+            render_ux_teardown_section(ux_report)
+            render_growth_strategy_section(strategy_report)
 
-        # Step 4: Export to Disk
+        # Step 5: Export to Disk
         output_dir = Path(args.output_dir)
         if not args.quiet:
-            print(f"\n[4/4] Persisting analytical outputs to: {output_dir.resolve()} ...")
+            print(f"\n[5/5] Persisting analytical and strategic outputs to: {output_dir.resolve()} ...")
 
         exporter = ExportService(output_dir=output_dir)
         artifacts = exporter.export_all(
@@ -418,8 +566,16 @@ def main(cli_args: Optional[Sequence[str]] = None) -> int:
             city_data=city_data,
         )
 
+        ux_json_path = exporter.export_ux_teardown(report=ux_report, output_dir=output_dir)
+        strategy_json_path = exporter.export_growth_strategy(report=strategy_report, output_dir=output_dir)
+
+        strategy_artifacts = {
+            "ux_teardown": ux_json_path,
+            "growth_strategy": strategy_json_path,
+        }
+
         if not args.quiet:
-            render_export_summary(artifacts)
+            render_export_summary(artifacts, strategy_artifacts=strategy_artifacts)
 
         elapsed = time.time() - start_time
         print("\n" + "=" * 80)

@@ -99,7 +99,7 @@
           ],
           "files_to_modify": [],
           "acceptance_criteria": "SPEC AC-2.1: Pytest in tests/test_content.py::test_ux_teardown_completeness checks that exactly 5 effective features and 5 prioritized UX friction points are documented with descriptions, behavioral psychology / growth mechanics rationale, actionable solutions, and primary impact metrics.",
-          "status": "pending"
+          "status": "completed"
         },
         {
           "id": "M2-TASK-02",
@@ -112,7 +112,7 @@
             "tests/test_content.py"
           ],
           "acceptance_criteria": "SPEC AC-3.1: Pytest in tests/test_content.py::test_growth_strategy_completeness checks that all 5 strategic growth verticals are documented with market opportunity sizing, unit economics projections, and integration flywheel mechanics.",
-          "status": "pending"
+          "status": "completed"
         },
         {
           "id": "M2-TASK-03",
@@ -125,7 +125,7 @@
             "tests/test_content.py"
           ],
           "acceptance_criteria": "SPEC AC-2.1, AC-3.1: Running `python -m src.main` serializes both Q2 UX teardown and Q3 growth strategy to data/output/ux_teardown.json and data/output/growth_strategy.json. Pytest in tests/test_content.py::test_content_exports validates file existence, JSON validity, and content structure.",
-          "status": "pending"
+          "status": "completed"
         }
       ]
     },
