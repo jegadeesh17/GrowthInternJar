@@ -23,8 +23,10 @@ from src.analytics_engine import (
     AnalyticsEngine,
     CategoryPerformance,
     CityPerformance,
+    CityPriority,
     FurnitureTargetAchievement,
     StatePerformance,
+    SubCategoryPerformance,
 )
 from src.content.growth_strategy import (
     GrowthStrategyReport,
@@ -274,6 +276,53 @@ def render_state_performance_section(
         print(f"  * Star Margin State:         {highest_margin.state} ({format_pct(highest_margin.profit_margin_pct)} margin, {format_currency(highest_margin.total_profit)} profit)")
         if lowest_margin.total_profit < 0:
             print(f"  * Loss-Leader Risk State:    {lowest_margin.state} ({format_currency(lowest_margin.total_profit)} net loss, {format_pct(lowest_margin.profit_margin_pct)} margin)")
+
+
+def render_q1_deep_dive_section(
+    subcategories: List[SubCategoryPerformance],
+    priorities: List[CityPriority],
+    insights: Dict[str, Any],
+) -> None:
+    """Prints the sub-category breakdown, cities to prioritise and Q1 insight bullets."""
+    print("\n" + "=" * 92)
+    print("  QUESTION 1 DEEP-DIVE: SUB-CATEGORIES, TARGET ALIGNMENT & CITIES TO PRIORITISE")
+    print("=" * 92)
+    rows = [
+        [
+            s.category,
+            s.sub_category,
+            format_currency(s.total_sales),
+            format_currency(s.total_profit),
+            format_pct(s.profit_margin_pct),
+            f"{s.distinct_orders:,}",
+        ]
+        for s in subcategories
+    ]
+    print(format_ascii_table(
+        ["Category", "Sub-Category", "Sales", "Profit", "Margin %", "Orders"],
+        rows,
+        ["<", "<", ">", ">", ">", ">"],
+    ))
+    if priorities:
+        print(format_ascii_table(
+            ["Action", "City", "State", "Sales", "Margin %"],
+            [
+                [p.action, p.city, p.state, format_currency(p.total_sales), format_pct(p.profit_margin_pct)]
+                for p in priorities
+            ],
+            ["<", "<", "<", ">", ">"],
+        ))
+    sections = (
+        ("Part 1 - Why categories differ", insights.get("part1_reasons", [])),
+        ("Part 1 - Recommendations", insights.get("part1_recommendations", [])),
+        ("Part 2 - Aligning targets", insights.get("part2_strategies", [])),
+        ("Part 3 - Regional disparities", insights.get("part3_disparities", [])),
+    )
+    for title, bullets in sections:
+        if bullets:
+            print(f"\n  {title}:")
+            for b in bullets:
+                print(f"  * {safe_terminal_text(b)}")
 
 
 def render_ux_teardown_section(report: UXTeardownReport) -> None:
@@ -535,6 +584,13 @@ def main(cli_args: Optional[Sequence[str]] = None) -> int:
         )
         city_data = AnalyticsEngine.compute_city_performance(merged_df)
 
+        # Deep-dive: sub-categories, cities to prioritise, narrative insights
+        subcategory_data = AnalyticsEngine.compute_subcategory_performance(merged_df)
+        city_priorities = AnalyticsEngine.compute_city_priorities(merged_df, state_data)
+        q1_insights = AnalyticsEngine.build_q1_insights(
+            category_data, subcategory_data, furniture_data, state_data, city_priorities
+        )
+
         # Step 4: Loading Strategy & Product Teardown Models
         if not args.quiet:
             print("\n[4/5] Loading Question 2 (UX Teardown) & Question 3 (Growth Strategy) models ...")
@@ -550,6 +606,7 @@ def main(cli_args: Optional[Sequence[str]] = None) -> int:
             render_category_section(category_data)
             render_furniture_target_section(furniture_data, args.fluctuation_threshold)
             render_state_performance_section(state_data, args.top_states)
+            render_q1_deep_dive_section(subcategory_data, city_priorities, q1_insights)
             render_ux_teardown_section(ux_report)
             render_growth_strategy_section(strategy_report)
 
@@ -564,6 +621,9 @@ def main(cli_args: Optional[Sequence[str]] = None) -> int:
             furniture_data=furniture_data,
             state_data=state_data,
             city_data=city_data,
+            subcategory_data=subcategory_data,
+            city_priorities=city_priorities,
+            q1_insights=q1_insights,
         )
 
         ux_json_path = exporter.export_ux_teardown(report=ux_report, output_dir=output_dir)

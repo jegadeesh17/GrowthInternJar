@@ -454,17 +454,19 @@ def test_growth_strategy_unit_economics_validation() -> None:
         ue = v.unit_economics
         # LTV should be substantially higher than CAC for healthy fintech economics
         assert ue.ltv_inr > ue.cac_inr, f"LTV must exceed CAC for viable unit economics in {v.id}"
-        expected_ratio = round(ue.ltv_inr / ue.cac_inr, 2) if ue.cac_inr > 0 else ue.ltv_cac_ratio
-        assert abs(ue.ltv_cac_ratio - expected_ratio) < 0.5
-        # Fast payback period (< 3 months)
-        assert ue.payback_months <= 3.0, f"Payback period should be <= 3.0 months in {v.id}"
+        assert ue.cac_inr >= 100, f"CAC should be in the hundreds of rupees in {v.id}"
+        # LTV:CAC must equal LTV / CAC exactly (rounded to 1 decimal)
+        assert ue.ltv_cac_ratio == round(ue.ltv_inr / ue.cac_inr, 1)
+        # Realistic Indian consumer fintech ranges
+        assert 2.5 <= ue.ltv_cac_ratio <= 6.0, f"LTV:CAC outside 2.5x-6x in {v.id}"
+        assert 4.0 <= ue.payback_months <= 18.0, f"Payback outside 4-18 months in {v.id}"
 
     # Unit economics summary helper
     ue_summary = get_unit_economics_summary()
     assert ue_summary["average_cac_inr"] > 0
     assert ue_summary["average_ltv_inr"] > ue_summary["average_cac_inr"]
-    assert ue_summary["blended_ltv_cac_ratio"] > 10.0
-    assert ue_summary["average_payback_months"] < 2.0
+    assert 2.5 <= ue_summary["blended_ltv_cac_ratio"] <= 6.0
+    assert 4.0 <= ue_summary["average_payback_months"] <= 18.0
     assert len(ue_summary["vertical_unit_economics"]) == 5
 
 
@@ -988,8 +990,8 @@ def test_content_exports(tmp_path: Path) -> None:
     metadata_strat = strategy_data["metadata"]
     assert metadata_strat["total_verticals"] == 5
     assert metadata_strat["total_tam_cr"] == 442000.0
-    assert metadata_strat["total_sam_cr"] == 94500.0
-    assert metadata_strat["total_som_cr"] == 6750.0
+    assert metadata_strat["total_sam_cr"] == 60000.0
+    assert metadata_strat["total_som_cr"] == 864.0
 
     assert len(strategy_data["verticals"]) == 5
     expected_vertical_keys = {

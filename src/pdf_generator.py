@@ -19,16 +19,19 @@ import os
 import re
 from datetime import date
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from fpdf import FPDF
 from fpdf.enums import MethodReturnValue, XPos, YPos
 from fpdf.fonts import FontFace
 
 from src.analytics_engine import (
+    AnalyticsEngine,
     CategoryPerformance,
+    CityPriority,
     FurnitureTargetAchievement,
     StatePerformance,
+    SubCategoryPerformance,
 )
 from src.content.ux_teardown import get_ux_strengths, get_ux_frictions
 from src.content.growth_strategy import (
@@ -227,6 +230,11 @@ def _problem_statement(text: str) -> str:
     if len(sentences) <= 2:
         return " ".join(sentences)
     return f"{sentences[0]} {sentences[-1]}"
+
+
+def _bullets(items: Sequence[str]) -> str:
+    """Joins insight strings into a dash-bulleted block for a card body."""
+    return "\n".join(f"- {str(item).strip()}" for item in items if str(item).strip())
 
 
 def _first_fix(solution: str) -> str:
@@ -724,8 +732,10 @@ class PdfGenerator:
         category_data: List[CategoryPerformance],
         furniture_data: List[FurnitureTargetAchievement],
         state_data: List[StatePerformance],
+        q1_insights: Optional[Dict[str, Any]] = None,
     ) -> None:
         """Builds the executive summary page (page 2)."""
+        q1 = q1_insights or {}
         pdf.add_page()
         self._h1(pdf, "Executive Summary")
 
@@ -803,19 +813,31 @@ class PdfGenerator:
             best_sales = max(category_data, key=lambda c: c.total_sales)
             findings.append((
                 "Q1 - Category economics",
-                f"{best_sales.category} leads revenue at Rs. {best_sales.total_sales:,.0f}, "
-                f"while {best_margin_cat} carries the richest margin "
-                f"({max(c.profit_margin_pct for c in category_data):.1f}%).",
+                f"{best_sales.category} leads revenue at Rs. {best_sales.total_sales:,.0f}. "
+                + (
+                    q1.get("exec_part1")
+                    or f"{best_margin_cat} carries the richest margin "
+                    f"({max(c.profit_margin_pct for c in category_data):.1f}%)."
+                ),
                 SAGE_BG, SAGE,
             ))
         if furniture_data:
             misses = sum(1 for f in furniture_data if f.variance < 0)
             findings.append((
                 "Q1 - Furniture targets",
-                f"Furniture missed target in {misses} of {len(furniture_data)} months, "
-                f"averaging {furn_ach:.1f}% achievement; target setting should track "
-                "realised demand rather than step changes.",
+                f"Furniture missed target in {misses} of {len(furniture_data)} months "
+                f"({furn_ach:.1f}% of the annual target). "
+                + (
+                    q1.get("exec_part2")
+                    or "Target setting should track realised demand rather than step changes."
+                ),
                 CORAL_BG, CORAL,
+            ))
+        if q1.get("exec_part3"):
+            findings.append((
+                "Q1 - Regions and cities",
+                str(q1["exec_part3"]),
+                LAVENDER_BG, LAVENDER,
             ))
         strengths = get_ux_strengths()
         frictions = get_ux_frictions()
@@ -835,7 +857,7 @@ class PdfGenerator:
             findings.append((
                 "Q3 - Growth strategy",
                 f"{len(verticals)} expansion verticals extend the savings flywheel with "
-                f"LTV:CAC ratios of {min(ratios):.1f}x to {max(ratios):.1f}x; "
+                f"illustrative LTV:CAC ratios of {min(ratios):.1f}x to {max(ratios):.1f}x; "
                 f"strongest economics: {best.name}.",
                 GOLD_BG, GOLD,
             ))
@@ -847,6 +869,8 @@ class PdfGenerator:
         pdf: JarPDF,
         category_data: List[CategoryPerformance],
         charts_dir: Optional[Path],
+        subcategory_data: Optional[List[SubCategoryPerformance]] = None,
+        q1_insights: Optional[Dict[str, Any]] = None,
     ) -> None:
         """Builds Q1 Part 1 - Category Sales & Profitability (page 3)."""
         pdf.add_page()
@@ -878,32 +902,78 @@ class PdfGenerator:
                 pdf, headers, rows, (40, 32, 30, 22, 34, 22), SAGE, fills, font_size=8
             )
 
-        pdf.ln(4)
+        subs = sorted(subcategory_data or [], key=lambda s: s.profit_margin_pct)
+        if subs:
+            pdf.ln(3)
+            self._subheading(pdf, "Sub-category drivers: lowest and highest margins", SLATE)
+            picked = subs[:4] + [s for s in subs[-3:] if s not in subs[:4]]
+            picked.sort(key=lambda s: s.profit_margin_pct)
+            rows = [
+                [
+                    s.sub_category,
+                    s.category,
+                    f"Rs. {s.total_sales:,.0f}",
+                    f"Rs. {s.total_profit:,.0f}",
+                    f"{s.profit_margin_pct:.1f}%",
+                    f"Rs. {s.avg_order_value:,.0f}",
+                    f"Rs. {s.avg_profit_per_order:,.0f}",
+                ]
+                for s in picked
+            ]
+            fills = [
+                CORAL_BG if s.total_profit < 0 else (CARD_BG if i % 2 else WHITE)
+                for i, s in enumerate(picked)
+            ]
+            self._render_table(
+                pdf,
+                ["Sub-category", "Category", "Sales", "Profit", "Margin %", "Avg order", "Profit/order"],
+                rows, (30, 26, 26, 24, 20, 24, 30), SLATE_MUTED, fills, font_size=7,
+            )
+            pdf.set_font("Helvetica", "I", 7)
+            pdf.set_text_color(*SLATE_MUTED)
+            pdf.set_x(MARGIN)
+            pdf.cell(
+                INNER_W, 5,
+                f"Coral rows: loss-making. Showing {len(picked)} of {len(subs)} sub-categories "
+                "(full list in data/output/subcategory_performance.csv).",
+                **NEXT_LINE,
+            )
+
+        pdf.ln(2)
         self._embed_image(
             pdf, self._resolve_chart("category_profitability", charts_dir),
+            max_w_mm=INNER_W * 0.8,
             key="category_profitability",
         )
-        if category_data:
-            by_sales = max(category_data, key=lambda c: c.total_sales)
+        q1 = q1_insights or {}
+        reasons = q1.get("part1_reasons") or []
+        recs = q1.get("part1_recommendations") or []
+        if reasons:
+            self._flow_card(
+                pdf, "Why the categories perform differently", _bullets(reasons),
+                SAGE_BG, SAGE,
+            )
+        elif category_data:
             by_margin = max(category_data, key=lambda c: c.profit_margin_pct)
             weakest = min(category_data, key=lambda c: c.profit_margin_pct)
             self._flow_card(
                 pdf,
                 "Insight",
-                f"{by_sales.category} generates the highest revenue "
-                f"(Rs. {by_sales.total_sales:,.0f}), but {by_margin.category} converts "
-                f"sales to profit most efficiently ({by_margin.profit_margin_pct:.1f}% margin). "
-                f"{weakest.category} has the thinnest margin ({weakest.profit_margin_pct:.1f}%), "
-                "so pricing, discounting and fulfilment cost there deserve review first.",
+                f"{by_margin.category} converts sales to profit most efficiently "
+                f"({by_margin.profit_margin_pct:.1f}% margin); {weakest.category} has the "
+                f"thinnest margin ({weakest.profit_margin_pct:.1f}%).",
                 SAGE_BG,
                 SAGE,
             )
+        if recs:
+            self._flow_card(pdf, "Recommendations", _bullets(recs), GOLD_BG, GOLD)
 
     def _build_furniture_page(
         self,
         pdf: JarPDF,
         furniture_data: List[FurnitureTargetAchievement],
         charts_dir: Optional[Path],
+        q1_insights: Optional[Dict[str, Any]] = None,
     ) -> None:
         """Builds Q1 Part 2 - Furniture Target MoM (page 4)."""
         pdf.add_page()
@@ -953,24 +1023,23 @@ class PdfGenerator:
             pdf, self._resolve_chart("furniture_target_vs_actual", charts_dir),
             key="furniture_target_vs_actual",
         )
-        if furniture_data:
-            worst = min(furniture_data, key=lambda f: f.achievement_pct)
-            best = max(furniture_data, key=lambda f: f.achievement_pct)
-            misses = sum(1 for f in furniture_data if f.variance < 0)
-            first, last = furniture_data[0], furniture_data[-1]
-            target_growth = (
-                (last.target_sales / first.target_sales - 1) * 100
-                if first.target_sales > 0 else 0.0
+        q1 = q1_insights or {}
+        strategies = q1.get("part2_strategies") or []
+        if q1.get("part2_diagnosis"):
+            self._flow_card(pdf, "Diagnosis", str(q1["part2_diagnosis"]), CORAL_BG, CORAL)
+        if strategies:
+            self._flow_card(
+                pdf, "Three strategies to align targets with actual trends",
+                _bullets(strategies), GOLD_BG, GOLD,
             )
+        elif furniture_data:
+            misses = sum(1 for f in furniture_data if f.variance < 0)
             self._flow_card(
                 pdf,
                 "Insight",
-                f"Targets rose steadily ({target_growth:+.1f}% from {first.display_month} to "
-                f"{last.display_month}) while actual sales were volatile: furniture missed "
-                f"target in {misses} of {len(furniture_data)} months, from a low of "
-                f"{worst.achievement_pct:.1f}% ({worst.display_month}) to a high of "
-                f"{best.achievement_pct:.1f}% ({best.display_month}). Targets should be "
-                "re-baselined on seasonal demand rather than a flat monthly increment.",
+                f"Furniture missed target in {misses} of {len(furniture_data)} months. "
+                "Targets should be re-baselined on seasonal demand rather than a flat "
+                "monthly increment.",
                 GOLD_BG,
                 GOLD,
             )
@@ -980,6 +1049,8 @@ class PdfGenerator:
         pdf: JarPDF,
         state_data: List[StatePerformance],
         charts_dir: Optional[Path],
+        city_priorities: Optional[List[CityPriority]] = None,
+        q1_insights: Optional[Dict[str, Any]] = None,
     ) -> None:
         """Builds Q1 Part 3 - Regional Performance (page 5)."""
         pdf.add_page()
@@ -1017,25 +1088,59 @@ class PdfGenerator:
             pdf, self._resolve_chart("regional_performance", charts_dir),
             key="regional_performance",
         )
-        if state_data:
+        q1 = q1_insights or {}
+        disparities = q1.get("part3_disparities") or []
+        if disparities:
+            self._flow_card(pdf, "Regional disparities", _bullets(disparities), LAVENDER_BG, LAVENDER)
+        elif state_data:
             leader = min(state_data, key=lambda st: st.rank)
             best_margin = max(state_data, key=lambda st: st.profit_margin_pct)
-            loss_states = [st.state for st in state_data if st.total_profit < 0]
-            loss_text = (
-                f" {', '.join(loss_states)} {'is' if len(loss_states) == 1 else 'are'} "
-                f"loss-making and {'needs' if len(loss_states) == 1 else 'need'} "
-                "a margin fix before further growth spend."
-                if loss_states else ""
-            )
             self._flow_card(
                 pdf,
                 "Insight",
                 f"{leader.state} leads on order volume ({leader.distinct_orders} orders, "
                 f"{leader.profit_margin_pct:.1f}% margin), while {best_margin.state} earns the "
-                f"best margin among the top states ({best_margin.profit_margin_pct:.1f}%)."
-                + loss_text,
+                f"best margin among the top states ({best_margin.profit_margin_pct:.1f}%).",
                 LAVENDER_BG,
                 LAVENDER,
+            )
+
+        prios = list(city_priorities or [])
+        if prios:
+            rows = [
+                [
+                    p.action,
+                    f"{p.city} ({p.state})",
+                    f"Rs. {p.total_sales:,.0f}",
+                    f"{p.profit_margin_pct:.1f}%",
+                    p.reason,
+                ]
+                for p in prios
+            ]
+            fills = [CORAL_BG if p.action == "Fix" else SAGE_BG for p in prios]
+            pdf.set_font("Helvetica", "", 7)
+            est_h = 12 + sum(
+                len(pdf.multi_cell(
+                    INNER_W * 0.5, 3.9, self._clean(p.reason),
+                    dry_run=True, output=MethodReturnValue.LINES,
+                )) * 3.9 + 2
+                for p in prios
+            )
+            self._ensure_space(pdf, est_h)
+            self._subheading(pdf, "Cities to prioritise", SLATE)
+            self._render_table(
+                pdf, ["Action", "City (State)", "Sales", "Margin", "Why"],
+                rows, (12, 34, 20, 14, 100), SLATE_MUTED, fills, font_size=7,
+                text_align="LEFT",
+            )
+            pdf.set_font("Helvetica", "I", 7)
+            pdf.set_text_color(*SLATE_MUTED)
+            pdf.set_x(MARGIN)
+            pdf.multi_cell(
+                INNER_W, 3.8,
+                "Fix: largest profit shortfall against the overall margin (sales x overall "
+                "margin - profit). Scale: above-median sales and above-average margin.",
+                **NEXT_LINE,
             )
 
     def _build_ux_teardown(self, pdf: JarPDF) -> None:
@@ -1080,7 +1185,7 @@ class PdfGenerator:
         narrative = (strategy_report.global_flywheel_narrative or "").strip()
         if narrative:
             intro, _, stages = narrative.partition("\n\n")
-            self._paragraph(pdf, _shorten(intro, 420), font_size=8)
+            self._paragraph(pdf, _first_sentences(intro, 3, 420), font_size=8)
             if stages.strip():
                 stage_heads = _list_headlines(stages, 400).replace("; ", "  ->  ")
                 pdf.set_x(MARGIN)
@@ -1093,7 +1198,7 @@ class PdfGenerator:
             pdf.ln(3)
 
         # Unit economics summary table
-        self._subheading(pdf, "Unit Economics at a Glance", LAVENDER)
+        self._subheading(pdf, "Unit Economics (illustrative planning assumptions)", LAVENDER)
         headers = ["Vertical", "SOM", "CAC (Rs.)", "LTV (Rs.)", "LTV:CAC", "Payback"]
         rows = []
         for v in strategy_report.verticals:
@@ -1110,18 +1215,31 @@ class PdfGenerator:
         self._render_table(
             pdf, headers, rows, (58, 42, 20, 20, 18, 22), LAVENDER, fills, font_size=7
         )
-        pdf.ln(4)
+        pdf.ln(1)
+        pdf.set_x(MARGIN)
+        pdf.set_font("Helvetica", "I", 7)
+        pdf.set_text_color(*SLATE)
+        pdf.multi_cell(
+            INNER_W, 4,
+            self._clean(
+                "Directional estimates for prioritisation, not sourced forecasts; "
+                "LTV = monthly contribution x expected lifetime; "
+                "payback = CAC / monthly contribution."
+            ),
+            align="L", **NEXT_LINE,
+        )
+        pdf.ln(3)
 
         for idx, vertical in enumerate(strategy_report.verticals, start=1):
             ms = vertical.market_sizing
             ue = vertical.unit_economics
             body = (
-                f"Why: {_shorten(vertical.strategic_rationale, 230)}\n"
+                f"Why: {_first_sentences(vertical.strategic_rationale, 2, 300)}\n"
                 f"Market: TAM {ms.tam}  |  SAM {ms.sam}  |  SOM {ms.som}\n"
                 f"Unit economics: CAC Rs.{ue.cac_inr:,.0f}  |  LTV Rs.{ue.ltv_inr:,.0f}"
                 f"  |  LTV:CAC {ue.ltv_cac_ratio:.1f}x  |  Payback {ue.payback_months:.1f} mo\n"
                 f"Take rate: {ue.take_rate}\n"
-                f"Flywheel: {_shorten(vertical.flywheel_integration, 200)}"
+                f"Flywheel: {_first_sentences(vertical.flywheel_integration, 2, 260)}"
             )
             self._flow_card(
                 pdf,
@@ -1146,10 +1264,10 @@ class PdfGenerator:
             }
             rows = [
                 [
-                    _shorten(r.risk_title, 90),
+                    _first_sentences(r.risk_title, 1, 90),
                     r.risk_category,
                     r.severity,
-                    _shorten(r.mitigation_strategy, 260),
+                    _first_sentences(r.mitigation_strategy, 2, 260),
                 ]
                 for r in risks
             ]
@@ -1176,6 +1294,9 @@ class PdfGenerator:
         furniture_data: List[FurnitureTargetAchievement],
         state_data: List[StatePerformance],
         charts_dir: Optional[Path] = None,
+        subcategory_data: Optional[List[SubCategoryPerformance]] = None,
+        city_priorities: Optional[List[CityPriority]] = None,
+        q1_insights: Optional[Dict[str, Any]] = None,
     ) -> Path:
         """Compiles the complete executive PDF submission document.
 
@@ -1186,6 +1307,10 @@ class PdfGenerator:
             state_data: List of StatePerformance records (Q1 Part 3).
             charts_dir: Optional directory containing pre-rendered chart PNGs,
                 used for any chart not supplied via the ``chart_paths`` manifest.
+            subcategory_data: Optional SubCategoryPerformance records (Q1 Part 1 drivers).
+            city_priorities: Optional CityPriority records (Q1 Part 3 cities to prioritise).
+            q1_insights: Optional narrative from AnalyticsEngine.build_q1_insights; computed
+                from the other inputs when omitted.
 
         Returns:
             Path: The path to the generated PDF file.
@@ -1227,13 +1352,25 @@ class PdfGenerator:
         category_data = list(category_data or [])
         furniture_data = list(furniture_data or [])
         state_data = list(state_data or [])
+        subcategory_data = list(subcategory_data or [])
+        city_priorities = list(city_priorities or [])
 
         try:
+            if q1_insights is None:
+                q1_insights = AnalyticsEngine.build_q1_insights(
+                    category_data, subcategory_data, furniture_data, state_data, city_priorities
+                )
             self._build_cover(pdf)
-            self._build_executive_summary(pdf, category_data, furniture_data, state_data)
-            self._build_category_page(pdf, category_data, charts_dir)
-            self._build_furniture_page(pdf, furniture_data, charts_dir)
-            self._build_regional_page(pdf, state_data, charts_dir)
+            self._build_executive_summary(
+                pdf, category_data, furniture_data, state_data, q1_insights
+            )
+            self._build_category_page(
+                pdf, category_data, charts_dir, subcategory_data, q1_insights
+            )
+            self._build_furniture_page(pdf, furniture_data, charts_dir, q1_insights)
+            self._build_regional_page(
+                pdf, state_data, charts_dir, city_priorities, q1_insights
+            )
             self._build_ux_teardown(pdf)
             self._build_growth_strategy(pdf)
             pdf.output(str(out))

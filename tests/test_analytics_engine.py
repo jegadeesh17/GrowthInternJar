@@ -1373,4 +1373,114 @@ def test_city_performance_dataclass_validation_and_edge_cases() -> None:
         AnalyticsEngine.compute_city_performance(bad_df)
 
 
+# ---------------------------------------------------------------------------
+# Q1 Deep-Dive: Sub-Categories, Target Alignment, City Priorities
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope="module")
+def real_q1_inputs() -> Dict[str, Any]:
+    """Loads and merges the real workbooks once for the deep-dive tests."""
+    orders_df, details_df, targets_df = DataLoader.load_all(data_dir=".")
+    merged_df = AnalyticsEngine.merge_orders(orders_df, details_df)
+    return {
+        "targets": targets_df,
+        "merged": merged_df,
+        "states": AnalyticsEngine.compute_top_states_performance(orders_df, merged_df),
+    }
+
+
+def test_subcategory_performance_reconciles_to_category_totals(
+    real_q1_inputs: Dict[str, Any],
+) -> None:
+    """Sub-category sales and profit sum to each category total; Tables stays loss-making."""
+    merged_df = real_q1_inputs["merged"]
+    subs = AnalyticsEngine.compute_subcategory_performance(merged_df)
+    cats = AnalyticsEngine.compute_category_performance(merged_df)
+    assert len(subs) == merged_df.groupby(["category", "sub_category"]).ngroups
+
+    for cat in cats:
+        rows = [s for s in subs if s.category == cat.category]
+        assert sum(s.total_sales for s in rows) == pytest.approx(cat.total_sales, abs=0.05)
+        assert sum(s.total_profit for s in rows) == pytest.approx(cat.total_profit, abs=0.05)
+
+    tables = next(s for s in subs if s.sub_category == "Tables")
+    assert tables.category == "Furniture"
+    assert tables.total_profit < 0
+    assert tables.profit_margin_pct == pytest.approx(-17.74, abs=0.01)
+
+
+def test_subcategory_performance_keeps_negative_margin_synthetic() -> None:
+    """A loss-making sub-category is kept with its negative margin; bad input is rejected."""
+    df = pd.DataFrame({
+        "order_id": ["A", "A", "B", "C"],
+        "category": ["Furniture", "Furniture", "Furniture", "Clothing"],
+        "sub_category": ["Tables", "Chairs", "Tables", "Saree"],
+        "amount": [100.0, 50.0, 100.0, 40.0],
+        "profit": [-30.0, 5.0, -10.0, 4.0],
+        "quantity": [1, 1, 2, 1],
+    })
+    subs = AnalyticsEngine.compute_subcategory_performance(df)
+    tables = next(s for s in subs if s.sub_category == "Tables")
+    assert tables.total_sales == 200.0
+    assert tables.total_profit == -40.0
+    assert tables.profit_margin_pct == -20.0
+    assert tables.distinct_orders == 2
+    assert tables.avg_profit_per_order == -20.0
+    assert AnalyticsEngine.compute_subcategory_performance(pd.DataFrame()) == []
+    with pytest.raises(ValueError, match="sub-category analysis"):
+        AnalyticsEngine.compute_subcategory_performance(df.drop(columns=["sub_category"]))
+
+
+def test_target_alignment_half_year_split(real_q1_inputs: Dict[str, Any]) -> None:
+    """Half-year actuals sum to the annual total and the second half dominates."""
+    furn = AnalyticsEngine.compute_furniture_target_mom(
+        real_q1_inputs["targets"], real_q1_inputs["merged"]
+    )
+    ta = AnalyticsEngine.compute_target_alignment(furn)
+    assert ta["h1_actual"] + ta["h2_actual"] == pytest.approx(sum(f.actual_sales for f in furn))
+    assert ta["h1_target"] + ta["h2_target"] == pytest.approx(sum(f.target_sales for f in furn))
+    assert ta["h2_actual_share_pct"] > 60
+    assert ta["rolling_mae"] < ta["flat_ramp_mae"]
+    assert len(ta["quarters"]) == 4
+    assert AnalyticsEngine.compute_target_alignment(furn[:2]) == {}
+
+
+def test_city_priorities_name_fix_and_scale_cities(real_q1_inputs: Dict[str, Any]) -> None:
+    """City prioritisation returns named Fix and Scale cities with reasons."""
+    prios = AnalyticsEngine.compute_city_priorities(
+        real_q1_inputs["merged"], real_q1_inputs["states"]
+    )
+    fix = [p for p in prios if p.action == "Fix"]
+    scale = [p for p in prios if p.action == "Scale"]
+    assert fix and scale
+    assert all(p.city.strip() and p.reason.strip() for p in prios)
+    assert ("Chandigarh", "Punjab") in {(p.city, p.state) for p in fix}
+    assert any(p.city == "Mumbai" for p in fix)
+    assert all(p.profit_gap > 0 for p in fix)
+    assert all(p.total_profit > 0 for p in scale)
+    top_states = {s.state for s in real_q1_inputs["states"]}
+    assert any(p.state in top_states for p in fix)
+
+
+def test_build_q1_insights_sections(real_q1_inputs: Dict[str, Any]) -> None:
+    """The Q1 narrative has reasons, 2 recommendations, 3 strategies and disparities."""
+    merged = real_q1_inputs["merged"]
+    states = real_q1_inputs["states"]
+    insights = AnalyticsEngine.build_q1_insights(
+        AnalyticsEngine.compute_category_performance(merged),
+        AnalyticsEngine.compute_subcategory_performance(merged),
+        AnalyticsEngine.compute_furniture_target_mom(real_q1_inputs["targets"], merged),
+        states,
+        AnalyticsEngine.compute_city_priorities(merged, states),
+    )
+    assert 3 <= len(insights["part1_reasons"]) <= 4
+    assert "Tables" in insights["part1_reasons"][0]
+    assert len(insights["part1_recommendations"]) == 2
+    assert len(insights["part2_strategies"]) == 3
+    assert insights["part3_disparities"]
+    assert "Chandigarh" in insights["exec_part3"]
+    empty = AnalyticsEngine.build_q1_insights([], [], [], [], [])
+    assert empty["part1_reasons"] == [] and empty["part2_strategies"] == []
+
+
 

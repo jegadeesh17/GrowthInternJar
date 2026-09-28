@@ -22,8 +22,10 @@ from src.analytics_engine import (
     AnalyticsEngine,
     CategoryPerformance,
     CityPerformance,
+    CityPriority,
     FurnitureTargetAchievement,
     StatePerformance,
+    SubCategoryPerformance,
 )
 from src.export_service import (
     DEFAULT_OUTPUT_DIR,
@@ -502,3 +504,40 @@ def test_format_helpers() -> None:
     assert format_pct(15.25) == "15.25%"
     assert format_pct(15.25, show_sign=True) == "+15.25%"
     assert format_pct(-5.5, show_sign=True) == "-5.50%"
+
+
+def test_export_subcategory_priorities_and_insights(tmp_path: Path) -> None:
+    """Sub-category, city-priority and Q1 insight artifacts round-trip through export_all."""
+    subs = [
+        SubCategoryPerformance(
+            category="Furniture", sub_category="Tables", total_sales=22614.0,
+            total_profit=-4011.0, profit_margin_pct=-17.74, distinct_orders=16,
+            total_quantity=61, avg_order_value=1413.38, avg_profit_per_order=-250.69,
+        ),
+    ]
+    prios = [
+        CityPriority(
+            action="Fix", state="Punjab", city="Chandigarh", total_sales=12279.0,
+            total_profit=-1153.0, profit_margin_pct=-9.39, profit_gap=1834.67,
+            in_top_states=True, reason="Loses Rs 1,153.",
+        ),
+    ]
+    service = ExportService(output_dir=tmp_path)
+    artifacts = service.export_all(
+        category_data=[], furniture_data=[], state_data=[],
+        subcategory_data=subs, city_priorities=prios,
+        q1_insights={"part1_reasons": ["Tables loses money."]},
+    )
+
+    sub_json = tmp_path / "subcategory_performance.json"
+    assert artifacts["subcategory_performance"]["json"] == sub_json
+    assert (tmp_path / "subcategory_performance.csv").exists()
+    data = json.loads(sub_json.read_text(encoding="utf-8"))
+    assert SubCategoryPerformance(**data[0]).total_profit == -4011.0
+    csv_df = pd.read_csv(tmp_path / "subcategory_performance.csv")
+    assert list(csv_df.columns)[:2] == ["category", "sub_category"]
+
+    prio_data = json.loads((tmp_path / "city_priorities.json").read_text(encoding="utf-8"))
+    assert CityPriority(**prio_data[0]).city == "Chandigarh"
+    insights = json.loads((tmp_path / "q1_insights.json").read_text(encoding="utf-8"))
+    assert insights["part1_reasons"] == ["Tables loses money."]

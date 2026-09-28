@@ -280,29 +280,29 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
         market_sizing=MarketSizing(
             tam="₹75,000 Cr ($9.0B)",
             tam_numeric_cr=75000.0,
-            sam="₹18,000 Cr ($2.15B)",
-            sam_numeric_cr=18000.0,
-            som="₹1,200 Cr ($145M)",
-            som_numeric_cr=1200.0,
+            sam="₹12,000 Cr ($1.44B)",
+            sam_numeric_cr=12000.0,
+            som="₹240 Cr ($29M)",
+            som_numeric_cr=240.0,
             methodology=(
                 "TAM represents the unorganized and semi-organized Indian gold pawn-broking and micro-gold loan "
-                "market. SAM focuses on digitally addressable micro-loans (<₹25,000) collateralized by gold or liquid "
-                "assets. SOM assumes Jar captures 6.7% of SAM over 36 months by activating 450,000 active vault holders "
-                "(out of 10M+ registered users) taking an average revolving credit balance of ₹8,000 rotated 3.3x annually."
+                "market. SAM focuses on digitally addressable micro-loans (<₹25,000) collateralized by gold. "
+                "SOM (about 2% of SAM) assumes 100,000 Jar vault holders borrow an average revolving balance of "
+                "₹8,000 rotated 3x a year, i.e. ₹240 Cr of annual disbursals by year 3."
             ),
         ),
         unit_economics=UnitEconomics(
-            cac_inr=45.0,
-            ltv_inr=1480.0,
-            ltv_cac_ratio=32.89,
-            take_rate="4.50% - 6.00% Net Interest Spread (co-lending partner) + 1.25% processing fee",
-            payback_months=0.8,
+            cac_inr=720.0,
+            ltv_inr=2160.0,
+            ltv_cac_ratio=3.0,
+            take_rate="~4.5% net interest spread share (LSP with co-lending NBFC) + 1.0% processing fee",
+            payback_months=12.0,
             economics_narrative=(
-                "Marginal CAC is exceptionally low (₹45) because borrower acquisition occurs contextually inside "
-                "the app: when a user clicks 'Sell Gold' for an emergency withdrawal, Jar intercepts with a 1-tap "
-                "'Keep Your Gold, Borrow ₹5,000 Instantly' prompt. LTV of ₹1,480 is generated over a 24-month horizon "
-                "from a 4.5% net interest margin (NIM) spread over NBFC partner funding costs, plus a 1.25% upfront "
-                "processing fee across an average lifetime cumulative borrowing turnover of ₹26,000."
+                "Illustrative planning assumption. CAC of ₹720 covers in-app prompts, eligibility incentives, KYC and "
+                "bureau checks, and the credit-cost reserve for a borrower's first loan. Net monthly contribution is "
+                "about ₹60 (spread and fees on an ₹8,000 revolving balance, after servicing and credit costs) over an "
+                "expected 36-month borrower lifetime: LTV = ₹60 x 36 = ₹2,160, LTV:CAC = 3.0x, payback = ₹720 / ₹60 = "
+                "12.0 months."
             ),
         ),
         flywheel_integration=(
@@ -379,28 +379,29 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
         market_sizing=MarketSizing(
             tam="₹42,000 Cr ($5.0B)",
             tam_numeric_cr=42000.0,
-            sam="₹8,500 Cr ($1.02B)",
-            sam_numeric_cr=8500.0,
-            som="₹650 Cr ($78M)",
-            som_numeric_cr=650.0,
+            sam="₹5,000 Cr ($0.60B)",
+            sam_numeric_cr=5000.0,
+            som="₹90 Cr ($11M)",
+            som_numeric_cr=90.0,
             methodology=(
                 "TAM encompasses the Indian annual retail investment demand for silver bullion, coins, and mutual "
                 "fund silver ETFs. SAM isolates digital retail precious metal investment and micro-SIP platforms. "
-                "SOM targets capturing 7.6% of digital silver micro-investments over 36 months, representing ₹650 Cr "
-                "in cumulative Multi-Asset AUM from 320,000 diversified Jar savers."
+                "SOM (about 1.8% of SAM) assumes 150,000 diversified Jar savers holding an average of ₹6,000 in "
+                "silver and SGB assets by year 3, i.e. ₹90 Cr of Multi-Asset AUM."
             ),
         ),
         unit_economics=UnitEconomics(
-            cac_inr=60.0,
-            ltv_inr=1120.0,
-            ltv_cac_ratio=18.67,
-            take_rate="1.50% - 2.00% gross spread on Digital Silver + 0.35% distribution trail on Silver ETFs / SGBs",
-            payback_months=1.8,
+            cac_inr=200.0,
+            ltv_inr=792.0,
+            ltv_cac_ratio=4.0,
+            take_rate="~1.5% spread on Digital Silver purchases + distribution trail on Silver ETFs / SGBs",
+            payback_months=9.1,
             economics_narrative=(
-                "Customer acquisition leverages in-app portfolio health audits, showing users an instant 'Diversification "
-                "Score' that unlocks a free ₹10 silver reward on first allocation. LTV of ₹1,120 over 36 months stems from "
-                "a 1.75% transaction spread on recurring silver round-up purchases, combined with an annualized 0.35% trail "
-                "commission on partner Silver ETF assets under management."
+                "Illustrative planning assumption. CAC of ₹200 reflects cross-selling to existing Jar savers "
+                "(first-allocation rewards, in-app placements and support) rather than new-user acquisition. Net "
+                "monthly contribution is about ₹22 (spread on ~₹1,200 of monthly silver purchases plus a small ETF "
+                "trail) over an expected 36-month lifetime: LTV = ₹22 x 36 = ₹792, LTV:CAC = 4.0x, payback = "
+                "₹200 / ₹22 = 9.1 months."
             ),
         ),
         flywheel_integration=(
@@ -474,35 +475,35 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
         market_sizing=MarketSizing(
             tam="₹110,000 Cr ($13.2B)",
             tam_numeric_cr=110000.0,
-            sam="₹22,000 Cr ($2.65B)",
-            sam_numeric_cr=22000.0,
-            som="₹1,850 Cr ($222M)",
-            som_numeric_cr=1850.0,
+            sam="₹15,000 Cr ($1.80B)",
+            sam_numeric_cr=15000.0,
+            som="₹150 Cr ($18M)",
+            som_numeric_cr=150.0,
             methodology=(
                 "TAM encompasses the informal child savings, wedding gold accumulation, and festive gifting expenditures "
                 "in urban and semi-urban Indian households. SAM isolates digitally transacted festive gifting, child-earmarked "
-                "SIPs, and sovereign child investment schemes. SOM projects capturing 8.4% of SAM over 36 months, mobilizing "
-                "₹1,850 Cr in cumulative earmarked child vault AUM across 620,000 enrolled children."
+                "SIPs, and sovereign child investment schemes. SOM (about 1% of SAM) assumes 200,000 child vaults "
+                "holding an average of ₹7,500 by year 3, i.e. ₹150 Cr of earmarked AUM."
             ),
         ),
         unit_economics=UnitEconomics(
-            cac_inr=28.0,
-            ltv_inr=2350.0,
-            ltv_cac_ratio=83.93,
-            take_rate="2.00% - 2.50% transaction spread on external festive gifting + 1.00% physical coin delivery margin",
-            payback_months=0.5,
+            cac_inr=300.0,
+            ltv_inr=1680.0,
+            ltv_cac_ratio=5.6,
+            take_rate="~2.0% spread on vault contributions and gifts + margin on physical milestone coin delivery",
+            payback_months=8.6,
             economics_narrative=(
-                "Blended CAC drops to an extraordinary ₹28 because each Family Vault acts as a viral growth loop: "
-                "a parent sharing a birthday shagun link brings an average of 3.4 external adult contributors into Jar's "
-                "ecosystem for zero paid spend. LTV reaches ₹2,350 over a 5-year average holding horizon due to the "
-                "near-zero liquidation rate of child-earmarked accounts, sustained recurring contributions, and lucrative "
-                "doorstep delivery margins on 24K customized milestone birthday gold coins."
+                "Illustrative planning assumption. CAC of ₹300 blends paid parent acquisition with cheaper referrals "
+                "from shagun gift links. Net monthly contribution is about ₹35 (spread on ~₹1,200 of monthly family "
+                "contributions plus coin delivery margin) over an expected 48-month lifetime, since goal-earmarked "
+                "vaults are withdrawn less often: LTV = ₹35 x 48 = ₹1,680, LTV:CAC = 5.6x, payback = ₹300 / ₹35 = "
+                "8.6 months."
             ),
         ),
         flywheel_integration=(
-            "Every social gift transaction sent via UPI deep-link displays a post-transaction conversion card to the gifter: "
-            "'You just gifted Aarav 0.25g gold! Start a savings jar for your family today.' This viral K-factor (>1.3) "
-            "continuously feeds the top of Jar's customer acquisition funnel with high-intent, high-trust users. Earmarked "
+            "Every social gift sent via a UPI deep-link ends with a conversion card inviting the gifter to start a "
+            "savings jar for their own family. This referral loop feeds the top of Jar's acquisition funnel with "
+            "high-intent, high-trust users at a lower blended CAC than paid channels. Earmarked "
             "goal vaults harness Clark Hull's Goal Gradient Effect and Richard Thaler's Mental Accounting: users save 40% "
             "more money when funds are tagged with their child's name, and premature withdrawals plunge by 76%."
         ),
@@ -572,28 +573,28 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
         market_sizing=MarketSizing(
             tam="₹160,000 Cr ($19.2B)",
             tam_numeric_cr=160000.0,
-            sam="₹32,000 Cr ($3.85B)",
-            sam_numeric_cr=32000.0,
-            som="₹2,100 Cr ($252M)",
-            som_numeric_cr=2100.0,
+            sam="₹20,000 Cr ($2.40B)",
+            sam_numeric_cr=20000.0,
+            som="₹288 Cr ($35M)",
+            som_numeric_cr=288.0,
             methodology=(
                 "TAM reflects the total working capital bullion inventory financed annually by India's organized gems "
                 "and jewellery manufacturing sector. SAM represents the working capital metal loan demand from top-tier, "
-                "credit-rated retail jeweller chains. SOM targets capturing 6.6% of SAM over 36 months, representing "
-                "₹2,100 Cr in leased digital gold AUM across 280,000 participating long-term Jar savers."
+                "credit-rated retail jeweller chains. SOM (about 1.4% of SAM) assumes 60,000 long-term Jar savers "
+                "leasing an average of ₹48,000 of gold by year 3, i.e. ₹288 Cr of leased AUM."
             ),
         ),
         unit_economics=UnitEconomics(
-            cac_inr=55.0,
+            cac_inr=440.0,
             ltv_inr=1920.0,
-            ltv_cac_ratio=34.91,
-            take_rate="1.00% - 1.25% Net AUM Spread (Jeweller pays ~4.25%, user receives 2.75% gold yield, Jar retains 1.50%)",
-            payback_months=1.1,
+            ltv_cac_ratio=4.4,
+            take_rate="~1.0% net AUM spread (jeweller pays ~4%, user receives 2-3% gold yield, rest covers insurance and custody)",
+            payback_months=11.0,
             economics_narrative=(
-                "CAC is highly efficient (₹55) via targeted in-app banners triggered automatically when a user's vault "
-                "balance crosses 5 grams. LTV of ₹1,920 over a 36-month lease cycle is generated through a predictable "
-                "1.25% annualized net management fee on leased gold balances, with zero inventory depreciation risk and "
-                "near-100% renewal rates as users compound their daily gold yield."
+                "Illustrative planning assumption. CAC of ₹440 reflects targeted acquisition of higher-balance savers "
+                "plus onboarding and suitability checks. Net monthly contribution is about ₹40 (1.0% net spread on "
+                "₹48,000 of leased gold) over an expected 48-month lifetime: LTV = ₹40 x 48 = ₹1,920, LTV:CAC = 4.4x, "
+                "payback = ₹440 / ₹40 = 11.0 months."
             ),
         ),
         flywheel_integration=(
@@ -667,29 +668,28 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
         market_sizing=MarketSizing(
             tam="₹55,000 Cr ($6.6B)",
             tam_numeric_cr=55000.0,
-            sam="₹14,000 Cr ($1.68B)",
-            sam_numeric_cr=14000.0,
-            som="₹950 Cr ($114M)",
-            som_numeric_cr=950.0,
+            sam="₹8,000 Cr ($0.96B)",
+            sam_numeric_cr=8000.0,
+            som="₹96 Cr ($12M)",
+            som_numeric_cr=96.0,
             methodology=(
-                "TAM is based on NITI Aayog's projection of annual payout disbursements across India's 23.5M gig and "
-                "platform workforce. SAM isolates voluntary micro-savings and wellness deduction allocations among "
-                "organized platform fleets. SOM targets onboarding 8 major enterprise gig platforms within 36 months, "
-                "capturing 420,000 enrolled gig workers saving an average of ₹1,900 monthly, yielding ₹950 Cr in annualized "
-                "deduction volume."
+                "TAM is the potential annual savings pool if India's projected 23.5M gig and platform workers "
+                "(NITI Aayog) saved about ₹2,000 a month. SAM isolates workers on organized platform fleets with "
+                "digital payouts. SOM (about 1.2% of SAM) assumes 4 enterprise platforms and 100,000 enrolled workers "
+                "sweeping an average of ₹800 a month, i.e. ₹96 Cr of annual deduction volume by year 3."
             ),
         ),
         unit_economics=UnitEconomics(
-            cac_inr=12.0,
-            ltv_inr=880.0,
-            ltv_cac_ratio=73.33,
-            take_rate="₹15 per active employee/month B2B SaaS license + 1.20% spread on micro-savings conversion",
-            payback_months=0.4,
+            cac_inr=500.0,
+            ltv_inr=1260.0,
+            ltv_cac_ratio=2.5,
+            take_rate="~₹25 per active worker/month SaaS fee paid by the employer + ~1.2% spread on payout sweeps",
+            payback_months=14.3,
             economics_narrative=(
-                "B2B enterprise partnership distribution slashes acquisition cost to an ultra-lean ₹12 per enrolled "
-                "worker because fleet onboarding is distributed centrally through company driver apps. LTV of ₹880 "
-                "over a 24-month horizon combines enterprise SaaS seat fees paid by corporate employers with transaction "
-                "spreads on automated weekly payout deductions."
+                "Illustrative planning assumption. CAC of ₹500 per enrolled worker amortizes enterprise sales cycles, "
+                "integration work and worker activation incentives. Net monthly contribution is about ₹35 (SaaS fee "
+                "plus spread on ~₹800 of monthly sweeps) over an expected 36-month lifetime, reflecting high gig-worker "
+                "churn: LTV = ₹35 x 36 = ₹1,260, LTV:CAC = 2.5x, payback = ₹500 / ₹35 = 14.3 months."
             ),
         ),
         flywheel_integration=(
@@ -807,13 +807,13 @@ GLOBAL_FLYWHEEL_NARRATIVE: str = (
     "Jar's 5 strategic growth verticals form a self-reinforcing, virtuous flywheel powered by two core engines: "
     "Frictionless Habitual Automation and Unshakeable Sovereign Trust.\n\n"
     "1. Top of Funnel: Daily UPI round-ups and B2B gig-worker payroll sweeps (Jar for Work) feed hundreds of thousands of new "
-    "micro-deposits into the system daily at ultra-low acquisition costs.\n"
+    "micro-deposits into the system daily at low marginal acquisition cost.\n"
     "2. Asset Accumulation: Automated splits across Gold and Silver (Jar Multi-Asset) and emotionalized child jars (Jar Family Vaults) "
     "accelerate balance growth, turning loose change into substantial multi-gram portfolios.\n"
     "3. High-Value Monetization: Accumulated vault collateral directly unlocks instant credit (Jar Cash) and high-yield gold leasing (Jar Earn), "
-    "generating lucrative net interest margins and asset management fees without requiring the user to liquidate their wealth.\n"
+    "generating net interest margins and asset management fees without requiring the user to liquidate their wealth.\n"
     "4. Retention Lock-In: Earning daily compounding gold dividends (Jar Earn) and preserving generational savings (Jar Family Vaults) "
-    "suppresses churn to near-zero, creating an unbeatable competitive moat against traditional banks and discount brokerages."
+    "lengthens customer lifetimes, building a durable moat against traditional banks and discount brokerages."
 )
 
 

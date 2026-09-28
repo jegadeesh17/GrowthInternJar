@@ -99,6 +99,8 @@ def run() -> int:
         cat_data = AnalyticsEngine.compute_category_performance(merged_df)
         furn_data = AnalyticsEngine.compute_furniture_target_mom(targets_df, merged_df)
         state_data = AnalyticsEngine.compute_top_states_performance(orders_df, merged_df)
+        sub_data = AnalyticsEngine.compute_subcategory_performance(merged_df)
+        city_priorities = AnalyticsEngine.compute_city_priorities(merged_df, state_data)
     except FileNotFoundError as exc:
         print(f"ERROR: Input data not found: {exc}", file=sys.stderr)
         print(
@@ -127,6 +129,8 @@ def run() -> int:
             furniture_data=furn_data,
             state_data=state_data,
             charts_dir=charts_dir if charts_dir.is_dir() else None,
+            subcategory_data=sub_data,
+            city_priorities=city_priorities,
         )
     except (ValueError, RuntimeError) as exc:
         print(f"ERROR: Could not generate PDF: {exc}", file=sys.stderr)

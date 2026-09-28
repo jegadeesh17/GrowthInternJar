@@ -8,7 +8,7 @@ Implements deterministic computational routines for Question 1:
 
 from dataclasses import asdict, dataclass
 import logging
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 import numpy as np
 import pandas as pd
@@ -83,6 +83,15 @@ REQUIRED_STATE_MERGED_COLUMNS: Set[str] = {
     "state",
     "amount",
     "profit",
+}
+
+REQUIRED_SUBCATEGORY_COLUMNS: Set[str] = {
+    "order_id",
+    "category",
+    "sub_category",
+    "amount",
+    "profit",
+    "quantity",
 }
 
 REQUIRED_CITY_MERGED_COLUMNS: Set[str] = {
@@ -289,6 +298,82 @@ class CityPerformance:
     def to_dict(self) -> Dict[str, Any]:
         """Serializes the record to a dictionary."""
         return asdict(self)
+
+
+@dataclass(frozen=True)
+class SubCategoryPerformance:
+    """Sales and profitability metrics for one (Category, Sub-Category) pair."""
+
+    category: str
+    sub_category: str
+    total_sales: float
+    total_profit: float
+    profit_margin_pct: float
+    distinct_orders: int
+    total_quantity: int
+    avg_order_value: float  # total_sales / distinct_orders
+    avg_profit_per_order: float  # total_profit / distinct_orders
+
+    def __post_init__(self) -> None:
+        if not self.category or not str(self.category).strip():
+            raise ValueError("category cannot be blank or whitespace")
+        if not self.sub_category or not str(self.sub_category).strip():
+            raise ValueError("sub_category cannot be blank or whitespace")
+        if self.distinct_orders < 0:
+            raise ValueError(f"distinct_orders cannot be negative: {self.distinct_orders}")
+        if self.total_quantity < 0:
+            raise ValueError(f"total_quantity cannot be negative: {self.total_quantity}")
+        expected_margin = (
+            round((self.total_profit / self.total_sales) * 100, 2)
+            if self.total_sales > 0
+            else 0.0
+        )
+        if abs(self.profit_margin_pct - expected_margin) > 0.05:
+            raise ValueError(
+                f"Margin mismatch for sub-category '{self.sub_category}': "
+                f"got {self.profit_margin_pct}, expected {expected_margin}"
+            )
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Serializes the record to a dictionary."""
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class CityPriority:
+    """A city flagged for action: 'Fix' (loss / low margin) or 'Scale' (high margin)."""
+
+    action: str  # 'Fix' or 'Scale'
+    state: str
+    city: str
+    total_sales: float
+    total_profit: float
+    profit_margin_pct: float
+    profit_gap: float  # sales x overall margin - profit (positive = below average)
+    in_top_states: bool
+    reason: str
+
+    def __post_init__(self) -> None:
+        if self.action not in ("Fix", "Scale"):
+            raise ValueError(f"action must be 'Fix' or 'Scale', got '{self.action}'")
+        if not self.city or not str(self.city).strip():
+            raise ValueError("city cannot be blank or whitespace")
+        if not self.state or not str(self.state).strip():
+            raise ValueError("state cannot be blank or whitespace")
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Serializes the record to a dictionary."""
+        return asdict(self)
+
+
+def _rs(value: float) -> str:
+    """Formats a rupee amount as 'Rs 4,011' (sign handled by the caller)."""
+    return f"Rs {abs(value):,.0f}"
+
+
+def _weighted_margin(sales: float, profit: float) -> float:
+    """Profit margin % with zero-division guard."""
+    return (profit / sales) * 100 if sales > 0 else 0.0
 
 
 # ---------------------------------------------------------------------------
@@ -1074,3 +1159,501 @@ class AnalyticsEngine:
     ) -> List[CityPerformance]:
         """Returns top performing cities ranked by profit margin percentage descending."""
         return sorted(city_data, key=lambda c: c.profit_margin_pct, reverse=True)[:top_n]
+
+    # -----------------------------------------------------------------------
+    # Question 1 Deep-Dive: Sub-Categories, Target Alignment, City Priorities
+    # -----------------------------------------------------------------------
+
+    @staticmethod
+    def compute_subcategory_performance(
+        merged_df: pd.DataFrame,
+    ) -> List[SubCategoryPerformance]:
+        """Aggregates sales, profit, margin % and orders per (Category, Sub-Category).
+
+        Loss-making sub-categories are kept (negative profit and margin preserved).
+
+        Returns:
+            List[SubCategoryPerformance]: Sorted by category, then margin descending.
+
+        Raises:
+            TypeError: If merged_df is not a DataFrame.
+            ValueError: If mandatory columns are missing.
+        """
+        if not isinstance(merged_df, pd.DataFrame):
+            raise TypeError(f"merged_df must be pd.DataFrame, got {type(merged_df).__name__}")
+        if merged_df.empty:
+            logger.warning("Empty merged_df passed to compute_subcategory_performance; returning empty list")
+            return []
+        missing = REQUIRED_SUBCATEGORY_COLUMNS - set(merged_df.columns)
+        if missing:
+            raise ValueError(
+                f"merged_df is missing mandatory columns for sub-category analysis: {sorted(missing)}"
+            )
+
+        clean = merged_df.dropna(subset=["category", "sub_category"]).copy()
+        clean["category"] = clean["category"].astype(str).str.strip()
+        clean["sub_category"] = clean["sub_category"].astype(str).str.strip()
+        clean = clean[(clean["category"] != "") & (clean["sub_category"] != "")]
+        if clean.empty:
+            return []
+
+        grouped = clean.groupby(["category", "sub_category"], as_index=False).agg(
+            total_sales=("amount", "sum"),
+            total_profit=("profit", "sum"),
+            distinct_orders=("order_id", "nunique"),
+            total_quantity=("quantity", "sum"),
+        )
+
+        results: List[SubCategoryPerformance] = []
+        for _, row in grouped.iterrows():
+            sales = round(float(row["total_sales"]), 2)
+            profit = round(float(row["total_profit"]), 2)
+            orders = int(row["distinct_orders"])
+            results.append(
+                SubCategoryPerformance(
+                    category=str(row["category"]),
+                    sub_category=str(row["sub_category"]),
+                    total_sales=sales,
+                    total_profit=profit,
+                    profit_margin_pct=round(_weighted_margin(sales, profit), 2),
+                    distinct_orders=orders,
+                    total_quantity=int(row["total_quantity"]),
+                    avg_order_value=round(sales / orders, 2) if orders > 0 else 0.0,
+                    avg_profit_per_order=round(profit / orders, 2) if orders > 0 else 0.0,
+                )
+            )
+        results.sort(key=lambda s: (s.category, -s.profit_margin_pct))
+        logger.info("Computed sub-category performance for %d sub-categories", len(results))
+        return results
+
+    @staticmethod
+    def compute_target_alignment(
+        furniture_data: List[FurnitureTargetAchievement],
+        window: int = 3,
+    ) -> Dict[str, Any]:
+        """Quantifies how far a flat target ramp is from seasonal actuals.
+
+        Computes the half-year split (first vs second half of the months given),
+        a seasonal re-phasing of the annual target, the error of a rolling
+        ``window``-month baseline versus the flat ramp, and quarterly achievement.
+
+        Returns:
+            Dict[str, Any]: Supporting numbers, or {} if fewer than window + 1 months.
+        """
+        if not isinstance(window, int) or window < 1:
+            raise ValueError(f"window must be a positive integer, got {window!r}")
+        recs = list(furniture_data or [])
+        if len(recs) < window + 1:
+            logger.warning("Not enough months (%d) for target alignment analysis", len(recs))
+            return {}
+
+        actual = [r.actual_sales for r in recs]
+        target = [r.target_sales for r in recs]
+        half = len(recs) // 2
+        h1, h2 = recs[:half], recs[half:]
+        h1_act, h2_act = sum(actual[:half]), sum(actual[half:])
+        h1_tgt, h2_tgt = sum(target[:half]), sum(target[half:])
+        annual_act, annual_tgt = h1_act + h2_act, h1_tgt + h2_tgt
+        h2_act_share = h2_act / annual_act * 100 if annual_act > 0 else 0.0
+        h2_tgt_share = h2_tgt / annual_tgt * 100 if annual_tgt > 0 else 0.0
+
+        flat_err = [abs(target[i] - actual[i]) for i in range(window, len(recs))]
+        roll_err = [
+            abs(sum(actual[i - window:i]) / window - actual[i]) for i in range(window, len(recs))
+        ]
+        flat_mae = sum(flat_err) / len(flat_err)
+        roll_mae = sum(roll_err) / len(roll_err)
+
+        quarters: List[Dict[str, Any]] = []
+        for i in range(0, len(recs), 3):
+            chunk = recs[i:i + 3]
+            q_t = sum(r.target_sales for r in chunk)
+            q_a = sum(r.actual_sales for r in chunk)
+            quarters.append({
+                "label": f"{chunk[0].display_month} to {chunk[-1].display_month}",
+                "target": round(q_t, 2),
+                "actual": round(q_a, 2),
+                "achievement_pct": round(q_a / q_t * 100, 2) if q_t > 0 else 0.0,
+            })
+
+        moms = [r.mom_target_pct_change for r in recs if r.mom_target_pct_change is not None]
+        low = min(recs, key=lambda r: r.actual_sales)
+        high = max(recs, key=lambda r: r.actual_sales)
+        return {
+            "months": len(recs),
+            "months_met": sum(1 for r in recs if r.variance >= 0),
+            "first_target": target[0],
+            "last_target": target[-1],
+            "avg_target_mom_pct": round(sum(moms) / len(moms), 2) if moms else 0.0,
+            "low_actual": low.actual_sales,
+            "low_month": low.display_month,
+            "high_actual": high.actual_sales,
+            "high_month": high.display_month,
+            "h1_label": f"{h1[0].display_month} to {h1[-1].display_month}",
+            "h2_label": f"{h2[0].display_month} to {h2[-1].display_month}",
+            "h1_months": len(h1),
+            "h2_months": len(h2),
+            "h1_actual": round(h1_act, 2),
+            "h2_actual": round(h2_act, 2),
+            "h1_target": round(h1_tgt, 2),
+            "h2_target": round(h2_tgt, 2),
+            "h1_achievement_pct": round(h1_act / h1_tgt * 100, 2) if h1_tgt > 0 else 0.0,
+            "h2_achievement_pct": round(h2_act / h2_tgt * 100, 2) if h2_tgt > 0 else 0.0,
+            "h2_actual_share_pct": round(h2_act_share, 2),
+            "h2_target_share_pct": round(h2_tgt_share, 2),
+            "annual_target": round(annual_tgt, 2),
+            "annual_actual": round(annual_act, 2),
+            "seasonal_h1_monthly_target": round(annual_tgt * (100 - h2_act_share) / 100 / len(h1), 2),
+            "seasonal_h2_monthly_target": round(annual_tgt * h2_act_share / 100 / len(h2), 2),
+            "rolling_window": window,
+            "rolling_eval_label": f"{recs[window].display_month} to {recs[-1].display_month}",
+            "flat_ramp_mae": round(flat_mae, 2),
+            "rolling_mae": round(roll_mae, 2),
+            "mae_reduction_pct": round((1 - roll_mae / flat_mae) * 100, 2) if flat_mae > 0 else 0.0,
+            "latest_rolling_baseline": round(sum(actual[-window:]) / window, 2),
+            "quarters": quarters,
+        }
+
+    @staticmethod
+    def compute_city_priorities(
+        merged_df: pd.DataFrame,
+        state_data: List[StatePerformance],
+        fix_n: int = 4,
+        scale_n: int = 2,
+    ) -> List[CityPriority]:
+        """Names the cities to fix (loss / below-average margin) and to scale.
+
+        - Fix: cities in the top states ranked by profit gap, i.e. how much profit
+          they fall short of the overall margin (sales x overall margin - profit).
+          The worst city outside the top states is added if its gap is larger.
+        - Scale: cities with at least median city sales and above-average margin,
+          ranked by total profit.
+
+        Returns:
+            List[CityPriority]: Fix cities first (largest gap first), then Scale cities.
+        """
+        if not isinstance(fix_n, int) or not isinstance(scale_n, int) or fix_n < 0 or scale_n < 0:
+            raise ValueError("fix_n and scale_n must be non-negative integers")
+        cities = AnalyticsEngine.compute_city_performance(merged_df)
+        if not cities:
+            return []
+
+        total_sales = sum(c.total_sales for c in cities)
+        overall = _weighted_margin(total_sales, sum(c.total_profit for c in cities))
+        top_states = {s.state for s in (state_data or [])}
+        median_sales = float(np.median([c.total_sales for c in cities]))
+        state_sales: Dict[str, float] = {}
+        for c in cities:
+            state_sales[c.state] = state_sales.get(c.state, 0.0) + c.total_sales
+
+        sub_profit: Dict[Tuple[str, str], pd.Series] = {}
+        if "sub_category" in merged_df.columns:
+            clean = merged_df.dropna(subset=["state", "city", "sub_category"]).copy()
+            for col in ("state", "city", "sub_category"):
+                clean[col] = clean[col].astype(str).str.strip()
+            for (st, ct), grp in clean.groupby(["state", "city"]):
+                sub_profit[(st, ct)] = grp.groupby("sub_category")["profit"].sum().sort_values()
+
+        def gap(c: CityPerformance) -> float:
+            return c.total_sales * overall / 100 - c.total_profit
+
+        def signed(v: float) -> str:
+            return f"-{_rs(v)}" if v < 0 else _rs(v)
+
+        def fix_reason(c: CityPerformance, outside: bool) -> str:
+            subs = sub_profit.get((c.state, c.city))
+            drag = ""
+            if subs is not None and not subs.empty:
+                word = "biggest drag" if subs.iloc[0] < 0 else "weakest line"
+                drag = f"; {word} is {subs.index[0]} ({signed(float(subs.iloc[0]))})"
+            prefix = f"Worst city outside the top states ({c.state}): " if outside else ""
+            if c.total_profit < 0:
+                body = (
+                    f"loses {_rs(c.total_profit)} on {_rs(c.total_sales)} of sales "
+                    f"({c.profit_margin_pct:.1f}% margin)"
+                )
+            else:
+                share = c.total_sales / state_sales[c.state] * 100 if state_sales.get(c.state) else 0.0
+                body = (
+                    f"{share:.0f}% of {c.state} sales but only {c.profit_margin_pct:.1f}% margin "
+                    f"vs {overall:.1f}% overall"
+                )
+            text = prefix + body + drag + "."
+            return text[0].upper() + text[1:]
+
+        def scale_reason(c: CityPerformance) -> str:
+            subs = sub_profit.get((c.state, c.city))
+            lead = ""
+            if subs is not None and not subs.empty:
+                lead = f", led by {subs.index[-1]} ({signed(float(subs.iloc[-1]))} profit)"
+            return (
+                f"{c.profit_margin_pct:.1f}% margin on {_rs(c.total_sales)} of sales{lead}; "
+                "add volume here."
+            )
+
+        def make(c: CityPerformance, action: str, reason: str) -> CityPriority:
+            return CityPriority(
+                action=action, state=c.state, city=c.city,
+                total_sales=c.total_sales, total_profit=c.total_profit,
+                profit_margin_pct=c.profit_margin_pct, profit_gap=round(gap(c), 2),
+                in_top_states=c.state in top_states, reason=reason,
+            )
+
+        below = [c for c in cities if c.profit_margin_pct < overall and gap(c) > 0]
+        fix_in = sorted([c for c in below if c.state in top_states], key=gap, reverse=True)[:fix_n]
+        outside = sorted([c for c in below if c.state not in top_states], key=gap, reverse=True)
+        results = [make(c, "Fix", fix_reason(c, False)) for c in fix_in]
+        if outside and (not fix_in or gap(outside[0]) > gap(fix_in[0])):
+            results.append(make(outside[0], "Fix", fix_reason(outside[0], True)))
+
+        scale = sorted(
+            [c for c in cities if c.total_sales >= median_sales and c.profit_margin_pct > overall],
+            key=lambda c: c.total_profit, reverse=True,
+        )[:scale_n]
+        results.extend(make(c, "Scale", scale_reason(c)) for c in scale)
+        logger.info(
+            "City priorities: %s",
+            ", ".join(f"{p.action} {p.city} ({p.state})" for p in results),
+        )
+        return results
+
+    @staticmethod
+    def build_q1_insights(
+        category_data: List[CategoryPerformance],
+        subcategory_data: List[SubCategoryPerformance],
+        furniture_data: List[FurnitureTargetAchievement],
+        state_data: List[StatePerformance],
+        city_priorities: List[CityPriority],
+    ) -> Dict[str, Any]:
+        """Builds the data-driven Q1 narrative shared by the PDF and the dashboard.
+
+        Every number in the text is computed from the inputs. Sections with no
+        input data are returned as empty lists / strings.
+
+        Returns:
+            Dict[str, Any]: Keys part1_reasons, part1_recommendations, part2_diagnosis,
+            part2_strategies, part3_disparities, exec_part1, exec_part2, exec_part3.
+        """
+        cats = list(category_data or [])
+        subs = list(subcategory_data or [])
+        states = sorted(state_data or [], key=lambda s: s.rank)
+        prios = list(city_priorities or [])
+        out: Dict[str, Any] = {
+            "part1_reasons": [], "part1_recommendations": [],
+            "part2_diagnosis": "", "part2_strategies": [],
+            "part3_disparities": [],
+            "exec_part1": "", "exec_part2": "", "exec_part3": "",
+        }
+
+        def signed(v: float) -> str:
+            return f"-{_rs(v)}" if v < 0 else _rs(v)
+
+        # ---------------- Part 1: why categories differ ----------------
+        if cats:
+            weak = min(cats, key=lambda c: c.profit_margin_pct)
+            strong = max(cats, key=lambda c: c.profit_margin_pct)
+            best_ppo = max(cats, key=lambda c: c.avg_profit_per_order)
+            cat_margin = {c.category: c.profit_margin_pct for c in cats}
+            cat_sales = {c.category: c.total_sales for c in cats}
+            overall = _weighted_margin(
+                sum(c.total_sales for c in cats), sum(c.total_profit for c in cats)
+            )
+            weak_subs = [s for s in subs if s.category == weak.category]
+            worst = min(weak_subs, key=lambda s: s.total_profit) if weak_subs else None
+            reasons: List[str] = []
+            recs: List[str] = []
+            be_margin = weak.profit_margin_pct
+            if worst is not None and worst.total_profit < 0:
+                be_margin = _weighted_margin(weak.total_sales, weak.total_profit - worst.total_profit)
+                reasons.append(
+                    f"{weak.category} has the thinnest margin ({weak.profit_margin_pct:.1f}%) because "
+                    f"{worst.sub_category} loses money: {worst.profit_margin_pct:.1f}% margin, a "
+                    f"{_rs(worst.total_profit)} loss on {_rs(worst.total_sales)} of sales. If "
+                    f"{worst.sub_category} only broke even, {weak.category} would earn {be_margin:.1f}%."
+                )
+            elif worst is not None:
+                reasons.append(
+                    f"{weak.category} has the thinnest margin ({weak.profit_margin_pct:.1f}%); its "
+                    f"weakest line is {worst.sub_category} ({worst.profit_margin_pct:.1f}%)."
+                )
+            thin = sorted(
+                [s for s in subs if s is not worst and s.profit_margin_pct < overall / 2],
+                key=lambda s: s.profit_margin_pct,
+            )
+            if thin:
+                text = (
+                    "Other loss-making or near-zero lines, all below half the "
+                    f"{overall:.1f}% average margin: "
+                    + ", ".join(
+                        f"{s.sub_category} ({s.category}, {s.profit_margin_pct:.1f}%)" for s in thin
+                    )
+                    + "."
+                )
+                big = max(thin, key=lambda s: s.total_sales)
+                big_cat_sales = cat_sales.get(big.category, 0.0)
+                share = big.total_sales / big_cat_sales * 100 if big_cat_sales > 0 else 0.0
+                if share >= 25 and big.category in cat_margin:
+                    text += (
+                        f" {big.sub_category} is {share:.0f}% of {big.category} sales, so its thin "
+                        f"margin holds {big.category} to {cat_margin[big.category]:.1f}%."
+                    )
+                reasons.append(text)
+            if len(subs) >= 2:
+                median_aov = float(np.median([s.avg_order_value for s in subs]))
+                high = [s for s in subs if s.avg_order_value > median_aov]
+                low = [s for s in subs if s.avg_order_value <= median_aov]
+                if high and low:
+                    h_sales = sum(s.total_sales for s in high)
+                    l_sales = sum(s.total_sales for s in low)
+                    h_m = _weighted_margin(h_sales, sum(s.total_profit for s in high))
+                    l_m = _weighted_margin(l_sales, sum(s.total_profit for s in low))
+                    h_ex = ", ".join(
+                        s.sub_category for s in sorted(high, key=lambda s: s.profit_margin_pct)[:2]
+                    )
+                    l_ex = ", ".join(
+                        s.sub_category for s in sorted(low, key=lambda s: -s.profit_margin_pct)[:2]
+                    )
+                    reasons.append(
+                        f"Mix of ticket sizes: high-ticket lines (average order above "
+                        f"{_rs(median_aov)}, e.g. {h_ex}) make up "
+                        f"{h_sales / (h_sales + l_sales) * 100:.0f}% of sales but earn only "
+                        f"{h_m:.1f}% margin, while low-ticket lines (e.g. {l_ex}) earn {l_m:.1f}%."
+                    )
+            ppo_text = (
+                f"Profit per order: {best_ppo.category} earns {_rs(best_ppo.avg_profit_per_order)} "
+                f"per order against {_rs(weak.avg_profit_per_order)} for {weak.category}"
+            )
+            if worst is not None and worst.avg_profit_per_order < 0:
+                ppo_text += (
+                    f", and the average {worst.sub_category} order loses "
+                    f"{_rs(worst.avg_profit_per_order)}"
+                )
+            reasons.append(ppo_text + ".")
+
+            if worst is not None and worst.total_profit < 0:
+                recs.append(
+                    f"Reprice or cap discounts on {worst.sub_category}: the average order is "
+                    f"{_rs(worst.avg_order_value)} but loses {_rs(worst.avg_profit_per_order)}. "
+                    f"Reaching break-even lifts {weak.category} margin from "
+                    f"{weak.profit_margin_pct:.1f}% to {be_margin:.1f}%."
+                )
+            others = [s for s in subs if s is not worst]
+            if others:
+                second = min(others, key=lambda s: s.total_profit)
+                peers = [s for s in subs if s.category == second.category and s is not second]
+                top_line = max(subs, key=lambda s: s.profit_margin_pct)
+                if peers:
+                    partner = max(peers, key=lambda s: s.profit_margin_pct)
+                    recs.append(
+                        f"Bundle {second.sub_category} ({second.profit_margin_pct:.1f}%) with "
+                        f"{partner.sub_category} ({partner.profit_margin_pct:.1f}% margin) and push "
+                        f"low-ticket, high-margin add-ons such as {top_line.sub_category} "
+                        f"({top_line.profit_margin_pct:.1f}%) to lift basket margin instead of "
+                        "chasing volume."
+                    )
+            out["part1_reasons"] = reasons
+            out["part1_recommendations"] = recs
+            out["exec_part1"] = (
+                f"{strong.category} converts sales to profit best ({strong.profit_margin_pct:.1f}% "
+                f"margin); {weak.category} trails at {weak.profit_margin_pct:.1f}%"
+                + (
+                    f", mainly because {worst.sub_category} loses {_rs(worst.total_profit)}."
+                    if worst is not None and worst.total_profit < 0 else "."
+                )
+            )
+
+        # ---------------- Part 2: aligning targets ----------------
+        ta = AnalyticsEngine.compute_target_alignment(furniture_data)
+        if ta:
+            h1_share = 100 - ta["h2_actual_share_pct"]
+            out["part2_diagnosis"] = (
+                f"Targets rise a steady {ta['avg_target_mom_pct']:.1f}% a month "
+                f"({_rs(ta['first_target'])} to {_rs(ta['last_target'])}), but actual sales are "
+                f"seasonal, from {_rs(ta['low_actual'])} ({ta['low_month']}) to "
+                f"{_rs(ta['high_actual'])} ({ta['high_month']}). {ta['h1_label']} reached "
+                f"{ta['h1_achievement_pct']:.0f}% of target and {ta['h2_label']} "
+                f"{ta['h2_achievement_pct']:.0f}%; target was met in {ta['months_met']} of "
+                f"{ta['months']} months."
+            )
+            qs = ta["quarters"]
+            q_low = min(qs, key=lambda q: q["achievement_pct"])
+            q_high = max(qs, key=lambda q: q["achievement_pct"])
+            out["part2_strategies"] = [
+                f"Seasonal targets: {ta['h2_label']} delivered {ta['h2_actual_share_pct']:.0f}% of "
+                f"actual sales ({_rs(ta['h2_actual'])} vs {_rs(ta['h1_actual'])}) but carried only "
+                f"{ta['h2_target_share_pct']:.0f}% of the target. Keeping the annual "
+                f"{_rs(ta['annual_target'])} target but splitting it {h1_share:.0f}/"
+                f"{ta['h2_actual_share_pct']:.0f} gives about "
+                f"{_rs(ta['seasonal_h1_monthly_target'])} a month for {ta['h1_label']} and "
+                f"{_rs(ta['seasonal_h2_monthly_target'])} a month for {ta['h2_label']}.",
+                f"Rolling {ta['rolling_window']}-month baseline: anchoring each month's target on "
+                f"the average of the previous {ta['rolling_window']} months' actuals would have "
+                f"missed by {_rs(ta['rolling_mae'])} a month on average over "
+                f"{ta['rolling_eval_label']}, against {_rs(ta['flat_ramp_mae'])} for the current "
+                f"ramp ({ta['mae_reduction_pct']:.0f}% smaller). The latest baseline is "
+                f"{_rs(ta['latest_rolling_baseline'])} a month versus a "
+                f"{_rs(ta['last_target'])} target.",
+                f"Quarterly re-forecast: achievement ranged from {q_low['achievement_pct']:.0f}% "
+                f"({q_low['label']}) to {q_high['achievement_pct']:.0f}% ({q_high['label']}). "
+                "Resetting the next quarter's target at each quarter end, blending the seasonal "
+                "split with the latest run-rate, stops one quarter's miss or windfall from "
+                "distorting the rest of the year.",
+            ]
+            out["exec_part2"] = (
+                f"Furniture targets rise ~{ta['avg_target_mom_pct']:.1f}% a month, but "
+                f"{ta['h2_label']} brings {ta['h2_actual_share_pct']:.0f}% of actual sales "
+                f"({ta['h1_achievement_pct']:.0f}% vs {ta['h2_achievement_pct']:.0f}% achievement "
+                "by half). Set seasonal targets on a rolling 3-month baseline and re-forecast "
+                "quarterly."
+            )
+
+        # ---------------- Part 3: regional disparities ----------------
+        if states:
+            disp: List[str] = []
+            if len(states) >= 2:
+                a, b = states[0], states[1]
+                lower, higher = (a, b) if a.profit_margin_pct < b.profit_margin_pct else (b, a)
+                gap_pts = higher.profit_margin_pct - lower.profit_margin_pct
+                disp.append(
+                    f"{a.state} and {b.state} lead on volume ({a.distinct_orders} and "
+                    f"{b.distinct_orders} orders; {_rs(a.total_sales)} and {_rs(b.total_sales)} "
+                    f"of sales), but {lower.state} earns {lower.profit_margin_pct:.1f}% margin "
+                    f"against {higher.profit_margin_pct:.1f}%. Closing that {gap_pts:.1f}-point gap "
+                    f"is worth about {_rs(lower.total_sales * gap_pts / 100)} of profit at "
+                    f"{lower.state}'s sales."
+                )
+            best = max(states, key=lambda s: s.profit_margin_pct)
+            worst_st = min(states, key=lambda s: s.profit_margin_pct)
+            text = (
+                f"Across the top {len(states)} states margin ranges from "
+                f"{best.profit_margin_pct:.1f}% ({best.state}) to "
+                f"{worst_st.profit_margin_pct:.1f}% ({worst_st.state})."
+            )
+            if worst_st.total_profit < 0:
+                text += f" {worst_st.state} loses {_rs(worst_st.total_profit)}"
+                driver = next(
+                    (p for p in prios if p.state == worst_st.state and p.action == "Fix"), None
+                )
+                if driver is not None and driver.total_profit < 0:
+                    text += f", driven by {driver.city} ({signed(driver.total_profit)})"
+                text += "."
+            disp.append(text)
+            for sc in (p for p in prios if p.action == "Scale"):
+                twin = next((p for p in prios if p.action == "Fix" and p.state == sc.state), None)
+                if twin is not None:
+                    disp.append(
+                        f"The gap is wider inside states: in {sc.state}, {twin.city} runs at "
+                        f"{twin.profit_margin_pct:.1f}% margin while {sc.city} earns "
+                        f"{sc.profit_margin_pct:.1f}%, so the fix is local pricing and mix, "
+                        "not the whole state."
+                    )
+                    break
+            out["part3_disparities"] = disp
+        fix = [p for p in prios if p.action == "Fix"]
+        scale = [p for p in prios if p.action == "Scale"]
+        if fix or scale:
+            out["exec_part3"] = (
+                (f"Cities to fix first: {', '.join(p.city for p in fix)}. " if fix else "")
+                + (f"Cities to scale: {', '.join(p.city for p in scale)}." if scale else "")
+            ).strip()
+        return out

@@ -24,8 +24,10 @@ import pandas as pd
 from src.analytics_engine import (
     CategoryPerformance,
     CityPerformance,
+    CityPriority,
     FurnitureTargetAchievement,
     StatePerformance,
+    SubCategoryPerformance,
 )
 from src.content.growth_strategy import (
     GrowthStrategyReport,
@@ -373,6 +375,66 @@ class ExportService:
 
         return {"json": json_path, "csv": csv_path}
 
+    def export_subcategory_performance(
+        self,
+        records: Sequence[SubCategoryPerformance],
+        output_dir: Optional[Union[str, Path]] = None,
+    ) -> Dict[str, Path]:
+        """Serializes SubCategoryPerformance records to subcategory_performance.json and .csv."""
+        base_dir = Path(output_dir) if output_dir is not None else self._output_dir
+        base_dir.mkdir(parents=True, exist_ok=True)
+        fieldnames = [
+            "category",
+            "sub_category",
+            "total_sales",
+            "total_profit",
+            "profit_margin_pct",
+            "distinct_orders",
+            "total_quantity",
+            "avg_order_value",
+            "avg_profit_per_order",
+        ]
+        json_path = base_dir / "subcategory_performance.json"
+        csv_path = base_dir / "subcategory_performance.csv"
+        self.export_records_to_json(records, json_path)
+        self.export_records_to_csv(records, csv_path, fieldnames=fieldnames)
+        return {"json": json_path, "csv": csv_path}
+
+    def export_city_priorities(
+        self,
+        records: Sequence[CityPriority],
+        output_dir: Optional[Union[str, Path]] = None,
+    ) -> Dict[str, Path]:
+        """Serializes CityPriority records to city_priorities.json and .csv."""
+        base_dir = Path(output_dir) if output_dir is not None else self._output_dir
+        base_dir.mkdir(parents=True, exist_ok=True)
+        fieldnames = [
+            "action",
+            "state",
+            "city",
+            "total_sales",
+            "total_profit",
+            "profit_margin_pct",
+            "profit_gap",
+            "in_top_states",
+            "reason",
+        ]
+        json_path = base_dir / "city_priorities.json"
+        csv_path = base_dir / "city_priorities.csv"
+        self.export_records_to_json(records, json_path)
+        self.export_records_to_csv(records, csv_path, fieldnames=fieldnames)
+        return {"json": json_path, "csv": csv_path}
+
+    def export_q1_insights(
+        self,
+        insights: Dict[str, Any],
+        output_dir: Optional[Union[str, Path]] = None,
+    ) -> Dict[str, Path]:
+        """Serializes the Q1 narrative (AnalyticsEngine.build_q1_insights) to q1_insights.json."""
+        base_dir = Path(output_dir) if output_dir is not None else self._output_dir
+        base_dir.mkdir(parents=True, exist_ok=True)
+        return {"json": self.export_dict_to_json(insights, base_dir / "q1_insights.json")}
+
     # -----------------------------------------------------------------------
     # Question 2 & Question 3 Strategy Export Methods
     # -----------------------------------------------------------------------
@@ -470,6 +532,9 @@ class ExportService:
         state_data: Sequence[StatePerformance],
         city_data: Optional[Sequence[CityPerformance]] = None,
         output_dir: Optional[Union[str, Path]] = None,
+        subcategory_data: Optional[Sequence[SubCategoryPerformance]] = None,
+        city_priorities: Optional[Sequence[CityPriority]] = None,
+        q1_insights: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Dict[str, Path]]:
         """Executes full export of Question 1 analytical artifacts.
 
@@ -479,6 +544,9 @@ class ExportService:
             state_data: StatePerformance records.
             city_data: Optional CityPerformance records.
             output_dir: Optional destination directory override.
+            subcategory_data: Optional SubCategoryPerformance records.
+            city_priorities: Optional CityPriority records.
+            q1_insights: Optional Q1 narrative dict from AnalyticsEngine.build_q1_insights.
 
         Returns:
             Dict[str, Dict[str, Path]]: Mapping artifact names to their json and csv paths.
@@ -496,5 +564,13 @@ class ExportService:
 
         if city_data is not None:
             artifacts["city_performance"] = self.export_city_performance(city_data, target_dir)
+        if subcategory_data is not None:
+            artifacts["subcategory_performance"] = self.export_subcategory_performance(
+                subcategory_data, target_dir
+            )
+        if city_priorities is not None:
+            artifacts["city_priorities"] = self.export_city_priorities(city_priorities, target_dir)
+        if q1_insights is not None:
+            artifacts["q1_insights"] = self.export_q1_insights(q1_insights, target_dir)
 
         return artifacts

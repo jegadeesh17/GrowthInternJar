@@ -651,7 +651,7 @@ def test_q3_growth_strategy_has_5_verticals(generated_pdf: Path) -> None:
     text = _all_text(generated_pdf)
     lines = text.splitlines()
     assert "Q3 - Fintech Growth Strategy: 5 Expansion Verticals" in lines
-    assert "Unit Economics at a Glance" in lines
+    assert "Unit Economics (illustrative planning assumptions)" in lines
     assert "Execution Risk Matrix" in lines
     v_titles = [ln for ln in lines if re.match(r"^V\d+\. ", ln)]
     assert [t.split(".")[0] for t in v_titles] == ["V1", "V2", "V3", "V4", "V5"]
