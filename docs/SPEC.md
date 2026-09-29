@@ -52,7 +52,6 @@
 5. **Q3 — Fintech Growth & Business Expansion Roadmap**:
    - Evaluator reads strategic growth verticals: Gold-backed Micro-Lending (Jar Cash), Micro-SIPs (Silver & SGBs), Jar Family Vaults, Gold Leasing (Jar Earn 2-3% yield), and B2B Corporate Wellness SDK.
    - Evaluator reviews market opportunity sizing, unit economics impact, and execution feasibility matrices.
-6. **Action**: Evaluator clicks "Download Executive PDF Report" to retrieve the compiled offline report.
 
 ### Journey 3: Automated Compilation & Review of Executive PDF Document
 1. **Trigger**: Evaluator or developer runs `python -m src.generate_pdf` or triggers the build pipeline.

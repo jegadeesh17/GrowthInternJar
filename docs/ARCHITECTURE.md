@@ -549,4 +549,4 @@ The dashboard was redesigned after M3 (see ADR-008). **`DESIGN.md` is the source
   3. *Q2: App teardown* (5 strengths, 5 frictions)
   4. *Q3: Expansion strategy*
   5. *Methodology* (including in-browser consistency checks)
-- **Download PDF** links to `data/output/Jar_Growth_Intern_Assignment_Submission.pdf`, which is gitignored and must be generated first.
+- **No PDF link**: the dashboard is the reviewer-facing deliverable (hosted on GitHub Pages); the submission PDF is internal and not linked.

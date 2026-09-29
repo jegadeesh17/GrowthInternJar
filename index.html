@@ -88,9 +88,6 @@ code { font-family: ui-monospace, "Cascadia Code", Menlo, Consolas, monospace; f
 .part:not([hidden]) { animation: rise 0.45s var(--ease) both; }
 .chip { display: inline-flex; align-items: center; height: 22px; padding: 0 7px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; background: var(--grey-200); color: var(--grey-600); }
 [role="tab"][aria-selected="true"] .chip { background: var(--lav-200); color: var(--lav-600); }
-.nav-card { margin-top: auto; padding: 20px; border-radius: var(--radius); background: linear-gradient(160deg, var(--lav-50), var(--sky-50) 60%, var(--mint-50)); text-align: left; }
-.nav-card strong { display: block; font-size: 0.92rem; }
-.nav-card p { font-size: 0.8rem; color: var(--grey-700); margin: 4px 0 14px; }
 
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 10px; border: 0; background: var(--grey-800); color: #fff; font: inherit; font-size: 0.875rem; font-weight: 600; text-decoration: none; cursor: pointer; transition: background-color 0.2s, box-shadow 0.2s; }
 .btn:hover { background: var(--grey-700); box-shadow: 0 8px 16px 0 rgba(28, 37, 46, 0.16); }
@@ -296,12 +293,6 @@ footer { padding: 0 40px 40px; color: var(--grey-600); font-size: 0.8rem; max-wi
     <button type="button" role="tab" id="tab-methodology" aria-controls="panel-methodology" aria-selected="false" tabindex="-1">
       <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5.5c0 4.6-3 7.9-7 9.5-4-1.6-7-4.9-7-9.5V6z"/><path d="M9 12l2 2 4-4.5"/></svg>
       <span class="lbl">Methodology</span></button>
-  </div>
-  <div class="nav-card">
-    <strong>Full written report</strong>
-    <p>All three answers with charts, as a PDF.</p>
-    <a class="btn" href="data/output/Jar_Growth_Intern_Assignment_Submission.pdf" download>
-      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>Download PDF</a>
   </div>
 </aside>
 <div class="scrim" id="scrim" hidden></div>

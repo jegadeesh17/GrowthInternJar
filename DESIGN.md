@@ -252,7 +252,7 @@ Corners are soft and nested. Cards and banners use 16px. Icon tiles and insets u
 - **Internal Padding:** 24px (20px at 600px and below).
 
 ### Navigation
-The sidebar is white with a dashed right edge. It holds the brand at the top, five vertical tabs, and a gradient PDF card pinned to the bottom. Tabs are 46px tall, 0.9rem 500 weight, and grey 600. On hover they take a grey wash at 8% alpha. The active tab is a lavender-50 pill with lavender-600 text at 600 weight. Switching sections plays a rise-and-fade: 8px up over 0.45s using the ease-out-expo curve.
+The sidebar is white with a dashed right edge. It holds the brand at the top and five vertical tabs. Tabs are 46px tall, 0.9rem 500 weight, and grey 600. On hover they take a grey wash at 8% alpha. The active tab is a lavender-50 pill with lavender-600 text at 600 weight. Switching sections plays a rise-and-fade: 8px up over 0.45s using the ease-out-expo curve.
 
 **Sub-navigation.** A section split into parts (Q1 has three, one per part of the assignment) shows child items under its tab only while that tab is active, including in the mobile drawer. Children are indented under a 2px grey-200 guide line, 36px tall, 0.85rem 500 weight in grey 600, each with a 20px numbered tile (grey 600 on grey 200). The active child turns lavender 600 at 600 weight, its tile lavender 600 on lavender 100, with a 4px lavender-400 marker on the guide line. Children are plain buttons with `aria-current="page"`, not extra tabs. The breadcrumb reads "Dashboard / Section / Part".
 

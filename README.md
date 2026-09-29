@@ -31,7 +31,7 @@ python -m src.generate_pdf
 
 This writes `data/output/Jar_Growth_Intern_Assignment_Submission.pdf`. Set `OUTPUT_PDF_PATH` to write it somewhere else, and `CANDIDATE_NAME` to set the author name on the cover. The charts are rendered to `assets/charts/` (override with `CHART_ASSETS_DIR`).
 
-The PDF is gitignored, so generate it before opening the dashboard; its Download PDF link points to this file.
+The PDF is gitignored and for internal submission use only; the dashboard does not link to it.
 
 ## Update and open the dashboard
 

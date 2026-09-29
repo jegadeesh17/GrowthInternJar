@@ -13,7 +13,7 @@ Jar's growth team, reviewing a Growth Intern assignment submission. They skim th
 A single-file interactive dashboard (`index.html`) that presents the assignment's answers from the Python pipeline's outputs. Success: a reviewer understands the findings quickly and trusts the numbers.
 
 ## Operating Context
-Opened locally in a desktop browser, with no server. Data is embedded as JSON by `python -m src.build_dashboard`, and Chart.js loads from a CDN. A companion PDF (`data/output/Jar_Growth_Intern_Assignment_Submission.pdf`) is downloadable from the page.
+Opened locally in a desktop browser, with no server. Data is embedded as JSON by `python -m src.build_dashboard`, and Chart.js loads from a CDN. The page is hosted on GitHub Pages for reviewers; the submission PDF is internal and is not linked from the page.
 
 ## Capabilities and Constraints
 - Every figure is computed by the pipeline; the page must not hand-edit values. The `<script id="dashboard-data">` block must stay intact for `build_dashboard.py`.
