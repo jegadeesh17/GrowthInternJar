@@ -57,13 +57,13 @@ flowchart TD
 
     subgraph Export ["Export & Chart Services"]
         Exporter["ExportService (src/export_service.py)\n• JSON & CSV serialization\n• data/output/ persistence"]
-        ChartGen["ChartGenerator (src/chart_generator.py)\n• Pastel Matplotlib styling\n• 300 DPI chart image assets"]
+        ChartGen["ChartGenerator (src/chart_generator.py)\n• Standalone Matplotlib export\n• 300 DPI chart image assets"]
     end
 
     subgraph Presentation ["Presentation & Delivery Layer"]
         CLI["CLI Entry Points\n• python -m src.main\n• python -m src.build_dashboard\n• python -m src.generate_pdf"]
         WebDash["Interactive Web Dashboard\n(index.html)\n• Minimal-UI pastel aesthetics\n• Chart.js interactivity\n• Questions 1, 2, and 3"]
-        ExecPDF["Executive PDF Submission\n(Jar_Growth_Intern_Assignment_Submission.pdf)\n• fpdf2 vector document\n• Embedded high-DPI charts\n• Full strategy teardowns"]
+        ExecPDF["Submission note PDF (internal)\n(Jar_Growth_Intern_Assignment_Submission.pdf)\n• fpdf2, one page\n• Links to dashboard and repo\n• Question-to-section map"]
     end
 
     RawOrders --> Loader
@@ -81,15 +81,11 @@ flowchart TD
     StateAnalytics --> Exporter
     Merger --> DrillDown
     DrillDown --> Exporter
-    DrillDown --> ExecPDF
 
     Exporter --> ChartGen
-    ChartGen --> ExecPDF
-    CatAnalytics --> ExecPDF
-    TargetAnalytics --> ExecPDF
-    StateAnalytics --> ExecPDF
 
     Exporter --> WebDash
+    ExecPDF -. links to .-> WebDash
     CLI --> Ingestion
     CLI --> Analytics
     CLI --> Export
@@ -106,8 +102,8 @@ flowchart TD
 - **`ExportService` (`src/export_service.py`)**: Serializes analytical results into clean JSON and CSV formats stored in `data/output/` for dashboard and archival use.
 - **`build_dashboard` (`src/build_dashboard.py`)**: Embeds every `data/output/*.json` file into the `<script id="dashboard-data">` block of `index.html`.
 - **Q2/Q3 content (`src/content/`)**: `ux_teardown.py` and `growth_strategy.py` hold the Jar UX teardown and growth strategy as typed dataclasses, exported to `ux_teardown.json` and `growth_strategy.json`.
-- **`ChartGenerator` (`src/chart_generator.py`)**: Renders publication-grade, pastel-themed chart PNGs at 300 DPI using Matplotlib for automated embedding in the PDF.
-- **`PdfGenerator` (`src/pdf_generator.py`)**: Compiles the comprehensive A4 executive submission PDF (`Jar_Growth_Intern_Assignment_Submission.pdf`) using `fpdf2`.
+- **`ChartGenerator` (`src/chart_generator.py`)**: Standalone tool (`python -m src.chart_generator`) that renders pastel chart PNGs at 300 DPI with Matplotlib. The PDF no longer uses it.
+- **`PdfGenerator` (`src/pdf_generator.py`)**: Builds the internal submission note (`Jar_Growth_Intern_Assignment_Submission.pdf`, one page, at most 2) with `fpdf2`. It links to the live dashboard and repository and maps each question to its dashboard section; it contains no analysis (ADR-009).
 - **`Interactive Web Dashboard` (`index.html`)**: Single-page static web application styled with `minimal-ui-kit/material-kit-react` pastel aesthetics (see `DESIGN.md`), presenting interactive charts and teardowns for Questions 1, 2, and 3.
 
 ---
@@ -397,27 +393,13 @@ class ChartGenerator:
 #### `PdfGenerator` (`src/pdf_generator.py`)
 ```python
 class PdfGenerator:
-    """Compiles the executive PDF submission using fpdf2."""
+    """Builds the submission cover note."""
 
-    def __init__(self, chart_paths: Optional[Dict[str, Path]] = None):
-        ...
+    def __init__(self, candidate_name=None, dashboard_url=None, repo_url=None, submission_date=None):
+        """Unset values fall back to CANDIDATE_NAME / DASHBOARD_URL / REPO_URL, then built-in defaults."""
 
-    def build_submission_pdf(
-        self,
-        output_path: "str | Path",
-        category_data: List[CategoryPerformance],
-        furniture_data: List[FurnitureTargetAchievement],
-        state_data: List[StatePerformance],
-        charts_dir: Optional[Path] = None,
-        subcategory_data: Optional[List[SubCategoryPerformance]] = None,
-        city_priorities: Optional[List[CityPriority]] = None,
-        q1_insights: Optional[Dict[str, Any]] = None,
-    ) -> Path:
-        """
-        Builds Jar_Growth_Intern_Assignment_Submission.pdf with cover,
-        executive summary, Q1 analysis, Q2 UX teardown, and Q3 growth strategy.
-        """
-        ...
+    def build_submission_pdf(self, output_path: "str | Path") -> Path:
+        """Writes the note; raises RuntimeError if it exceeds MAX_PAGES (2)."""
 ```
 
 ### CLI Command Interfaces
@@ -426,7 +408,8 @@ class PdfGenerator:
 | :--- | :--- | :--- |
 | `python -m src.main` | Runs ingestion, analytics engine, prints console summaries, and exports data. | `data/output/*.json`, `data/output/*.csv` |
 | `python -m src.build_dashboard` | Embeds every `data/output/*.json` into the `<script id="dashboard-data">` block of `index.html`. Run after `src.main`. | `index.html` (rewritten in place) |
-| `python -m src.generate_pdf` | Renders pastel charts and builds the executive PDF report. | `data/output/Jar_Growth_Intern_Assignment_Submission.pdf`, `assets/charts/*.png` |
+| `python -m src.generate_pdf` | Builds the internal submission note. | `data/output/Jar_Growth_Intern_Assignment_Submission.pdf` |
+| `python -m src.chart_generator` | Optional: renders static chart PNGs. | `assets/charts/*.png` |
 | `python -m pytest -v` | Executes complete automated test suite across all units. | Terminal test results report |
 
 ---
@@ -453,13 +436,13 @@ GrowthInternJar/
 ├── src/
 │   ├── __init__.py
 │   ├── main.py                            # CLI entry point for analytics pipeline
-│   ├── generate_pdf.py                    # Standalone CLI entry point for PDF generation
+│   ├── generate_pdf.py                    # CLI entry point for the submission note
 │   ├── build_dashboard.py                 # Embeds data/output/*.json into index.html
 │   ├── data_loader.py                     # Excel ingestion, validation, and date normalization
 │   ├── analytics_engine.py                # Mathematical aggregations for Q1 Parts 1, 2, and 3
 │   ├── export_service.py                  # JSON/CSV serialization service
-│   ├── chart_generator.py                 # Matplotlib pastel chart generation
-│   ├── pdf_generator.py                   # fpdf2 PDF compilation engine
+│   ├── chart_generator.py                 # Standalone Matplotlib chart export
+│   ├── pdf_generator.py                   # fpdf2 submission note builder
 │   └── content/
 │       ├── ux_teardown.py                 # Q2 Jar app UX teardown content
 │       └── growth_strategy.py             # Q3 growth and expansion strategy content
@@ -480,7 +463,7 @@ GrowthInternJar/
     ├── test_export_service.py             # Tests for JSON/CSV export
     ├── test_content.py                    # Tests for Q2/Q3 content integrity
     ├── test_chart_generator.py            # Tests for chart rendering
-    ├── test_pdf_generator.py              # Tests for PDF compilation
+    ├── test_pdf_generator.py              # Tests for the submission note (page limit, links, CLI)
     └── test_edge_cases.py                 # Spec edge cases AC-E1 to AC-E6
 ```
 
@@ -510,7 +493,11 @@ OUTPUT_DATA_DIR=data/output
 # Directory for Generated Charts
 CHART_ASSETS_DIR=assets/charts
 
-# Target Filepath for Generated Executive PDF
+# Links printed in the submission note
+DASHBOARD_URL=https://jegadeesh17.github.io/GrowthInternJar/
+REPO_URL=https://github.com/jegadeesh17/GrowthInternJar
+
+# Target Filepath for the Submission Note PDF
 OUTPUT_PDF_PATH=data/output/Jar_Growth_Intern_Assignment_Submission.pdf
 
 # Fluctuation Cutoff for Furniture Targets (in percent)
@@ -519,7 +506,7 @@ FURNITURE_MOM_FLUCTUATION_THRESHOLD=15.0
 # Top N States for Regional Performance Analysis
 TOP_STATES_COUNT=5
 
-# Author name shown on the PDF cover (blank uses the built-in default)
+# Name shown on the submission note (blank uses the built-in default)
 CANDIDATE_NAME=
 
 # Dashboard page that build_dashboard embeds data into
@@ -538,7 +525,7 @@ The dashboard was redesigned after M3 (see ADR-008). **`DESIGN.md` is the source
 - **Layout**: Minimal UI Kit grammar: white left sidebar with Q-number labels, blurred sticky top bar, white 16px cards with a two-layer soft shadow.
 - **Palette**: pastel roles lavender (primary), mint, butter, peach and sky over a grey 100-800 ramp. Tints fill surfaces and the darker shade of each hue carries text.
 - **Typography**: Barlow for headings, DM Sans for body text.
-- **PDF and charts**: `pdf_generator.py` and `chart_generator.py` still use the ADR-007 palette (sage, amber, lavender, coral, slate).
+- **PDF and charts**: the submission note uses the DESIGN.md lavender and grey tokens; `chart_generator.py` still uses the ADR-007 palette.
 
 ### Web Application Architecture
 - **Single File Self-Contained**: Statically deployable with zero build step; Chart.js loads from a CDN.

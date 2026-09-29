@@ -23,15 +23,13 @@ python -m src.main --data-dir data/input --output-dir data/output --top-states 5
 
 The CLI prints the Q1, Q2 and Q3 sections and writes JSON/CSV files to `data/output/`. Environment variables can override the defaults: `DATA_DIR`, `OUTPUT_DATA_DIR`, `FURNITURE_MOM_FLUCTUATION_THRESHOLD`, `TOP_STATES_COUNT` and `LOG_LEVEL`. See `.env.example` for the full list.
 
-## Generate the PDF report
+## Generate the submission note
 
 ```bash
 python -m src.generate_pdf
 ```
 
-This writes `data/output/Jar_Growth_Intern_Assignment_Submission.pdf`. Set `OUTPUT_PDF_PATH` to write it somewhere else, and `CANDIDATE_NAME` to set the author name on the cover. The charts are rendered to `assets/charts/` (override with `CHART_ASSETS_DIR`).
-
-The PDF is gitignored and for internal submission use only; the dashboard does not link to it.
+This writes a one-page note to `data/output/Jar_Growth_Intern_Assignment_Submission.pdf` for internal submission. It links to the live dashboard and this repository and maps each question to its dashboard section; it does not repeat the analysis. `DASHBOARD_URL`, `REPO_URL`, `CANDIDATE_NAME` and `OUTPUT_PDF_PATH` override the defaults. The PDF is gitignored and the dashboard does not link to it.
 
 ## Update and open the dashboard
 
@@ -61,16 +59,16 @@ src/
   analytics_engine.py   Q1 metrics: categories, Furniture targets, states, cities
   export_service.py     JSON/CSV export
   content/              Q2 UX teardown and Q3 growth strategy content
-  chart_generator.py    Matplotlib charts for the PDF
-  pdf_generator.py      PDF report builder
-  generate_pdf.py       PDF entry point
+  chart_generator.py    Standalone Matplotlib chart export (python -m src.chart_generator)
+  pdf_generator.py      Submission note builder
+  generate_pdf.py       Submission note entry point
   main.py               Analytics CLI entry point
   build_dashboard.py    Embeds data/output/*.json into index.html
 tests/                  pytest suite (fixtures in conftest.py)
 docs/                   Spec, architecture, decisions, tasks
 data/input/             Source Excel files (tracked)
 data/output/            Generated JSON/CSV files and the PDF (gitignored)
-assets/charts/          Generated chart images
+assets/charts/          Chart images from chart_generator (gitignored)
 index.html              Interactive dashboard
 DESIGN.md               Dashboard design system (colours, type, components)
 PRODUCT.md              Dashboard purpose, audience and constraints

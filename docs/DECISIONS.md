@@ -14,6 +14,7 @@ This document records the key architectural, technical, and methodological choic
 - [ADR-006: State Ranking Methodology and Regional Profitability Granularity](#adr-006-state-ranking-methodology-and-regional-profitability-granularity)
 - [ADR-007: Visual Design Token System and Soft Pastel Palette](#adr-007-visual-design-token-system-and-soft-pastel-palette)
 - [ADR-008: Dashboard Redesign with a Minimal UI Kit Pastel System](#adr-008-dashboard-redesign-with-a-minimal-ui-kit-pastel-system)
+- [ADR-009: Submission PDF Becomes a One-Page Note](#adr-009-submission-pdf-becomes-a-one-page-note)
 
 ---
 
@@ -141,3 +142,15 @@ This document records the key architectural, technical, and methodological choic
 - **Consequences**:
   - The dashboard and the PDF no longer share exact colours; both stay pastel.
   - Design changes are made in `DESIGN.md` first, then in `index.html`.
+
+---
+
+## ADR-009: Submission PDF Becomes a One-Page Note
+
+- **Status**: Accepted (post-M3); supersedes the report scope of ADR-003 and SPEC AC-4.2's 6-12 page count
+- **Context**: The dashboard, hosted on GitHub Pages, is where reviewers evaluate the work. A 9-page PDF that repeats the same analysis adds reading time and can drift from the dashboard.
+- **Decision**: The PDF is an internal submission note of at most 2 pages (it fits on one): candidate name, date, links to the live dashboard and repository, a table mapping each question to its dashboard section, a review path and a short note on how the numbers were produced. It contains no analysis or charts. The dashboard no longer links to the PDF.
+- **Consequences**:
+  - `pdf_generator.py` shrank from about 1,400 lines to under 300 and needs no data inputs.
+  - `chart_generator.py` is no longer used by any deliverable; it remains as a standalone tool.
+  - `DASHBOARD_URL` and `REPO_URL` configure the links.

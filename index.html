@@ -958,7 +958,7 @@ footer { padding: 0 40px 40px; color: var(--grey-600); font-size: 0.8rem; max-wi
       el('h3', { text: 'Reproduce' }),
       el('ul', { class: 'list', style: 'margin-top:12px' }, [
         el('li', null, [el('code', { text: 'python -m src.main' }), ' runs the pipeline and writes data/output/*.json and *.csv']),
-        el('li', null, [el('code', { text: 'python -m src.generate_pdf' }), ' builds the PDF report and charts']),
+        el('li', null, [el('code', { text: 'python -m src.build_dashboard' }), ' embeds those JSON files into this page']),
         el('li', null, [el('code', { text: 'python -m pytest -v' }), ' runs the test suite'])
       ])
     ]));

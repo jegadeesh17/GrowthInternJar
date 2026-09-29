@@ -5,7 +5,7 @@
 - **Vision**: Deliver an executive-grade, rigorous Growth Intern assignment submission for Jar (changejar.com) that demonstrates analytical depth, commercial instincts, product teardown acumen, and clean Python software engineering. The submission delivers three integrated components:
   1. **Sales & Profitability Analytics Engine (Python)**: Robust data pipeline calculating category sales/margins, Furniture target MoM fluctuations, and regional performance across retail datasets.
   2. **Interactive Minimal-UI Web Dashboard (`index.html`)**: Production-ready static web application deployed to GitHub Pages inspired by `minimal-ui-kit/material-kit-react` with a soft pastel color scheme, interactive Chart.js visualizations, and comprehensive teardowns for Questions 1, 2, and 3.
-  3. **Executive PDF Submission Document (`Jar_Growth_Intern_Assignment_Submission.pdf`)**: Publication-grade A4 executive report generated via an automated Python PDF pipeline with high-DPI visualizations, structured data tables, and strategic growth frameworks.
+  3. **Submission Note PDF (`Jar_Growth_Intern_Assignment_Submission.pdf`)**: An internal one-page note that links reviewers to the live dashboard and repository (revised post-M3; see ADR-009).
 - **Post-spec additions**: sub-category performance, city performance with Fix/Scale city priorities, and a data-driven Q1 narrative (`q1_insights.json`) were added after M3. The dashboard was redesigned; `DESIGN.md` defines its visual system (see ADR-008).
 - **Posture**: **Production**
   - All analytical calculations must be zero-defect, deterministic, typed, and backed by automated unit tests.
@@ -53,15 +53,10 @@
    - Evaluator reads strategic growth verticals: Gold-backed Micro-Lending (Jar Cash), Micro-SIPs (Silver & SGBs), Jar Family Vaults, Gold Leasing (Jar Earn 2-3% yield), and B2B Corporate Wellness SDK.
    - Evaluator reviews market opportunity sizing, unit economics impact, and execution feasibility matrices.
 
-### Journey 3: Automated Compilation & Review of Executive PDF Document
-1. **Trigger**: Evaluator or developer runs `python -m src.generate_pdf` or triggers the build pipeline.
-2. **Pipeline Execution**: The Python PDF generation pipeline reads the analytical outputs and pre-rendered high-resolution pastel charts.
-3. **Document Layout Compilation**:
-   - Generates an executive cover page with metadata and table of contents.
-   - Generates Section 1: Executive Summary & Question 1 Sales Analysis with styled tables, KPIs, and embedded charts.
-   - Generates Section 2: Jar App UX Teardown (Question 2) with evaluation scorecards and design recommendations.
-   - Generates Section 3: Fintech Product Expansion Strategy (Question 3) with growth frameworks and unit economic projections.
-4. **Output**: Produces `Jar_Growth_Intern_Assignment_Submission.pdf` verified for visual fidelity, table pagination, and crisp vector typography.
+### Journey 3: Submission Note PDF (internal)
+1. **Trigger**: The candidate runs `python -m src.generate_pdf` before submitting.
+2. **Output**: A one-page `Jar_Growth_Intern_Assignment_Submission.pdf` (at most 2 pages) in `data/output/`, linking to the live dashboard and the repository and mapping each question to its dashboard section.
+3. **Use**: The PDF goes with the submission; reviewers follow its link to evaluate the dashboard. It does not repeat the analysis.
 
 ### Journey 4: Continuous Quality Assurance & Test Verification
 1. **Trigger**: Developer or CI workflow executes `pytest -v`.
@@ -143,13 +138,13 @@
     3. Includes functional sidebar navigation for: Overview & KPIs, Question 1 (Sales Analysis), Question 2 (App Teardown), Question 3 (Product Expansion), and Methodology.
     4. Renders responsive interactive Chart.js charts for Category Performance, Furniture Target vs Actual, and Top 5 States.
 
-- **AC-4.2: Automated Executive PDF Generation (`Jar_Growth_Intern_Assignment_Submission.pdf`)**
+- **AC-4.2: Submission Note PDF (`Jar_Growth_Intern_Assignment_Submission.pdf`)**
   - **Given** the Python PDF generation script `src/generate_pdf.py`,
   - **When** executed via Python,
   - **Then**:
     1. A valid, uncorrupted PDF file `Jar_Growth_Intern_Assignment_Submission.pdf` is generated in `data/output/`.
-    2. The PDF contains formatted executive cover page, executive summary, analytical tables with pastel styling, embedded high-DPI charts, complete Question 2 teardown, and Question 3 expansion roadmap.
-    3. Total page count is between 6 and 12 pages with proper headers, footers, and page numbers.
+    2. The PDF contains clickable links to the live dashboard and the repository, and maps Q1, Q2, Q3 and Methodology to their dashboard sections. It does not repeat the analysis.
+    3. Total page count is at most 2 (revised from 6-12 pages; see ADR-009).
 
 ### Edge Cases & Data Hygiene Criteria
 

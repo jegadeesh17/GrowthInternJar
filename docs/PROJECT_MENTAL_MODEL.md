@@ -66,3 +66,4 @@ Deliver an executive-grade, rigorous Growth Intern assignment submission for Jar
 - **PDF, Question 3:** keep unchanged, with full detail (user decision).
 - **General:** avoid over-engineering. Build to the acceptance criteria and skip extra polish.
 - **Post-M3 additions:** Q1 gained sub-category and city drill-downs (cities to fix or scale) and a shared data-driven narrative. The dashboard was redesigned to the Minimal UI Kit pastel system in `DESIGN.md` (ADR-008). The PDF keeps the ADR-007 palette.
+- **Submission PDF (post-M3, user direction):** replaced the 9-page report with a one-page internal note that links to the hosted dashboard and repo; no analysis in the PDF (ADR-009). The dashboard no longer offers a PDF download.
