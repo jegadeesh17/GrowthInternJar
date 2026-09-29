@@ -262,20 +262,15 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
         name="Jar Cash",
         tagline="Gold-Backed Micro-Lending & Instant Credit Line",
         strategic_rationale=(
-            "Jar Cash provides an instant overdraft credit line against vaulted 24K digital gold collateral, "
-            "completely eliminating the need for users to liquidate their long-term savings during short-term "
-            "cash crunches. In India's informal economy, unexpected hospital visits, family obligations, or "
-            "temporary cash-flow delays force savers to sell their accumulated gold or turn to predatory "
-            "unregulated moneylenders charging 36%–60% APR. With Jar Cash, users tap a single button to borrow "
-            "up to 75% of their live vaulted gold value at an affordable 12%–15% annualized interest rate, with "
-            "instant credit to their bank account via UPI / IMPS within 15 seconds. Because the loan is 100% "
-            "collateralized by physical gold sitting in SafeGold/Augmont vaults, underwriting is instant, credit "
-            "bureau scores are not a bottleneck, and Jar incurs negligible default credit risk."
+            "Jar Cash is an instant credit line against vaulted 24K gold, so users never sell long-term savings "
+            "in a short-term crunch or borrow from unregulated moneylenders at 36%–60% APR. One tap borrows up to "
+            "75% of live vault value at 12%–15% a year, credited via UPI / IMPS within 15 seconds. Every loan is "
+            "100% backed by physical gold in SafeGold/Augmont vaults, so underwriting is instant, credit bureau "
+            "scores are not a bottleneck, and default risk is negligible."
         ),
         target_persona=(
-            "Tier 2/3 young aspirational savers, small shop owners, and gig economy workers with 2g to 15g "
-            "of accumulated gold in Jar, who experience intermittent monthly liquidity crunches and need "
-            "emergency credit without paperwork or pawnshop stigma."
+            "Tier 2/3 young savers, small shop owners and gig economy workers with 2g to 15g of gold in Jar who "
+            "hit monthly liquidity crunches and need emergency credit without paperwork or pawnshop stigma."
         ),
         market_sizing=MarketSizing(
             tam="₹75,000 Cr ($9.0B)",
@@ -285,10 +280,10 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
             som="₹240 Cr ($29M)",
             som_numeric_cr=240.0,
             methodology=(
-                "TAM represents the unorganized and semi-organized Indian gold pawn-broking and micro-gold loan "
-                "market. SAM focuses on digitally addressable micro-loans (<₹25,000) collateralized by gold. "
-                "SOM (about 2% of SAM) assumes 100,000 Jar vault holders borrow an average revolving balance of "
-                "₹8,000 rotated 3x a year, i.e. ₹240 Cr of annual disbursals by year 3."
+                "TAM: India's unorganized and semi-organized gold pawn-broking and micro-gold loan market. SAM: "
+                "digitally addressable gold-backed micro-loans (<₹25,000). SOM (about 2% of SAM): 100,000 Jar vault "
+                "holders borrowing an average revolving ₹8,000, rotated 3x a year, i.e. ₹240 Cr of annual disbursals "
+                "by year 3."
             ),
         ),
         unit_economics=UnitEconomics(
@@ -299,19 +294,15 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
             payback_months=12.0,
             economics_narrative=(
                 "Illustrative planning assumption. CAC of ₹720 covers in-app prompts, eligibility incentives, KYC and "
-                "bureau checks, and the credit-cost reserve for a borrower's first loan. Net monthly contribution is "
-                "about ₹60 (spread and fees on an ₹8,000 revolving balance, after servicing and credit costs) over an "
-                "expected 36-month borrower lifetime: LTV = ₹60 x 36 = ₹2,160, LTV:CAC = 3.0x, payback = ₹720 / ₹60 = "
-                "12.0 months."
+                "bureau checks, and a credit-cost reserve for the first loan. Net monthly contribution is about ₹60 "
+                "(spread and fees on an ₹8,000 revolving balance, after servicing and credit costs) over a 36-month "
+                "borrower lifetime: LTV = ₹60 x 36 = ₹2,160, LTV:CAC = 3.0x, payback = ₹720 / ₹60 = 12.0 months."
             ),
         ),
         flywheel_integration=(
-            "Jar's automated UPI round-ups continuously build the user's gold vault balance, which automatically "
-            "and dynamically expands their pre-approved Jar Cash credit limit. When credit is drawn, automated UPI "
-            "AutoPay mandates handle regular interest and principal repayments without manual collection effort. "
-            "As the loan is repaid, the vaulted gold collateral is released back into the unencumbered balance, "
-            "and round-up habituation resumes instantly. The user never loses their gold upside, deepening brand trust "
-            "and driving a 3.4x surge in daily micro-savings deposits."
+            "Round-ups grow the vault, which automatically raises the pre-approved Jar Cash limit; UPI AutoPay "
+            "collects repayments; repaid collateral returns to the free balance and round-ups resume. Users keep "
+            "their gold upside, which deepens trust and drives a 3.4x surge in daily micro-savings deposits."
         ),
         execution_risks=[
             ExecutionRiskItem(
@@ -319,10 +310,10 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
                 risk_category="Regulatory",
                 severity="High",
                 mitigation_strategy=(
-                    "Operate strictly as a Lending Service Provider (LSP) partnering with RBI-regulated NBFCs "
-                    "(e.g., Vivriti Capital, DMI Finance). All loan disbursals and repayments flow directly "
-                    "between the regulated bank/NBFC and the borrower's verified bank account without passing "
-                    "through Jar's balance sheet, adhering fully to the 5% First Loss Default Guarantee (FLDG) cap."
+                    "Operate strictly as a Lending Service Provider (LSP) with RBI-regulated NBFCs (e.g., Vivriti "
+                    "Capital, DMI Finance). Disbursals and repayments flow directly between the lender and the borrower's "
+                    "verified bank account, never through Jar's balance sheet, within the 5% First Loss Default Guarantee "
+                    "(FLDG) cap."
                 ),
             ),
             ExecutionRiskItem(
@@ -330,9 +321,9 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
                 risk_category="Market",
                 severity="Medium",
                 mitigation_strategy=(
-                    "Implement a dynamic loan-to-value (LTV) ceiling capped at 70% (well below the regulatory 75% limit). "
-                    "Trigger automated WhatsApp/SMS margin call alerts at 78% LTV, and execute automated fractional "
-                    "liquidation safeguards via partner bullion APIs only if LTV crosses 85%, ensuring zero capital loss."
+                    "Cap loan-to-value (LTV) at 70%, well below the regulatory 75% limit. Send automated WhatsApp/SMS "
+                    "margin calls at 78% LTV, and trigger fractional liquidation via partner bullion APIs only above 85%, "
+                    "ensuring zero capital loss."
                 ),
             ),
             ExecutionRiskItem(
@@ -340,10 +331,10 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
                 risk_category="Credit",
                 severity="Low",
                 mitigation_strategy=(
-                    "Because all loans are backed 100% by physical 24K gold stored in institutional vaults, default "
-                    "risk is strictly structural rather than unsecured. If a borrower defaults after 90 days of missed "
-                    "mandates, partner custodians liquidate the pledged gold at spot market rates to recover principal, "
-                    "interest, and auction fees, returning any residual balance to the customer."
+                    "Every loan is 100% backed by physical 24K gold in institutional vaults, so default risk is "
+                    "structural, not unsecured. After 90 days of missed mandates, partner custodians liquidate the "
+                    "pledged gold at spot rates to recover principal, interest and auction fees, returning any residual "
+                    "balance to the customer."
                 ),
             ),
         ],
@@ -362,19 +353,15 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
         name="Jar Multi-Asset",
         tagline="Micro-SIPs in Silver ETFs & Sovereign Gold Bonds",
         strategic_rationale=(
-            "As Jar's core user base matures and accumulates meaningful wealth, single-asset gold concentration "
-            "triggers prudence anxiety and asset allocation friction. Jar Multi-Asset introduces frictionless, "
-            "sub-₹10 automated micro-savings across complementary precious metals and fixed-income assets: "
-            "Digital Silver, Silver ETFs, and RBI Sovereign Gold Bonds (SGBs). Users configure a visual 'Asset "
-            "Allocation Slider' (e.g., 70% Gold / 30% Silver, or 60% Gold / 20% Silver / 20% SGB), and Jar's "
-            "automated UPI AutoPay engine splits daily spare change and round-ups across both assets in real time. "
-            "By capturing silver's dual role as a precious metal and industrial super-conductor (benefiting from the "
-            "global solar, EV, and electronics boom), Jar provides superior portfolio inflation protection without "
-            "requiring the user to open a complex demat account or migrate to discount brokers like Groww or Zerodha."
+            "Holding only gold makes maturing Jar users anxious about concentration. Jar Multi-Asset extends "
+            "sub-₹10 automated micro-savings to Digital Silver, Silver ETFs and RBI Sovereign Gold Bonds (SGBs): "
+            "users set an 'Asset Allocation Slider' (e.g., 70% Gold / 30% Silver, or 60% Gold / 20% Silver / 20% "
+            "SGB) and UPI AutoPay splits every round-up in real time. Silver's industrial demand (solar, EV, "
+            "electronics) adds inflation protection, with no demat account and no move to Groww or Zerodha."
         ),
         target_persona=(
-            "Financially maturing Tier 1/2/3 users (active on Jar for 6+ months with vault holdings >₹15,000) who "
-            "understand precious metals, want exposure to silver's high beta growth, and seek simple diversification."
+            "Maturing Tier 1/2/3 users (6+ months on Jar, vault holdings >₹15,000) who understand precious "
+            "metals, want exposure to silver's high beta growth and seek simple diversification."
         ),
         market_sizing=MarketSizing(
             tam="₹42,000 Cr ($5.0B)",
@@ -384,10 +371,10 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
             som="₹90 Cr ($11M)",
             som_numeric_cr=90.0,
             methodology=(
-                "TAM encompasses the Indian annual retail investment demand for silver bullion, coins, and mutual "
-                "fund silver ETFs. SAM isolates digital retail precious metal investment and micro-SIP platforms. "
-                "SOM (about 1.8% of SAM) assumes 150,000 diversified Jar savers holding an average of ₹6,000 in "
-                "silver and SGB assets by year 3, i.e. ₹90 Cr of Multi-Asset AUM."
+                "TAM: Indian annual retail investment demand for silver bullion, coins and silver ETFs. SAM: digital "
+                "retail precious-metal investment and micro-SIP platforms. SOM (about 1.8% of SAM): 150,000 "
+                "diversified Jar savers holding an average ₹6,000 in silver and SGBs by year 3, i.e. ₹90 Cr of "
+                "Multi-Asset AUM."
             ),
         ),
         unit_economics=UnitEconomics(
@@ -398,18 +385,15 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
             payback_months=9.1,
             economics_narrative=(
                 "Illustrative planning assumption. CAC of ₹200 reflects cross-selling to existing Jar savers "
-                "(first-allocation rewards, in-app placements and support) rather than new-user acquisition. Net "
-                "monthly contribution is about ₹22 (spread on ~₹1,200 of monthly silver purchases plus a small ETF "
-                "trail) over an expected 36-month lifetime: LTV = ₹22 x 36 = ₹792, LTV:CAC = 4.0x, payback = "
-                "₹200 / ₹22 = 9.1 months."
+                "(first-allocation rewards, in-app placements, support), not new-user acquisition. Net monthly "
+                "contribution is about ₹22 (spread on ~₹1,200 of monthly silver purchases plus a small ETF trail) "
+                "over a 36-month lifetime: LTV = ₹22 x 36 = ₹792, LTV:CAC = 4.0x, payback = ₹200 / ₹22 = 9.1 months."
             ),
         ),
         flywheel_integration=(
-            "Users do not need to learn a new investment workflow or approve secondary banking mandates. The existing "
-            "UPI AutoPay engine simply splits the incoming daily debits according to the user's chosen allocation slider. "
-            "Daily gamified spin rewards and streak counters now award bonus milligrams of both Gold and Silver, triggering "
-            "dual endowment effects. When silver rallies, push notifications celebrate portfolio performance, driving an "
-            "immediate 42% lift in round-up multiplier adoption."
+            "No new workflow or second mandate: UPI AutoPay splits daily debits by the allocation slider. Spins "
+            "and streaks award bonus Gold and Silver milligrams, doubling the endowment effect, and silver-rally "
+            "notifications drive an immediate 42% lift in round-up multiplier adoption."
         ),
         execution_risks=[
             ExecutionRiskItem(
@@ -417,9 +401,9 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
                 risk_category="Regulatory",
                 severity="High",
                 mitigation_strategy=(
-                    "Acquire AMFI Mutual Fund Distributor (MFD) licensing for distributing Silver ETFs and partner with "
-                    "SEBI-regulated custodial vaults (Augmont/SafeGold) for fractional digital silver ledgering, ensuring "
-                    "100% segregated, insured physical silver backing in Brink's vaults."
+                    "Obtain AMFI Mutual Fund Distributor (MFD) licensing for Silver ETFs, and partner with SEBI-regulated "
+                    "custodial vaults (Augmont/SafeGold) for fractional digital silver, with 100% segregated, insured "
+                    "physical silver in Brink's vaults."
                 ),
             ),
             ExecutionRiskItem(
@@ -427,9 +411,9 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
                 risk_category="Market",
                 severity="Medium",
                 mitigation_strategy=(
-                    "Implement a smart allocation guardrail that caps default automated silver allocation at 30% "
-                    "of monthly deposits. Display educational visual tooltips on dollar-cost averaging (DCA) and long-term "
-                    "cyclical trends to anchor long-term wealth preservation rather than speculative trading."
+                    "Cap default automated silver allocation at 30% of monthly deposits, and show visual tooltips on "
+                    "dollar-cost averaging (DCA) and long-term cycles to anchor wealth preservation over speculative "
+                    "trading."
                 ),
             ),
             ExecutionRiskItem(
@@ -437,9 +421,8 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
                 risk_category="Operational",
                 severity="Low",
                 mitigation_strategy=(
-                    "Enforce strict contract clauses with bullion partners requiring 999-purity silver grain/bars stored "
-                    "in climate-controlled, tamper-evident vaults with quarterly independent third-party physical audit "
-                    "reports published transparently in the Jar app."
+                    "Contractually require 999-purity silver grain/bars in climate-controlled, tamper-evident vaults, "
+                    "with quarterly independent third-party physical audit reports published in the Jar app."
                 ),
             ),
         ],
@@ -458,19 +441,16 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
         name="Jar Family Vaults",
         tagline="Child Savings & Intergenerational Wealth Building",
         strategic_rationale=(
-            "In Indian culture, saving gold for a child's future education, marriage, and festive milestones is "
-            "a sacred, universal parental imperative. Jar Family Vaults enables parents to create dedicated, "
-            "earmarked virtual sub-vaults for their children (e.g., 'Aarav's Higher Education 2038', 'Diya's "
-            "Wedding Fund') with goal-directed milestone tracking and visual progress rings. Crucially, the vertical "
-            "incorporates a viral social gifting engine ('Shagun by Jar'): parents generate shareable UPI payment "
-            "deep-links that grandparents, godparents, and relatives can tap to gift 24K digital gold directly into "
-            "the child's jar on birthdays, Diwali, and achievements—without requiring the gifter to download the full app. "
-            "By emotionalizing savings and solving the uncoordinated physical gold gifting dilemma, Jar transforms "
-            "individual savings into an intergenerational household movement."
+            "Saving gold for a child's education, marriage and festivals is a sacred, near-universal parental "
+            "priority in India. Jar Family Vaults gives parents earmarked sub-vaults (e.g., 'Aarav's Higher "
+            "Education 2038', 'Diya's Wedding Fund') with milestone tracking and progress rings. 'Shagun by Jar' "
+            "creates shareable UPI deep-links so grandparents, godparents and relatives can gift 24K digital gold "
+            "on birthdays, Diwali and achievements without downloading the app, turning individual saving into an "
+            "intergenerational household habit."
         ),
         target_persona=(
-            "Young parents (aged 24–40) in Tier 1, 2, and 3 India who want to build a disciplined financial safety net "
-            "for their children, alongside extended family members seeking modern, digital alternatives to cash shagun."
+            "Young parents (aged 24–40) in Tier 1, 2 and 3 India building a financial safety net for their "
+            "children, plus extended family wanting a digital alternative to cash shagun."
         ),
         market_sizing=MarketSizing(
             tam="₹110,000 Cr ($13.2B)",
@@ -480,10 +460,10 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
             som="₹150 Cr ($18M)",
             som_numeric_cr=150.0,
             methodology=(
-                "TAM encompasses the informal child savings, wedding gold accumulation, and festive gifting expenditures "
-                "in urban and semi-urban Indian households. SAM isolates digitally transacted festive gifting, child-earmarked "
-                "SIPs, and sovereign child investment schemes. SOM (about 1% of SAM) assumes 200,000 child vaults "
-                "holding an average of ₹7,500 by year 3, i.e. ₹150 Cr of earmarked AUM."
+                "TAM: informal child savings, wedding gold accumulation and festive gifting spend in urban and "
+                "semi-urban Indian households. SAM: digitally transacted festive gifting, child-earmarked SIPs and "
+                "sovereign child investment schemes. SOM (about 1% of SAM): 200,000 child vaults holding an average "
+                "₹7,500 by year 3, i.e. ₹150 Cr of earmarked AUM."
             ),
         ),
         unit_economics=UnitEconomics(
@@ -495,17 +475,15 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
             economics_narrative=(
                 "Illustrative planning assumption. CAC of ₹300 blends paid parent acquisition with cheaper referrals "
                 "from shagun gift links. Net monthly contribution is about ₹35 (spread on ~₹1,200 of monthly family "
-                "contributions plus coin delivery margin) over an expected 48-month lifetime, since goal-earmarked "
-                "vaults are withdrawn less often: LTV = ₹35 x 48 = ₹1,680, LTV:CAC = 5.6x, payback = ₹300 / ₹35 = "
-                "8.6 months."
+                "contributions plus coin delivery margin) over a 48-month lifetime, since goal-earmarked vaults are "
+                "withdrawn less often: LTV = ₹35 x 48 = ₹1,680, LTV:CAC = 5.6x, payback = ₹300 / ₹35 = 8.6 months."
             ),
         ),
         flywheel_integration=(
-            "Every social gift sent via a UPI deep-link ends with a conversion card inviting the gifter to start a "
-            "savings jar for their own family. This referral loop feeds the top of Jar's acquisition funnel with "
-            "high-intent, high-trust users at a lower blended CAC than paid channels. Earmarked "
-            "goal vaults harness Clark Hull's Goal Gradient Effect and Richard Thaler's Mental Accounting: users save 40% "
-            "more money when funds are tagged with their child's name, and premature withdrawals plunge by 76%."
+            "Every gift ends with a card inviting the gifter to start their own family jar, bringing high-trust "
+            "users in at a lower blended CAC than paid channels. Clark Hull's Goal Gradient Effect and Richard "
+            "Thaler's Mental Accounting do the rest: users save 40% more when funds carry their child's name, and "
+            "premature withdrawals drop by 76%."
         ),
         execution_risks=[
             ExecutionRiskItem(
@@ -513,10 +491,9 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
                 risk_category="Regulatory",
                 severity="Medium",
                 mitigation_strategy=(
-                    "Structure vaults under the primary guardian's verified KYC until the minor reaches 18 years of age, "
-                    "aligning fully with Indian Contract Act and RBI guidelines. External gift contributions are structured "
-                    "under Section 56(2)(x) Income Tax exemptions for gifts from relatives, with transparent annual tax "
-                    "receipt summaries provided for parent records."
+                    "Hold vaults under the primary guardian's verified KYC until the minor turns 18, in line with the "
+                    "Indian Contract Act and RBI guidelines. Gifts from relatives fall under the Section 56(2)(x) Income "
+                    "Tax exemption, with annual tax receipt summaries for parent records."
                 ),
             ),
             ExecutionRiskItem(
@@ -524,10 +501,9 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
                 risk_category="Operational",
                 severity="Low",
                 mitigation_strategy=(
-                    "Avoid rigid, irreversible lock-ins that induce financial claustrophobia. Implement an empathetic "
-                    "'24-Hour Cooling-Off Discipline Guard': when a user requests a withdrawal from a child vault, the app "
-                    "displays a visual milestone progress reminder and institutes a 24-hour reflection window, stopping "
-                    "impulsive impulse liquidation while maintaining ultimate emergency liquidity access."
+                    "Avoid rigid lock-ins that cause financial claustrophobia. A '24-Hour Cooling-Off Discipline Guard' "
+                    "shows a milestone progress reminder and a 24-hour reflection window before any child-vault "
+                    "withdrawal, stopping impulse liquidation while keeping emergency access."
                 ),
             ),
             ExecutionRiskItem(
@@ -535,9 +511,9 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
                 risk_category="Fraud",
                 severity="Medium",
                 mitigation_strategy=(
-                    "Enforce cryptographic tokenization on all shareable gifting links with verified parent names, "
-                    "tamper-evident child avatar badges, and direct integration with NPCI verified merchant handles to "
-                    "prevent malicious imitation or link spoofing."
+                    "Tokenize all shareable gifting links cryptographically, with verified parent names, tamper-evident "
+                    "child avatar badges and NPCI verified merchant handles to prevent malicious imitation or link "
+                    "spoofing."
                 ),
             ),
         ],
@@ -556,19 +532,16 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
         name="Jar Earn",
         tagline="Gold Leasing & Yield Generation (2-3% Annual Gold Yield)",
         strategic_rationale=(
-            "Gold has historically been regarded as an unproductive, zero-yield asset that sits idle in domestic "
-            "lockers. Jar Earn fundamentally disrupts this paradigm by introducing institutional Gold Leasing "
-            "under the Government of India / RBI Jeweller Metal Loan (GML) frameworks. Users lease their idle vaulted "
-            "24K digital gold to vetted, investment-grade institutional jewellers (such as Titan / Tanishq, Kalyan, "
-            "and Malabar consortium partners) for physical jewelry fabrication. In return, jewellers pay a 4.0% to 5.0% "
-            "annual lease fee, enabling Jar to deliver a net 2.0% to 3.0% annualized yield paid directly in physical "
-            "gold milligrams back into the user's vault. By transforming gold into a productive, compounding income "
-            "generator, Jar solves the #1 objection of sophisticated savers ('gold pays no dividends') and captures "
-            "massive high-ticket bullion balances from affluent retail investors."
+            "Gold usually sits idle as a zero-yield asset. Jar Earn leases idle vaulted 24K gold, under the "
+            "Government of India / RBI Jeweller Metal Loan (GML) frameworks, to vetted, investment-grade "
+            "jewellers (such as Titan / Tanishq, Kalyan and Malabar consortium partners). Jewellers pay a 4.0% to "
+            "5.0% annual lease fee, and users earn a net 2.0% to 3.0% annualized yield in gold milligrams. That "
+            "answers savers' #1 objection ('gold pays no dividends') and attracts high-ticket balances from "
+            "affluent investors."
         ),
         target_persona=(
-            "Affluent and long-term savers (vault balance >5 grams or ₹35,000+) who view gold as multi-year "
-            "generational security and seek inflation-beating yield without liquidating their principal."
+            "Affluent, long-term savers (vault balance >5 grams or ₹35,000+) who see gold as multi-year "
+            "generational security and want inflation-beating yield without liquidating their principal."
         ),
         market_sizing=MarketSizing(
             tam="₹160,000 Cr ($19.2B)",
@@ -578,10 +551,10 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
             som="₹288 Cr ($35M)",
             som_numeric_cr=288.0,
             methodology=(
-                "TAM reflects the total working capital bullion inventory financed annually by India's organized gems "
-                "and jewellery manufacturing sector. SAM represents the working capital metal loan demand from top-tier, "
-                "credit-rated retail jeweller chains. SOM (about 1.4% of SAM) assumes 60,000 long-term Jar savers "
-                "leasing an average of ₹48,000 of gold by year 3, i.e. ₹288 Cr of leased AUM."
+                "TAM: working-capital bullion inventory financed annually by India's organized gems and jewellery "
+                "manufacturing sector. SAM: working-capital metal loan demand from top-tier, credit-rated retail "
+                "jeweller chains. SOM (about 1.4% of SAM): 60,000 long-term Jar savers leasing an average ₹48,000 of "
+                "gold by year 3, i.e. ₹288 Cr of leased AUM."
             ),
         ),
         unit_economics=UnitEconomics(
@@ -593,16 +566,14 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
             economics_narrative=(
                 "Illustrative planning assumption. CAC of ₹440 reflects targeted acquisition of higher-balance savers "
                 "plus onboarding and suitability checks. Net monthly contribution is about ₹40 (1.0% net spread on "
-                "₹48,000 of leased gold) over an expected 48-month lifetime: LTV = ₹40 x 48 = ₹1,920, LTV:CAC = 4.4x, "
-                "payback = ₹440 / ₹40 = 11.0 months."
+                "₹48,000 of leased gold) over a 48-month lifetime: LTV = ₹40 x 48 = ₹1,920, LTV:CAC = 4.4x, payback = "
+                "₹440 / ₹40 = 11.0 months."
             ),
         ),
         flywheel_integration=(
-            "Daily gold yield payouts are credited directly into the user's primary Jar vault every single day at midnight. "
-            "Users experience the magical behavioral gratification of waking up to see their gold gram balance increment "
-            "organically without making a deposit. This creates an unshakeable retention lock-in: users refuse to sell or "
-            "withdraw because liquidating terminates their daily gold dividend stream. Furthermore, users actively divert "
-            "idle physical jewelry and bank deposits into Jar to maximize their daily yield-generating balance."
+            "Yield lands in the vault every day at midnight, so users wake up to more gold without depositing. "
+            "Selling would end that daily gold dividend, a strong retention lock-in, and users divert idle "
+            "jewelry and bank deposits into Jar to earn more."
         ),
         execution_risks=[
             ExecutionRiskItem(
@@ -610,9 +581,8 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
                 risk_category="Counterparty",
                 severity="High",
                 mitigation_strategy=(
-                    "Enforce strict credit eligibility: lease gold exclusively to CRISIL / ICRA AA-rated national jewellers. "
-                    "Mandate 110% bank guarantee or 100% cash/bullion escrow backing for all leased metal, backed by "
-                    "comprehensive credit insurance underwritten by Tier-1 general insurers."
+                    "Lease only to CRISIL / ICRA AA-rated national jewellers, with a 110% bank guarantee or 100% "
+                    "cash/bullion escrow on all leased metal, plus credit insurance from Tier-1 general insurers."
                 ),
             ),
             ExecutionRiskItem(
@@ -620,9 +590,9 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
                 risk_category="Regulatory",
                 severity="High",
                 mitigation_strategy=(
-                    "Structure all leases through SEBI/RBI compliant bullion consignment contracts facilitated by "
-                    "registered partner refiners (Augmont/SafeGold), ensuring the transaction is legally categorized as a "
-                    "commercial commodity consignment lease rather than a collective investment scheme or public deposit."
+                    "Structure leases as SEBI/RBI compliant bullion consignment contracts through registered partner "
+                    "refiners (Augmont/SafeGold), so they are legally a commercial commodity consignment lease, not a "
+                    "collective investment scheme or public deposit."
                 ),
             ),
             ExecutionRiskItem(
@@ -630,9 +600,9 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
                 risk_category="Operational",
                 severity="Medium",
                 mitigation_strategy=(
-                    "Offer flexible 90-day, 180-day, and 365-day lease terms with an internal emergency liquidity pool "
-                    "backed by Jar's treasury balance, allowing users to exit prematurely for a nominal 0.5% early-redemption "
-                    "fee while keeping the underlying institutional lease intact."
+                    "Offer 90-day, 180-day and 365-day lease terms with an internal emergency liquidity pool funded from "
+                    "Jar's treasury balance, letting users exit early for a nominal 0.5% early-redemption fee while the "
+                    "institutional lease stays intact."
                 ),
             ),
         ],
@@ -651,19 +621,16 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
         name="Jar for Work",
         tagline="B2B Corporate Wellness & Gig-Worker Micro-Benefits SDK",
         strategic_rationale=(
-            "India's 15M+ gig economy delivery partners, rideshare drivers, and contract workers (working for Swiggy, "
-            "Zomato, Uber, Urban Company, Porter, and Blinkit) lack access to formal provident funds (EPF), gratuity, "
-            "or employer-sponsored pension schemes. Jar for Work is a plug-and-play B2B2C API and SDK suite that embeds "
-            "automated micro-savings directly into enterprise payout and payroll disbursements. When a delivery partner "
-            "receives their daily or weekly earnings settlement via RazorpayX or Cashfree, Jar's SDK automatically sweeps "
-            "a small, flexible percentage (e.g., 1% to 2%, or round-up to nearest ₹50) directly into an employer-recognized "
-            "Emergency Gold Safety Net. Forward-thinking gig platforms can provide matching contributions (e.g., matching "
-            "₹5 for every ₹20 saved), transforming volatile gig earnings into structured financial resilience while slashing "
-            "fleet turnover and driver churn."
+            "India's 15M+ gig and contract workers (at Swiggy, Zomato, Uber, Urban Company, Porter and Blinkit) "
+            "have no EPF, gratuity or employer pension. Jar for Work is a plug-and-play B2B2C API and SDK: when a "
+            "daily or weekly payout lands via RazorpayX or Cashfree, it sweeps a small share (e.g., 1% to 2%, or "
+            "a round-up to the nearest ₹50) into an employer-recognized Emergency Gold Safety Net. Platforms can "
+            "match (e.g., ₹5 for every ₹20 saved), turning volatile earnings into resilience and cutting fleet "
+            "turnover and driver churn."
         ),
         target_persona=(
-            "Gig delivery fleets, contract laborers, and enterprise HR/operations leads at on-demand delivery, logistics, "
-            "and quick-commerce platforms seeking meaningful retention drivers for their blue-collar workforce."
+            "Gig delivery fleets, contract laborers, and HR/operations leads at on-demand delivery, logistics and "
+            "quick-commerce platforms who need retention drivers for their blue-collar workforce."
         ),
         market_sizing=MarketSizing(
             tam="₹55,000 Cr ($6.6B)",
@@ -673,10 +640,10 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
             som="₹96 Cr ($12M)",
             som_numeric_cr=96.0,
             methodology=(
-                "TAM is the potential annual savings pool if India's projected 23.5M gig and platform workers "
-                "(NITI Aayog) saved about ₹2,000 a month. SAM isolates workers on organized platform fleets with "
-                "digital payouts. SOM (about 1.2% of SAM) assumes 4 enterprise platforms and 100,000 enrolled workers "
-                "sweeping an average of ₹800 a month, i.e. ₹96 Cr of annual deduction volume by year 3."
+                "TAM: the annual savings pool if India's projected 23.5M gig and platform workers (NITI Aayog) saved "
+                "about ₹2,000 a month. SAM: workers on organized platform fleets with digital payouts. SOM (about "
+                "1.2% of SAM): 4 enterprise platforms and 100,000 enrolled workers sweeping an average ₹800 a month, "
+                "i.e. ₹96 Cr of annual deduction volume by year 3."
             ),
         ),
         unit_economics=UnitEconomics(
@@ -688,16 +655,15 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
             economics_narrative=(
                 "Illustrative planning assumption. CAC of ₹500 per enrolled worker amortizes enterprise sales cycles, "
                 "integration work and worker activation incentives. Net monthly contribution is about ₹35 (SaaS fee "
-                "plus spread on ~₹800 of monthly sweeps) over an expected 36-month lifetime, reflecting high gig-worker "
-                "churn: LTV = ₹35 x 36 = ₹1,260, LTV:CAC = 2.5x, payback = ₹500 / ₹35 = 14.3 months."
+                "plus spread on ~₹800 of monthly sweeps) over a 36-month lifetime, reflecting high gig-worker churn: "
+                "LTV = ₹35 x 36 = ₹1,260, LTV:CAC = 2.5x, payback = ₹500 / ₹35 = 14.3 months."
             ),
         ),
         flywheel_integration=(
-            "Payroll deductions execute at source before funds enter the worker's bank account, completely bypassing "
-            "the vulnerability of low bank balances and UPI mandate failures. When gig workers view their daily settlement, "
-            "they receive a gratifying notification: 'You completed 14 deliveries today and earned ₹1,120 (₹25 was automatically "
-            "saved in your 24K Gold Jar).' This establishes Jar as the indispensable financial backbone for Bharat's "
-            "informal economy, naturally feeding users into Jar Cash micro-lending during vehicle repair emergencies."
+            "Deductions run at source, before funds reach the bank, so low balances and UPI mandate failures "
+            "never interrupt saving. Each settlement reads: 'You completed 14 deliveries today and earned ₹1,120 "
+            "(₹25 was automatically saved in your 24K Gold Jar).' Jar becomes the financial backbone of Bharat's "
+            "informal economy and a route into Jar Cash micro-lending for vehicle repair emergencies."
         ),
         execution_risks=[
             ExecutionRiskItem(
@@ -705,9 +671,9 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
                 risk_category="Operational",
                 severity="Medium",
                 mitigation_strategy=(
-                    "Build pre-integrated webhook connectors with standard payout gateways (Cashfree, RazorpayX, "
-                    "Darwinbox, ZingHR) requiring zero engineering lift from enterprise partners, offering a 90-day "
-                    "free pilot to demonstrate immediate double-digit reductions in worker churn."
+                    "Ship pre-integrated webhook connectors for standard payout gateways (Cashfree, RazorpayX, Darwinbox, "
+                    "ZingHR) needing zero engineering from partners, with a 90-day free pilot to show double-digit "
+                    "reductions in worker churn."
                 ),
             ),
             ExecutionRiskItem(
@@ -715,9 +681,9 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
                 risk_category="Financial",
                 severity="Medium",
                 mitigation_strategy=(
-                    "Avoid rigid fixed rupee deduction commitments. Implement percentage-based micro-allocations "
-                    "(e.g., exactly 1.0% of daily earnings) that automatically pause on days when zero deliveries are made, "
-                    "paired with an instant 1-tap 'Skip Today' pause toggle in the partner driver app."
+                    "Use percentage-based micro-allocations (e.g., exactly 1.0% of daily earnings) instead of fixed rupee "
+                    "deductions, pausing automatically on zero-delivery days, plus a 1-tap 'Skip Today' toggle in the "
+                    "partner driver app."
                 ),
             ),
             ExecutionRiskItem(
@@ -725,9 +691,8 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
                 risk_category="Regulatory",
                 severity="Low",
                 mitigation_strategy=(
-                    "Ensure all micro-savings enrollment flows require explicit, authenticated digital opt-in consent "
-                    "from the worker with transparent terms stating that funds remain 100% liquid and withdrawable at any "
-                    "time without employer lock-in or forfeiture."
+                    "Require explicit, authenticated digital opt-in from every worker, with clear terms that funds stay "
+                    "100% liquid and withdrawable at any time, with no employer lock-in or forfeiture."
                 ),
             ),
         ],
@@ -751,8 +716,8 @@ PLATFORM_RISK_MATRIX: List[ExecutionRiskItem] = [
         risk_category="Regulatory",
         severity="High",
         mitigation_strategy=(
-            "Jar maintains strict status as a Lending Service Provider (LSP) partnering with RBI-licensed NBFCs. "
-            "All fund flows pass directly between borrower and lender accounts, capped at the statutory 5% FLDG limit."
+            "Jar operates strictly as a Lending Service Provider (LSP) with RBI-licensed NBFCs. Funds flow "
+            "directly between borrower and lender accounts, within the statutory 5% FLDG cap."
         ),
     ),
     ExecutionRiskItem(
@@ -760,8 +725,8 @@ PLATFORM_RISK_MATRIX: List[ExecutionRiskItem] = [
         risk_category="Market",
         severity="High",
         mitigation_strategy=(
-            "Enforce a conservative 70% LTV ceiling on gold credit, dynamic automated margin calls at 78%, and automated "
-            "micro-liquidation safeguards via partner APIs at 85% to protect capital."
+            "A conservative 70% LTV ceiling on gold credit, automated margin calls at 78%, and micro-liquidation "
+            "via partner APIs at 85% to protect capital."
         ),
     ),
     ExecutionRiskItem(
@@ -769,7 +734,7 @@ PLATFORM_RISK_MATRIX: List[ExecutionRiskItem] = [
         risk_category="Counterparty",
         severity="High",
         mitigation_strategy=(
-            "Lease bullion exclusively to CRISIL AA/A+ rated national jewellers with 110% bank guarantee or 100% cash/bullion "
+            "Lease only to CRISIL AA/A+ rated national jewellers with 110% bank guarantee or 100% cash/bullion "
             "escrow backing, underwritten by Tier-1 credit insurance."
         ),
     ),
@@ -778,8 +743,8 @@ PLATFORM_RISK_MATRIX: List[ExecutionRiskItem] = [
         risk_category="Operational",
         severity="Medium",
         mitigation_strategy=(
-            "Deploy intelligent 3-window automated retry algorithms, ambient SMS spend fallbacks, and multi-gateway routing "
-            "to ensure mandate execution resilience across all sponsor banks."
+            "3-window automated retries, ambient SMS spend fallbacks and multi-gateway routing keep mandates "
+            "executing across all sponsor banks."
         ),
     ),
     ExecutionRiskItem(
@@ -787,8 +752,8 @@ PLATFORM_RISK_MATRIX: List[ExecutionRiskItem] = [
         risk_category="Regulatory",
         severity="Medium",
         mitigation_strategy=(
-            "Maintain AMFI Mutual Fund Distributor (MFD) licensing and partner with SEBI-registered custodial vault providers "
-            "with physical hallmarked bars verified by quarterly independent third-party audits."
+            "Maintain AMFI Mutual Fund Distributor (MFD) licensing and use SEBI-registered custodial vaults with "
+            "hallmarked bars verified by quarterly independent third-party audits."
         ),
     ),
     ExecutionRiskItem(
@@ -796,24 +761,24 @@ PLATFORM_RISK_MATRIX: List[ExecutionRiskItem] = [
         risk_category="Operational",
         severity="Low",
         mitigation_strategy=(
-            "Provide zero-code plug-and-play SDKs and pre-built webhook connectors for major payout gateways (Cashfree, "
-            "RazorpayX), allowing enterprises to activate gig worker micro-benefits in under 48 hours."
+            "Zero-code plug-and-play SDKs and pre-built webhook connectors for major payout gateways (Cashfree, "
+            "RazorpayX) let enterprises activate gig worker micro-benefits in under 48 hours."
         ),
     ),
 ]
 
 
 GLOBAL_FLYWHEEL_NARRATIVE: str = (
-    "Jar's 5 strategic growth verticals form a self-reinforcing, virtuous flywheel powered by two core engines: "
+    "Jar's 5 growth verticals form a self-reinforcing flywheel powered by two engines: "
     "Frictionless Habitual Automation and Unshakeable Sovereign Trust.\n\n"
-    "1. Top of Funnel: Daily UPI round-ups and B2B gig-worker payroll sweeps (Jar for Work) feed hundreds of thousands of new "
-    "micro-deposits into the system daily at low marginal acquisition cost.\n"
-    "2. Asset Accumulation: Automated splits across Gold and Silver (Jar Multi-Asset) and emotionalized child jars (Jar Family Vaults) "
-    "accelerate balance growth, turning loose change into substantial multi-gram portfolios.\n"
-    "3. High-Value Monetization: Accumulated vault collateral directly unlocks instant credit (Jar Cash) and high-yield gold leasing (Jar Earn), "
-    "generating net interest margins and asset management fees without requiring the user to liquidate their wealth.\n"
-    "4. Retention Lock-In: Earning daily compounding gold dividends (Jar Earn) and preserving generational savings (Jar Family Vaults) "
-    "lengthens customer lifetimes, building a durable moat against traditional banks and discount brokerages."
+    "1. Top of Funnel: Daily UPI round-ups and B2B gig-worker payroll sweeps (Jar for Work) bring hundreds of "
+    "thousands of new micro-deposits a day at low acquisition cost.\n"
+    "2. Asset Accumulation: Gold and Silver splits (Jar Multi-Asset) and child jars (Jar Family Vaults) grow "
+    "loose change into multi-gram portfolios.\n"
+    "3. High-Value Monetization: Vault collateral unlocks instant credit (Jar Cash) and gold leasing yield "
+    "(Jar Earn), earning interest margins and fees without users liquidating their wealth.\n"
+    "4. Retention Lock-In: Daily compounding gold dividends (Jar Earn) and generational savings (Jar Family "
+    "Vaults) lengthen customer lifetimes, a durable moat against banks and discount brokerages."
 )
 
 

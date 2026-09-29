@@ -208,31 +208,23 @@ UX_STRENGTHS: List[UXStrengthItem] = [
         title="Frictionless UPI AutoPay Round-ups",
         category="Automated Habituation & Micro-Savings",
         description=(
-            "Jar seamlessly integrates with NPCI's UPI AutoPay mandate and ambient SMS spend detection "
-            "(with fallback to scheduled daily micro-debits) to round up daily retail transactions to the "
-            "nearest ₹10. When a user spends ₹42 on Swiggy or chai, Jar automatically debits the ₹8 spare "
-            "change and sweeps it directly into 24K 999 digital gold. The user sets up the mandate once during "
-            "onboarding, after which savings occur entirely in the background without requiring deliberate "
-            "manual intervention or daily willpower."
+            "Jar uses NPCI's UPI AutoPay and SMS spend detection (falling back to scheduled daily debits) to "
+            "round purchases up to the nearest ₹10: a ₹42 Swiggy order or chai puts ₹8 into 24K 999 digital gold. "
+            "The mandate is set once at onboarding; saving then runs in the background."
         ),
         behavioral_psychology=(
-            "Leverages Mental Accounting (Richard Thaler) and the Elimination of the Pain of Paying "
-            "(Prelec & Loewenstein). Users psychologically categorize 'spare change' as inconsequential loose money, "
-            "making the perceived cost of saving near-zero compared to a deliberate lump-sum transfer. "
-            "By establishing a pre-committed UPI AutoPay mandate, Jar harnesses the Default Effect and overcomes "
-            "Hyperbolic Discounting: saving becomes the effortless automated default rather than an active chore."
+            "Mental Accounting (Richard Thaler) and removing the Pain of Paying (Prelec & Loewenstein): spare "
+            "change feels like loose money, so saving feels free. The one-time AutoPay mandate uses the Default "
+            "Effect to beat Hyperbolic Discounting, making saving automatic, not a chore."
         ),
         growth_mechanism=(
-            "High-frequency compounding touchpoints and long-term cohort retention. While traditional SIPs engage users "
-            "only once a month upon salary credit, round-ups generate 25 to 40 micro-transactions per month. Every transaction "
-            "sends a positive reinforcement notification ('You just saved ₹8 in Gold!'), driving ambient brand recall, "
-            "accelerating user habituation, improving D30 cohort retention, and creating a continuous positive feedback loop "
-            "without paid advertising spend."
+            "High-frequency touchpoints and cohort retention. SIPs engage users once a month; round-ups create 25 "
+            "to 40 micro-transactions. Each triggers a 'You just saved ₹8 in Gold!' notification, building "
+            "recall, habit and D30 retention without paid advertising."
         ),
         actionable_takeaway=(
-            "Introduce dynamic round-up multipliers (e.g., 1x, 2x, 5x, or 'Round up to nearest ₹50') during festive "
-            "shopping peaks or payday weekends, empowering high-intent savers to accelerate gold accumulation "
-            "with a single contextual toggle."
+            "Add round-up multipliers (e.g., 1x, 2x, 5x, or 'Round up to nearest ₹50') for festive peaks and "
+            "payday weekends, so high-intent savers can accelerate with one toggle."
         ),
         primary_impact_metric="Daily Savings Frequency (3.8x baseline) & D30 Cohort Retention (+22% vs manual savers)",
     ),
@@ -241,27 +233,22 @@ UX_STRENGTHS: List[UXStrengthItem] = [
         title="Sub-₹10 Micro-Savings Accessibility",
         category="Financial Inclusion & Radical Barrier Reduction",
         description=(
-            "Jar dismantles the intimidating entry barrier of physical bullion (where the minimum denomination "
-            "is 0.5g to 1g, requiring ₹4,000–₹8,000+) and traditional mutual fund SIPs (minimum ₹500/month). "
-            "Users can begin investing in 99.99% pure 24K gold with as little as ₹1 to ₹10. Fractional milligram "
-            "ledgering democratizes precious metal investment for college students, gig economy workers, and "
-            "first-time retail investors across Tier 2, 3, and 4 Bharat demographics."
+            "Physical bullion needs 0.5g to 1g (₹4,000–₹8,000+) and SIPs ₹500/month; Jar starts at ₹1 to ₹10 in "
+            "99.99% pure 24K gold. Milligram ledgering opens gold to college students, gig workers and first-time "
+            "investors across Tier 2, 3 and 4 Bharat."
         ),
         behavioral_psychology=(
-            "Overcomes Status-Quo Bias and Perceived Unaffordability via B.J. Fogg's Behavior Model (B = MAT). "
-            "When the financial ability (A) threshold is set to ₹10, the cognitive friction and perceived loss risk "
-            "fall to zero. Even a user with low initial motivation (M) readily triggers the behavior (T) because "
-            "there is no fear of capital commitment or buyer's remorse."
+            "Beats Status-Quo Bias and Perceived Unaffordability (B.J. Fogg's Behavior Model, B = MAT). With "
+            "ability (A) set at ₹10, friction and perceived loss risk fall to zero, so even low-motivation (M) "
+            "users act on the trigger (T)."
         ),
         growth_mechanism=(
-            "Top-of-Funnel Hyper-Activation and Viral Word-of-Mouth. Micro-entry drives near-frictionless Day-0 "
-            "activation during the first onboarding session. Users deposit ₹10 as a test, experience the instantaneous "
-            "'Aha! moment' of seeing their gold vault increment in real-time, and rapidly graduate to ₹50–₹100 "
-            "daily auto-saves within their first 7 days."
+            "Top-of-funnel Day-0 activation and word-of-mouth. Users test with ₹10, watch their gold vault tick up in "
+            "real time (the 'Aha! moment'), and move to ₹50–₹100 daily auto-saves within their first 7 days."
         ),
         actionable_takeaway=(
-            "Deploy a 'First-Save Onboarding Booster' offering a matching ₹5 gold grant on the user's initial ₹10 save, "
-            "anchoring immediate positive portfolio yield and driving instantaneous bank verification."
+            "Offer a 'First-Save Onboarding Booster': a matching ₹5 gold grant on the first ₹10 save, giving an "
+            "instant positive yield and prompting bank verification."
         ),
         primary_impact_metric="Onboarding-to-First-Deposit Conversion (68% vs 24% fintech benchmark) & CAC Payback (<45 days)",
     ),
@@ -270,26 +257,22 @@ UX_STRENGTHS: List[UXStrengthItem] = [
         title="Daily Spin Habit Streaks & Variable Rewards",
         category="Gamification & Behavioral Retention Loops",
         description=(
-            "Every manual or automated gold deposit instantly unlocks a gamified 'Daily Spin the Wheel' interaction. "
-            "Users spin the wheel to win variable cashbacks, extra gold milligrams, or curated merchant discount vouchers. "
-            "A visual daily streak counter and progress milestone tracker reward consecutive active savings days, "
-            "visually celebrating 7-day, 21-day, and 30-day savings consistency."
+            "Every gold deposit, manual or automated, unlocks a 'Daily Spin the Wheel' for variable cashback, extra "
+            "gold milligrams or merchant vouchers. A daily streak counter and milestone tracker celebrate 7-day, "
+            "21-day and 30-day savings runs."
         ),
         behavioral_psychology=(
-            "Employs B.F. Skinner's Variable Ratio Schedule of Reinforcement and Nir Eyal's Hooked Model. "
-            "Predictable, fixed rewards cause rapid habituation and boredom, whereas stochastic, unpredictable rewards "
-            "trigger dopamine surges that build compulsion. The streak counter leverages Loss Aversion (Kahneman & Tversky) "
-            "and the Endowment Effect: once a user builds a 15-day streak, the psychological cost of breaking the chain "
-            "substantially outweighs the effort of saving ₹10."
+            "B.F. Skinner's Variable Ratio Schedule and Nir Eyal's Hooked Model: unpredictable rewards build "
+            "habit where fixed ones bore. Streaks add Loss Aversion (Kahneman & Tversky) and the Endowment "
+            "Effect: after a 15-day streak, breaking the chain feels costlier than saving ₹10."
         ),
         growth_mechanism=(
-            "Elevated DAU/MAU Ratio and Organic Re-engagement. Gamification converts a typically dormant financial utility "
-            "into an engaging daily lifestyle routine. Re-engagement push notifications ('Your daily spin is unlocked!') "
-            "achieve click-through rates exceeding 18%, keeping Jar front-of-mind without expensive retargeting campaigns."
+            "Higher DAU/MAU and organic re-engagement: a dormant utility becomes a daily routine, and 'Your daily "
+            "spin is unlocked!' pushes get click-through above 18% without retargeting spend."
         ),
         actionable_takeaway=(
-            "Introduce a 'Streak Freeze / Shield' mechanic that users can earn through weekly consistency or referring "
-            "a friend, preventing permanent streak loss and post-failure churn when a bank server outage interrupts a streak."
+            "Add an earnable 'Streak Freeze / Shield' (for weekly consistency or a referral) so a bank server outage "
+            "never breaks a streak and triggers post-failure churn."
         ),
         primary_impact_metric="DAU/MAU Ratio (>38%) & 90-Day Habitual Retention (+28% for streak-engaged cohorts)",
     ),
@@ -298,25 +281,22 @@ UX_STRENGTHS: List[UXStrengthItem] = [
         title="Real-time Liquidity & Buyback Guarantee",
         category="Liquidity Assurance & Risk Reversal",
         description=(
-            "Jar guarantees 24/7 instant liquidity through direct API integration with regulated institutional "
-            "bullion partners (Augmont and SafeGold). Users can sell any fractional amount of their accumulated gold "
-            "at live market rates with a single tap, receiving funds credited directly to their verified bank account "
-            "or UPI VPA within 30 seconds via IMPS without exit penalties or lock-in periods."
+            "Direct API links with regulated bullion partners (Augmont and SafeGold) give 24/7 liquidity: users "
+            "sell any fraction at live rates in one tap and get funds in their bank account or UPI VPA via IMPS "
+            "within 30 seconds, with no exit penalty or lock-in."
         ),
         behavioral_psychology=(
-            "Applies the Reversibility Heuristic and Mitigates Financial Commitment Anxiety. First-time retail investors "
-            "harbor deep skepticism that app-based savings will trap their hard-earned money. By guaranteeing instantaneous, "
-            "unconditional exit, Jar eliminates financial claustrophobia. Paradoxically, full reversibility increases net "
-            "savings: users deposit larger amounts because they know emergency cash is never out of reach."
+            "The Reversibility Heuristic eases commitment anxiety: first-time investors fear being trapped, and a "
+            "guaranteed instant exit removes that fear. Paradoxically, users then deposit more, knowing emergency "
+            "cash is always within reach."
         ),
         growth_mechanism=(
-            "The Reinvestment Flywheel. Empirical user behavior reveals that 78% of users who execute a small 'test withdrawal' "
-            "(e.g., selling ₹50 of gold to verify that the app legitimately returns real cash) subsequently increase their "
-            "monthly savings volume by 3x to 5x within 30 days of verifying instantaneous bank settlement."
+            "The reinvestment flywheel: 78% of users who make a small 'test withdrawal' (e.g., selling ₹50 of "
+            "gold) raise monthly savings 3x to 5x within 30 days of seeing instant bank settlement."
         ),
         actionable_takeaway=(
-            "Design a 1-tap 'Emergency Cash Slider' that contrasts instant selling against a low-cost gold-backed credit "
-            "line (Jar Cash preview), showing users how to preserve their gold accumulation while meeting short-term liquidity needs."
+            "A 1-tap 'Emergency Cash Slider' comparing instant selling with a low-cost gold-backed credit line "
+            "(Jar Cash preview), so users meet short-term needs and keep their gold."
         ),
         primary_impact_metric="Withdrawal-to-Reinvestment Rate (78% re-save within 30 days) & User Trust NPS (72+)",
     ),
@@ -325,26 +305,23 @@ UX_STRENGTHS: List[UXStrengthItem] = [
         title="24K Vault Trust & Verification",
         category="Institutional Credibility & Asset Tangibility",
         description=(
-            "Jar partners with BIS-hallmarked refiners and regulated custodial trustees (Augmont, SafeGold, and IDBI Trusteeship). "
-            "Every milligram of gold purchased on Jar is 100% backed by physical 24K 999-purity bullion stored in insured, "
-            "high-security vaults managed by Brink's and Sequel Logistics. The app prominently displays official purity "
-            "certificates, independent trustee audit statements, and allows users to convert digital gold into physical "
-            "hallmarked coins delivered securely to their doorstep."
+            "Every milligram is 100% backed by 24K 999-purity bullion from BIS-hallmarked refiners, held with "
+            "regulated trustees (Augmont, SafeGold, and IDBI Trusteeship) in insured Brink's and Sequel Logistics "
+            "vaults. The app shows purity certificates and audit statements, and delivers hallmarked coins to the "
+            "doorstep."
         ),
         behavioral_psychology=(
-            "Signaling Theory and Tangibility Anchoring. In Indian culture, gold is sacred, auspicious, and deeply tangible. "
-            "Purely digital financial assets suffer from an 'abstraction penalty' where users feel digital numbers lack true substance. "
-            "By offering visible hallmark certificates, trustee insurance badges, and doorstep coin delivery, Jar anchors digital "
-            "convenience to the psychological security of physical sovereign wealth."
+            "Signaling Theory and Tangibility Anchoring: gold is sacred and tangible in Indian culture, and "
+            "digital assets carry an 'abstraction penalty'. Hallmark certificates, trustee insurance badges and "
+            "doorstep coin delivery tie digital convenience to physical security."
         ),
         growth_mechanism=(
-            "High-Ticket Up-Selling and Festive LTV Expansion. Trust established through micro-savings allows Jar to capture "
-            "substantial festive lump-sum purchases during Dhanteras, Akshaya Tritiya, and wedding seasons. Users transition from "
-            "₹20 round-ups to ₹5,000–₹50,000 festival purchases because they trust the institutional custody infrastructure."
+            "High-ticket up-selling and festive LTV expansion: trust built on micro-savings moves users from ₹20 "
+            "round-ups to ₹5,000–₹50,000 purchases at Dhanteras, Akshaya Tritiya and weddings."
         ),
         actionable_takeaway=(
-            "Integrate an interactive 'Inspect Vault' feature featuring third-party audit verification stamps and an interactive "
-            "3D physical coin preview, showing users the exact hallmarked coin their digital balance can redeem."
+            "Add an interactive 'Inspect Vault' view with third-party audit stamps and a 3D preview of the exact "
+            "hallmarked coin a user's digital balance can redeem."
         ),
         primary_impact_metric="Average Deposit Ticket Size (+140% post-trust audit view) & Physical Delivery Orders (+32% YoY)",
     ),
@@ -361,25 +338,23 @@ UX_FRICTIONS: List[UXFrictionItem] = [
         title="AutoPay Failure & Mandate Renewal Transparency",
         priority="P0 - Critical",
         description=(
-            "When bank servers, partner payment gateways, or NPCI encounter intermittent downtimes, or when a user's bank "
-            "account has insufficient balance on a given morning, UPI AutoPay mandates fail silently. Users receive confusing, "
-            "technical error messages (e.g., 'NPCI_U16_MANDATE_DEBIT_FAILED') or no alert at all until they discover that their "
-            "cherished savings streak has broken. Furthermore, mandates expire after 1 to 3 years without proactive, guided "
-            "renewal flows, resulting in abrupt drop-offs in recurring savings."
+            "When banks, gateways or NPCI go down, or an account is short, UPI AutoPay mandates fail silently: "
+            "users see cryptic codes (e.g., 'NPCI_U16_MANDATE_DEBIT_FAILED') or nothing until their streak "
+            "breaks. Mandates also expire after 1 to 3 years with no guided renewal, so recurring savings stop "
+            "abruptly."
         ),
         behavioral_friction=(
-            "Broken System Feedback and Fundamental Attribution Error. In automated habit products, users delegate cognitive "
-            "monitoring to the system. When a silent failure occurs, the user's trust is shattered. If their savings streak breaks "
-            "due to an invisible bank-side glitch, users blame the Jar app rather than their bank, triggering acute frustration "
-            "and involuntary churn."
+            "Broken feedback and the Fundamental Attribution Error: users hand monitoring to the system, so when "
+            "a bank-side glitch silently breaks a streak they blame Jar, not their bank, causing frustration and "
+            "involuntary churn."
         ),
         actionable_solution=(
-            "1. Smart Fallback Retry Engine: Implement 3 automated retry windows (9 AM, 2 PM, 8 PM) aligning with typical salary and "
-            "credit timing before logging a daily failure.\n"
-            "2. Humanized Error Diagnostics: Replace raw bank error codes with clear, empathetic messaging: 'Your bank took a quick break. "
-            "We protected your streak and will retry automatically tonight.'\n"
-            "3. Proactive 1-Tap Mandate Health Center: Alert users 14 days before mandate expiration with a single-click UPI "
-            "re-authorization workflow in PhonePe, GPay, or Paytm."
+            "1. Smart Fallback Retry Engine: 3 retries (9 AM, 2 PM, 8 PM), timed to salary and credit cycles, "
+            "before logging a failure.\n"
+            "2. Humanized Error Diagnostics: plain copy instead of bank codes: 'Your bank took a quick break. We "
+            "protected your streak and will retry automatically tonight.'\n"
+            "3. Proactive 1-Tap Mandate Health Center: an alert 14 days before expiry with one-click UPI "
+            "re-authorization in PhonePe, GPay, or Paytm."
         ),
         primary_impact_metric="AutoPay Mandate Success Rate (+14%) & Involuntary Cohort Churn Reduction (-26%)",
         implementation_effort="Medium",
@@ -389,23 +364,21 @@ UX_FRICTIONS: List[UXFrictionItem] = [
         title="Buy-Sell Spread / GST Perception Gap",
         priority="P0 - Critical",
         description=(
-            "Physical and digital gold transactions in India carry a mandatory statutory 3% Goods and Services Tax (GST) upon purchase, "
-            "in addition to a commercial buy-sell spread (2% to 3%) covering trustee vault insurance, minting, and platform costs. "
-            "When a first-time user invests ₹100 and immediately visits their portfolio, they see a current liquidation value of ₹94–₹95. "
-            "Because this distinction is not explained during checkout, users feel deceived, concluding that Jar has surreptitiously deducted money."
+            "Gold purchases carry a mandatory 3% GST plus a 2% to 3% buy-sell spread (vault insurance, minting, "
+            "platform costs), so ₹100 invested shows a ₹94–₹95 liquidation value. Checkout never explains this, "
+            "and users assume Jar quietly deducted money."
         ),
         behavioral_friction=(
-            "Loss Aversion & Negative Peak-End Rule (Kahneman & Tversky). The pain of losing ₹5 is psychologically twice as potent "
-            "as the pleasure of gaining ₹5 (2.25x loss aversion multiplier). Showing an immediate negative portfolio return on Day-0 "
-            "triggers immediate buyer's remorse, high customer support ticket volumes, and negative 1-star app store reviews."
+            "Loss Aversion and the negative Peak-End Rule (Kahneman & Tversky): losing ₹5 hurts about twice as "
+            "much as gaining ₹5 pleases (a 2.25x multiplier), so a Day-0 loss triggers buyer's remorse, support "
+            "tickets and 1-star reviews."
         ),
         actionable_solution=(
-            "1. Upfront Pre-Purchase Cost Breakdown: Present a clear, transparent pastel bill receipt modal before final UPI approval: "
-            "'Pure 24K Gold Asset: ₹97.08 | Govt GST (3%): ₹2.92 | Total: ₹100.00'.\n"
-            "2. Long-Term Value Anchor: Display a toggleable 'Gold 5-Year CAGR Benchmark (+12.4%)' trajectory chart beside the current "
-            "vault balance, visually reframing gold as an inflation-hedging wealth builder rather than an intraday trading instrument.\n"
-            "3. First-Deposit Buffer Grant: Provide a ₹5 gold welcome credit on first-time deposits over ₹100 to psychologically offset "
-            "the initial GST burden."
+            "1. Upfront Pre-Purchase Cost Breakdown: a clear bill before UPI approval: 'Pure 24K Gold Asset: "
+            "₹97.08 | Govt GST (3%): ₹2.92 | Total: ₹100.00'.\n"
+            "2. Long-Term Value Anchor: a 'Gold 5-Year CAGR Benchmark (+12.4%)' chart beside the vault balance, "
+            "framing gold as an inflation hedge, not a trade.\n"
+            "3. First-Deposit Buffer Grant: a ₹5 gold credit on first deposits over ₹100 to offset the GST."
         ),
         primary_impact_metric="D30 First-Time Depositor Retention (+19%) & Checkout Abandonment Reduction (-15%)",
         implementation_effort="Low",
@@ -415,23 +388,22 @@ UX_FRICTIONS: List[UXFrictionItem] = [
         title="Notification Fatigue & Alert Granularity",
         priority="P1 - High",
         description=(
-            "The app broadcasts a high volume of generic, high-frequency push notifications daily—spanning price fluctuation alerts, "
-            "spin-the-wheel reminders, promotional merchant discounts, and round-up prompts. Users receive 4 to 6 notifications per day. "
-            "Faced with relentless interruptions, users experience acute notification fatigue and revoke notification permissions at the "
-            "Android/iOS system settings level."
+            "Jar sends 4 to 6 generic push notifications a day: price alerts, spin-the-wheel reminders, merchant "
+            "promotions and round-up prompts. Fatigued users revoke notification permission in their Android/iOS "
+            "system settings."
         ),
         behavioral_friction=(
-            "Cognitive Overload and Sensory Adaptation. When an application inundates users with repetitive, non-urgent alerts, "
-            "the brain develops banner blindness and irritation. Once an alert-fatigued user toggles off app notifications at the OS level, "
-            "Jar's primary asynchronous re-engagement and habituation bridge is permanently severed."
+            "Cognitive Overload and Sensory Adaptation: repetitive, non-urgent alerts breed banner blindness, and "
+            "once a user disables notifications at the OS level, Jar's main re-engagement channel is permanently "
+            "severed."
         ),
         actionable_solution=(
-            "1. Granular In-App Notification Preference Center: Provide individual toggle controls for 'Streak & Spin Reminders', "
-            "'Daily Gold Price Movements (>1.5% swings only)', and 'Special Offers'.\n"
-            "2. Contextual Notification Batching: Consolidate daily transaction receipts into a single elegant evening digest at 8:30 PM: "
-            "'Today you saved ₹34 across 3 round-ups. Your total gold vault is now 2.45 grams.'\n"
-            "3. Interactive Home Screen Widgets: Deliver ambient visibility through modern iOS/Android widgets showing streak status "
-            "and live gold value without firing intrusive push notifications."
+            "1. Granular In-App Notification Preference Center: toggles for 'Streak & Spin Reminders', 'Daily "
+            "Gold Price Movements (>1.5% swings only)' and 'Special Offers'.\n"
+            "2. Contextual Notification Batching: one 8:30 PM digest: 'Today you saved ₹34 across 3 round-ups. "
+            "Your total gold vault is now 2.45 grams.'\n"
+            "3. Interactive Home Screen Widgets: streak status and live gold value on iOS/Android widgets instead "
+            "of push alerts."
         ),
         primary_impact_metric="OS-Level Notification Opt-Out Rate (-25%) & App Re-open Click-Through Rate (+34%)",
         implementation_effort="Medium",
@@ -441,23 +413,21 @@ UX_FRICTIONS: List[UXFrictionItem] = [
         title="Asset Class Diversification Friction",
         priority="P1 - High",
         description=(
-            "As users mature financially and accumulate substantial gold balances over 12 to 24 months, their investment needs expand. "
-            "However, Jar strictly restricts automated savings to 24K digital gold. Users seeking multi-asset diversification (such as "
-            "Digital Silver, Sovereign Gold Bonds, Silver ETFs, or low-risk index funds) must withdraw funds and migrate to broader "
-            "fintech platforms like Zerodha, Groww, or INDmoney, causing mature user churn."
+            "After 12 to 24 months, users want Digital Silver, Sovereign Gold Bonds, Silver ETFs or low-risk "
+            "index funds, but Jar automates only 24K digital gold, so they withdraw to Zerodha, Groww or "
+            "INDmoney: mature user churn."
         ),
         behavioral_friction=(
-            "Choice Limitation and Prudence Anxiety. Once an individual's gold balance crosses ₹50,000, modern portfolio theory and "
-            "financial prudence trigger anxiety regarding single-asset concentration risk ('Is it prudent to keep all my liquid wealth "
-            "in gold?'). The inability to diversify within Jar forces affluent, high-LTV users to look elsewhere."
+            "Choice Limitation and Prudence Anxiety: past ₹50,000 in gold, concentration worry sets in ('Is it "
+            "prudent to keep all my liquid wealth in gold?'), and affluent high-LTV users leave to diversify."
         ),
         actionable_solution=(
-            "1. Multi-Asset Micro-Baskets: Launch automated round-up distribution across Digital Gold (70%) and Digital Silver (30%), "
-            "or curated precious metals + index micro-funds with a single slider.\n"
-            "2. Gold-Backed Yield Generation (Jar Earn): Enable users to lease vaulted gold to verified, audited institutional jewelers "
-            "to generate a conservative 2% to 3% annual gold-denominated yield (directly bridging to Question 3 expansion).\n"
-            "3. Sovereign Gold Bond (SGB) Distribution: Facilitate direct RBI SGB subscription windows within Jar, unlocking additional "
-            "2.5% annual sovereign interest for patient long-term savers."
+            "1. Multi-Asset Micro-Baskets: split round-ups across Digital Gold (70%) and Digital Silver (30%), or "
+            "metals plus index micro-funds, with one slider.\n"
+            "2. Gold-Backed Yield Generation (Jar Earn): lease vaulted gold to audited institutional jewelers for "
+            "a conservative 2% to 3% annual gold yield (see Question 3).\n"
+            "3. Sovereign Gold Bond (SGB) Distribution: RBI SGB subscription windows inside Jar, adding 2.5% "
+            "annual sovereign interest."
         ),
         primary_impact_metric="Average AUM per Active User (+30%) & Long-Term User Lifetime Value (LTV) (+42%)",
         implementation_effort="High",
@@ -467,22 +437,22 @@ UX_FRICTIONS: List[UXFrictionItem] = [
         title="Family & Goal-Based Vault Separation",
         priority="P2 - Medium",
         description=(
-            "All accumulated gold in Jar currently aggregates into a single, undifferentiated portfolio balance. Users saving for distinct, "
-            "emotionally resonant life milestones—such as a sister's wedding in 2028, a newborn child's college fund, an emergency safety "
-            "cushion, or annual Diwali gift coins—cannot segregate their holdings into separate earmarked accounts or track milestones individually."
+            "All gold sits in one balance, so users saving for distinct goals (a sister's wedding in 2028, a "
+            "newborn's college fund, an emergency cushion, annual Diwali gift coins) cannot earmark or track them "
+            "separately."
         ),
         behavioral_friction=(
-            "Mental Accounting Deficiency & Depleted Goal Gradient Effect (Clark Hull). Humans save with far greater discipline when "
-            "funds are categorized into dedicated mental accounts with specific emotional tags. In an undifferentiated balance, the goal "
-            "proximity is invisible, which weakens commitment and increases susceptibility to impulsive premature withdrawals."
+            "Mental Accounting Deficiency and a weak Goal Gradient Effect (Clark Hull): people save more reliably "
+            "into labelled accounts, and in one balance goal progress is invisible, inviting impulsive premature "
+            "withdrawals."
         ),
         actionable_solution=(
-            "1. Multi-Goal Virtual Sub-Vaults: Allow users to create custom-named target jars (e.g., 'Aanya's Higher Education', "
-            "'Diwali Gold Coin 2026') with target gram milestones and visual progress rings.\n"
-            "2. Smart Discipline Soft-Locks: Provide an optional 'Goal Lock' toggle that adds a 24-hour cooling-off confirmation delay "
-            "before allowing liquidations from earmarked goal vaults.\n"
-            "3. Social & Family Gifting Links: Enable family members and godparents to gift digital gold directly into a child's dedicated "
-            "milestone vault via shareable UPI payment links."
+            "1. Multi-Goal Virtual Sub-Vaults: named target jars (e.g., 'Aanya's Higher Education', 'Diwali Gold "
+            "Coin 2026') with gram milestones and progress rings.\n"
+            "2. Smart Discipline Soft-Locks: an optional 'Goal Lock' with a 24-hour cooling-off delay before "
+            "liquidating a goal vault.\n"
+            "3. Social & Family Gifting Links: family members and godparents gift gold into a child's milestone "
+            "vault via shareable UPI links."
         ),
         primary_impact_metric="Premature Withdrawal Rate (-22%) & Goal-Directed Net Monthly Inflow (+35%)",
         implementation_effort="Medium",

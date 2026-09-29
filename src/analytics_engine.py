@@ -1466,10 +1466,10 @@ class AnalyticsEngine:
             if worst is not None and worst.total_profit < 0:
                 be_margin = _weighted_margin(weak.total_sales, weak.total_profit - worst.total_profit)
                 reasons.append(
-                    f"{weak.category} has the thinnest margin ({weak.profit_margin_pct:.1f}%) because "
-                    f"{worst.sub_category} loses money: {worst.profit_margin_pct:.1f}% margin, a "
-                    f"{_rs(worst.total_profit)} loss on {_rs(worst.total_sales)} of sales. If "
-                    f"{worst.sub_category} only broke even, {weak.category} would earn {be_margin:.1f}%."
+                    f"{weak.category} has the thinnest margin ({weak.profit_margin_pct:.1f}%): "
+                    f"{worst.sub_category} loses {_rs(worst.total_profit)} on {_rs(worst.total_sales)} "
+                    f"of sales ({worst.profit_margin_pct:.1f}% margin). At break-even on "
+                    f"{worst.sub_category}, {weak.category} would earn {be_margin:.1f}%."
                 )
             elif worst is not None:
                 reasons.append(
@@ -1482,8 +1482,7 @@ class AnalyticsEngine:
             )
             if thin:
                 text = (
-                    "Other loss-making or near-zero lines, all below half the "
-                    f"{overall:.1f}% average margin: "
+                    f"Other lines below half the {overall:.1f}% average margin: "
                     + ", ".join(
                         f"{s.sub_category} ({s.category}, {s.profit_margin_pct:.1f}%)" for s in thin
                     )
@@ -1494,8 +1493,8 @@ class AnalyticsEngine:
                 share = big.total_sales / big_cat_sales * 100 if big_cat_sales > 0 else 0.0
                 if share >= 25 and big.category in cat_margin:
                     text += (
-                        f" {big.sub_category} is {share:.0f}% of {big.category} sales, so its thin "
-                        f"margin holds {big.category} to {cat_margin[big.category]:.1f}%."
+                        f" {big.sub_category} is {share:.0f}% of {big.category} sales, holding "
+                        f"{big.category} to {cat_margin[big.category]:.1f}%."
                     )
                 reasons.append(text)
             if len(subs) >= 2:
@@ -1514,28 +1513,27 @@ class AnalyticsEngine:
                         s.sub_category for s in sorted(low, key=lambda s: -s.profit_margin_pct)[:2]
                     )
                     reasons.append(
-                        f"Mix of ticket sizes: high-ticket lines (average order above "
-                        f"{_rs(median_aov)}, e.g. {h_ex}) make up "
-                        f"{h_sales / (h_sales + l_sales) * 100:.0f}% of sales but earn only "
-                        f"{h_m:.1f}% margin, while low-ticket lines (e.g. {l_ex}) earn {l_m:.1f}%."
+                        f"Ticket size: high-ticket lines (average order above {_rs(median_aov)}, "
+                        f"e.g. {h_ex}) are {h_sales / (h_sales + l_sales) * 100:.0f}% of sales at "
+                        f"{h_m:.1f}% margin; low-ticket lines (e.g. {l_ex}) earn {l_m:.1f}%."
                     )
             ppo_text = (
-                f"Profit per order: {best_ppo.category} earns {_rs(best_ppo.avg_profit_per_order)} "
-                f"per order against {_rs(weak.avg_profit_per_order)} for {weak.category}"
+                f"Profit per order: {best_ppo.category} {_rs(best_ppo.avg_profit_per_order)} vs "
+                f"{weak.category} {_rs(weak.avg_profit_per_order)}"
             )
             if worst is not None and worst.avg_profit_per_order < 0:
                 ppo_text += (
-                    f", and the average {worst.sub_category} order loses "
+                    f"; the average {worst.sub_category} order loses "
                     f"{_rs(worst.avg_profit_per_order)}"
                 )
             reasons.append(ppo_text + ".")
 
             if worst is not None and worst.total_profit < 0:
                 recs.append(
-                    f"Reprice or cap discounts on {worst.sub_category}: the average order is "
-                    f"{_rs(worst.avg_order_value)} but loses {_rs(worst.avg_profit_per_order)}. "
-                    f"Reaching break-even lifts {weak.category} margin from "
-                    f"{weak.profit_margin_pct:.1f}% to {be_margin:.1f}%."
+                    f"Reprice or cap discounts on {worst.sub_category} ({_rs(worst.avg_order_value)} "
+                    f"average order, {_rs(worst.avg_profit_per_order)} lost on each). Break-even "
+                    f"lifts {weak.category} margin from {weak.profit_margin_pct:.1f}% to "
+                    f"{be_margin:.1f}%."
                 )
             others = [s for s in subs if s is not worst]
             if others:
@@ -1547,9 +1545,8 @@ class AnalyticsEngine:
                     recs.append(
                         f"Bundle {second.sub_category} ({second.profit_margin_pct:.1f}%) with "
                         f"{partner.sub_category} ({partner.profit_margin_pct:.1f}% margin) and push "
-                        f"low-ticket, high-margin add-ons such as {top_line.sub_category} "
-                        f"({top_line.profit_margin_pct:.1f}%) to lift basket margin instead of "
-                        "chasing volume."
+                        f"high-margin add-ons like {top_line.sub_category} "
+                        f"({top_line.profit_margin_pct:.1f}%) to lift basket margin, not volume."
                     )
             out["part1_reasons"] = reasons
             out["part1_recommendations"] = recs
@@ -1568,36 +1565,34 @@ class AnalyticsEngine:
             h1_share = 100 - ta["h2_actual_share_pct"]
             out["part2_diagnosis"] = (
                 f"Targets rise a steady {ta['avg_target_mom_pct']:.1f}% a month "
-                f"({_rs(ta['first_target'])} to {_rs(ta['last_target'])}), but actual sales are "
-                f"seasonal, from {_rs(ta['low_actual'])} ({ta['low_month']}) to "
-                f"{_rs(ta['high_actual'])} ({ta['high_month']}). {ta['h1_label']} reached "
-                f"{ta['h1_achievement_pct']:.0f}% of target and {ta['h2_label']} "
-                f"{ta['h2_achievement_pct']:.0f}%; target was met in {ta['months_met']} of "
-                f"{ta['months']} months."
+                f"({_rs(ta['first_target'])} to {_rs(ta['last_target'])}) while actual sales swing "
+                f"seasonally from {_rs(ta['low_actual'])} ({ta['low_month']}) to "
+                f"{_rs(ta['high_actual'])} ({ta['high_month']}). Achievement: "
+                f"{ta['h1_achievement_pct']:.0f}% in {ta['h1_label']}, "
+                f"{ta['h2_achievement_pct']:.0f}% in {ta['h2_label']}; target met in "
+                f"{ta['months_met']} of {ta['months']} months."
             )
             qs = ta["quarters"]
             q_low = min(qs, key=lambda q: q["achievement_pct"])
             q_high = max(qs, key=lambda q: q["achievement_pct"])
             out["part2_strategies"] = [
-                f"Seasonal targets: {ta['h2_label']} delivered {ta['h2_actual_share_pct']:.0f}% of "
-                f"actual sales ({_rs(ta['h2_actual'])} vs {_rs(ta['h1_actual'])}) but carried only "
-                f"{ta['h2_target_share_pct']:.0f}% of the target. Keeping the annual "
-                f"{_rs(ta['annual_target'])} target but splitting it {h1_share:.0f}/"
+                f"Seasonal targets: {ta['h2_label']} brought {ta['h2_actual_share_pct']:.0f}% of "
+                f"actual sales ({_rs(ta['h2_actual'])} vs {_rs(ta['h1_actual'])}) but only "
+                f"{ta['h2_target_share_pct']:.0f}% of the target. Splitting the annual "
+                f"{_rs(ta['annual_target'])} target {h1_share:.0f}/"
                 f"{ta['h2_actual_share_pct']:.0f} gives about "
                 f"{_rs(ta['seasonal_h1_monthly_target'])} a month for {ta['h1_label']} and "
-                f"{_rs(ta['seasonal_h2_monthly_target'])} a month for {ta['h2_label']}.",
-                f"Rolling {ta['rolling_window']}-month baseline: anchoring each month's target on "
-                f"the average of the previous {ta['rolling_window']} months' actuals would have "
-                f"missed by {_rs(ta['rolling_mae'])} a month on average over "
-                f"{ta['rolling_eval_label']}, against {_rs(ta['flat_ramp_mae'])} for the current "
-                f"ramp ({ta['mae_reduction_pct']:.0f}% smaller). The latest baseline is "
-                f"{_rs(ta['latest_rolling_baseline'])} a month versus a "
+                f"{_rs(ta['seasonal_h2_monthly_target'])} for {ta['h2_label']}.",
+                f"Rolling {ta['rolling_window']}-month baseline: setting each target at the previous "
+                f"{ta['rolling_window']} months' average actual would have missed by "
+                f"{_rs(ta['rolling_mae'])} a month over {ta['rolling_eval_label']}, vs "
+                f"{_rs(ta['flat_ramp_mae'])} for the current ramp ({ta['mae_reduction_pct']:.0f}% "
+                f"smaller). Latest baseline: {_rs(ta['latest_rolling_baseline'])} a month vs a "
                 f"{_rs(ta['last_target'])} target.",
                 f"Quarterly re-forecast: achievement ranged from {q_low['achievement_pct']:.0f}% "
                 f"({q_low['label']}) to {q_high['achievement_pct']:.0f}% ({q_high['label']}). "
-                "Resetting the next quarter's target at each quarter end, blending the seasonal "
-                "split with the latest run-rate, stops one quarter's miss or windfall from "
-                "distorting the rest of the year.",
+                "Resetting each next quarter's target from the seasonal split and latest run-rate "
+                "stops one quarter's miss or windfall distorting the year.",
             ]
             out["exec_part2"] = (
                 f"Furniture targets rise ~{ta['avg_target_mom_pct']:.1f}% a month, but "
@@ -1617,35 +1612,32 @@ class AnalyticsEngine:
                 disp.append(
                     f"{a.state} and {b.state} lead on volume ({a.distinct_orders} and "
                     f"{b.distinct_orders} orders; {_rs(a.total_sales)} and {_rs(b.total_sales)} "
-                    f"of sales), but {lower.state} earns {lower.profit_margin_pct:.1f}% margin "
-                    f"against {higher.profit_margin_pct:.1f}%. Closing that {gap_pts:.1f}-point gap "
-                    f"is worth about {_rs(lower.total_sales * gap_pts / 100)} of profit at "
-                    f"{lower.state}'s sales."
+                    f"of sales), but {lower.state} earns {lower.profit_margin_pct:.1f}% margin vs "
+                    f"{higher.profit_margin_pct:.1f}%; closing the {gap_pts:.1f}-point gap is worth "
+                    f"about {_rs(lower.total_sales * gap_pts / 100)} of profit."
                 )
             best = max(states, key=lambda s: s.profit_margin_pct)
             worst_st = min(states, key=lambda s: s.profit_margin_pct)
             text = (
-                f"Across the top {len(states)} states margin ranges from "
+                f"Top-{len(states)} margins range from "
                 f"{best.profit_margin_pct:.1f}% ({best.state}) to "
-                f"{worst_st.profit_margin_pct:.1f}% ({worst_st.state})."
+                f"{worst_st.profit_margin_pct:.1f}% ({worst_st.state})"
             )
             if worst_st.total_profit < 0:
-                text += f" {worst_st.state} loses {_rs(worst_st.total_profit)}"
+                text += f"; {worst_st.state} loses {_rs(worst_st.total_profit)}"
                 driver = next(
                     (p for p in prios if p.state == worst_st.state and p.action == "Fix"), None
                 )
                 if driver is not None and driver.total_profit < 0:
                     text += f", driven by {driver.city} ({signed(driver.total_profit)})"
-                text += "."
-            disp.append(text)
+            disp.append(text + ".")
             for sc in (p for p in prios if p.action == "Scale"):
                 twin = next((p for p in prios if p.action == "Fix" and p.state == sc.state), None)
                 if twin is not None:
                     disp.append(
-                        f"The gap is wider inside states: in {sc.state}, {twin.city} runs at "
+                        f"Gaps are wider within states: in {sc.state}, {twin.city} runs at "
                         f"{twin.profit_margin_pct:.1f}% margin while {sc.city} earns "
-                        f"{sc.profit_margin_pct:.1f}%, so the fix is local pricing and mix, "
-                        "not the whole state."
+                        f"{sc.profit_margin_pct:.1f}%, so the fix is local pricing and mix."
                     )
                     break
             out["part3_disparities"] = disp

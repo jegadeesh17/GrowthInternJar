@@ -5,192 +5,410 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Jar Growth Intern Assignment | Dashboard</title>
 <meta name="description" content="Sales analytics, Jar app UX teardown and fintech expansion strategy for the Jar Growth Intern assignment.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap">
 <style>
 :root {
-  --sage: #48BB78; --sage-bg: #E6FFFA; --sage-ink: #276749;
-  --amber: #D69E2E; --amber-bg: #FEFCBF; --amber-ink: #975A16;
-  --lavender: #805AD5; --lavender-bg: #FAF5FF; --lavender-ink: #553C9A;
-  --coral: #E53E3E; --coral-bg: #FFF5F5; --coral-ink: #C53030;
-  --slate: #2D3748; --slate-2: #4A5568; --muted: #637185; --canvas: #F7FAFC;
-  --card: #FFFFFF;
-  --radius: 16px;
-  --border: 1px solid rgba(0, 0, 0, 0.06);
-  --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
-  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  /* pastel roles: 50 = surface tint, 200 = soft fill, 400 = chart/mark, 600 = text on tint */
+  --lav-50: #F3F1FF; --lav-100: #E6E2FD; --lav-200: #D5CEFA; --lav-400: #A497EE; --lav-600: #5B4AC0;
+  --mint-50: #E9F7EF; --mint-100: #D3EFDF; --mint-200: #B9E5CC; --mint-400: #86CFA6; --mint-600: #23744B;
+  --butter-50: #FFF6E1; --butter-100: #FDEBC4; --butter-200: #FBDEA3; --butter-400: #F1C370; --butter-600: #80560C;
+  --peach-50: #FDEEEA; --peach-100: #FADCD4; --peach-200: #F6C7BC; --peach-400: #EEA090; --peach-600: #A8433A;
+  --sky-50: #E8F3FB; --sky-100: #D2E8F6; --sky-200: #B8DBF1; --sky-400: #89C0E4; --sky-600: #25658C;
+
+  --grey-100: #F9FAFB; --grey-200: #F4F6F8; --grey-300: #DFE3E8; --grey-400: #C4CDD5;
+  --grey-500: #919EAB; --grey-600: #637381; --grey-700: #454F5B; --grey-800: #1C252E;
+
+  --ink: var(--grey-800); --ink-2: var(--grey-600); --line: rgba(145, 158, 171, 0.2);
+  --canvas: #FBFAFE; --card: #FFFFFF;
+  --radius: 16px; --radius-sm: 10px;
+  --shadow-card: 0 0 2px 0 rgba(145, 158, 171, 0.2), 0 12px 24px -4px rgba(145, 158, 171, 0.12);
+  --shadow-pop: 0 0 2px 0 rgba(145, 158, 171, 0.24), -20px 20px 40px -4px rgba(145, 158, 171, 0.24);
+  --font: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-head: "Barlow", "DM Sans", system-ui, sans-serif;
+  --nav-w: 280px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
-body { margin: 0; font-family: var(--font); color: var(--slate); background: var(--canvas); line-height: 1.6; font-size: 15px; overflow-x: hidden; }
-h1, h2, h3, h4 { line-height: 1.3; margin: 0; color: var(--slate); }
-h1 { font-size: 1.5rem; font-weight: 700; }
-h2 { font-size: 1.2rem; font-weight: 650; }
-h3 { font-size: 1.02rem; font-weight: 650; }
+html { -webkit-text-size-adjust: 100%; scrollbar-color: var(--grey-400) transparent; scrollbar-width: thin; }
+body { margin: 0; font-family: var(--font); color: var(--ink); background: var(--canvas); line-height: 1.6; font-size: 15px; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+::selection { background: var(--lav-200); color: var(--grey-800); }
+h1, h2, h3, h4 { margin: 0; color: var(--ink); text-wrap: balance; }
+h2 { font-family: var(--font-head); font-size: 1.75rem; font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; }
+h3 { font-size: 1.06rem; font-weight: 600; line-height: 1.4; }
+h4 { font-size: 0.94rem; font-weight: 600; line-height: 1.4; }
 p { margin: 0; }
-a { color: var(--lavender-ink); }
-:focus-visible { outline: 2px solid var(--lavender); outline-offset: 2px; }
-.wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
-.muted { color: var(--slate-2); }
-.small { font-size: 0.85rem; }
-.neg { color: var(--coral-ink); }
+a { color: var(--lav-600); text-underline-offset: 3px; }
+code { font-family: ui-monospace, "Cascadia Code", Menlo, Consolas, monospace; font-size: 0.86em; background: var(--grey-200); color: var(--grey-700); padding: 2px 6px; border-radius: 6px; }
+:focus-visible { outline: 2px solid var(--lav-400); outline-offset: 2px; border-radius: 8px; }
+.muted { color: var(--ink-2); }
+.small { font-size: 0.875rem; }
+.neg { color: var(--peach-600); }
+.icon { width: 22px; height: 22px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
-header.site { background: var(--card); border-bottom: var(--border); }
-header.site .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding-top: 24px; padding-bottom: 20px; }
-header.site p { margin-top: 4px; }
-.btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 12px; background: var(--slate); color: #fff; text-decoration: none; font-weight: 600; font-size: 0.9rem; border: 0; }
-.btn:hover { background: var(--slate-2); }
+/* ---------- layout ---------- */
+.nav { position: fixed; inset: 0 auto 0 0; width: var(--nav-w); background: var(--card); border-right: 1px dashed var(--line); display: flex; flex-direction: column; padding: 24px 16px; z-index: 30; overflow-y: auto; }
+.brand { display: flex; align-items: center; gap: 12px; padding: 0 8px 28px; }
+.brand-mark { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: linear-gradient(135deg, var(--lav-100), var(--peach-100)); color: var(--lav-600); }
+.brand-mark .icon { width: 24px; height: 24px; }
+.brand strong { display: block; font-family: var(--font-head); font-size: 1.12rem; font-weight: 700; line-height: 1.2; }
+.brand span { display: block; font-size: 0.8rem; color: var(--ink-2); }
+[role="tablist"] { display: flex; flex-direction: column; gap: 4px; }
+[role="tab"] { display: flex; align-items: center; gap: 14px; min-height: 46px; width: 100%; padding: 8px 12px 8px 16px; border: 0; border-radius: 10px; background: transparent; color: var(--ink-2); font: inherit; font-size: 0.9rem; font-weight: 500; text-align: left; cursor: pointer; transition: background-color 0.2s, color 0.2s; }
+[role="tab"]:hover { background: rgba(145, 158, 171, 0.08); color: var(--ink); }
+[role="tab"][aria-selected="true"] { background: var(--lav-50); color: var(--lav-600); font-weight: 600; }
+[role="tab"][aria-selected="true"]:hover { background: var(--lav-100); }
+[role="tab"] .lbl { flex: 1; }
+.subnav[hidden] { display: none; }
+.subnav { position: relative; display: flex; flex-direction: column; gap: 2px; margin: 2px 0 6px 27px; padding-left: 14px; }
+.subnav::before { content: ""; position: absolute; left: 0; top: 6px; bottom: 6px; width: 2px; border-radius: 1px; background: var(--grey-200); }
+.subnav button { position: relative; display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 6px 10px; border: 0; border-radius: 8px; background: transparent; color: var(--ink-2); font: inherit; font-size: 0.85rem; font-weight: 500; text-align: left; cursor: pointer; transition: background-color 0.2s, color 0.2s; }
+.subnav button:hover { background: rgba(145, 158, 171, 0.08); color: var(--ink); }
+.subnav button[aria-current="page"] { color: var(--lav-600); font-weight: 600; }
+.subnav button[aria-current="page"]::before { content: ""; position: absolute; left: -15px; top: 8px; bottom: 8px; width: 4px; border-radius: 2px; background: var(--lav-400); }
+.subnav .n { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 6px; background: var(--grey-200); color: var(--grey-600); font-size: 0.7rem; font-weight: 700; flex: none; }
+.subnav button[aria-current="page"] .n { background: var(--lav-100); color: var(--lav-600); }
+.part-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; }
+.part-head .step { font-size: 0.82rem; font-weight: 600; color: var(--lav-600); }
+.part-head h2 { margin-top: 2px; }
+.part-head p { margin-top: 6px; max-width: 72ch; color: var(--ink-2); }
+.stepper { display: flex; gap: 6px; }
+.stepper button { width: 36px; height: 36px; border-radius: 10px; border: 0; background: var(--card); box-shadow: var(--shadow-card); color: var(--grey-600); font: inherit; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+.stepper button[aria-current="page"] { background: var(--lav-100); color: var(--lav-600); box-shadow: none; }
+.part > * + * { margin-top: 24px; }
+.part-nav { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.part-nav button { display: inline-flex; flex-direction: column; gap: 2px; padding: 16px 20px; min-width: min(100%, 260px); border: 0; border-radius: var(--radius); background: var(--card); box-shadow: var(--shadow-card); font: inherit; text-align: left; cursor: pointer; transition: box-shadow 0.25s var(--ease), transform 0.25s var(--ease); }
+.part-nav button:hover { box-shadow: var(--shadow-pop); transform: translateY(-2px); }
+.part-nav .next { margin-left: auto; text-align: right; align-items: flex-end; }
+.part-nav small { font-size: 0.78rem; color: var(--grey-600); font-weight: 500; }
+.part-nav b { display: inline-flex; align-items: center; gap: 6px; font-size: 0.95rem; color: var(--lav-600); }
+.part-nav .icon { width: 16px; height: 16px; }
+.part-nav .prev .icon { transform: scaleX(-1); }
+.part:not([hidden]) { animation: rise 0.45s var(--ease) both; }
+.chip { display: inline-flex; align-items: center; height: 22px; padding: 0 7px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; background: var(--grey-200); color: var(--grey-600); }
+[role="tab"][aria-selected="true"] .chip { background: var(--lav-200); color: var(--lav-600); }
+.nav-card { margin-top: auto; padding: 20px; border-radius: var(--radius); background: linear-gradient(160deg, var(--lav-50), var(--sky-50) 60%, var(--mint-50)); text-align: left; }
+.nav-card strong { display: block; font-size: 0.92rem; }
+.nav-card p { font-size: 0.8rem; color: var(--grey-700); margin: 4px 0 14px; }
 
-nav.tabs-bar { position: sticky; top: 0; z-index: 10; background: rgba(247, 250, 252, 0.94); border-bottom: var(--border); }
-[role="tablist"] { display: flex; gap: 4px; overflow-x: auto; padding: 10px 0; scrollbar-width: thin; }
-[role="tab"] { flex: 0 0 auto; font: inherit; font-size: 0.9rem; font-weight: 600; color: var(--slate-2); background: transparent; border: 0; border-radius: 10px; padding: 8px 14px; cursor: pointer; white-space: nowrap; }
-[role="tab"]:hover { background: rgba(0, 0, 0, 0.04); }
-[role="tab"][aria-selected="true"] { background: var(--card); color: var(--slate); box-shadow: var(--shadow); border: var(--border); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 10px; border: 0; background: var(--grey-800); color: #fff; font: inherit; font-size: 0.875rem; font-weight: 600; text-decoration: none; cursor: pointer; transition: background-color 0.2s, box-shadow 0.2s; }
+.btn:hover { background: var(--grey-700); box-shadow: 0 8px 16px 0 rgba(28, 37, 46, 0.16); }
+.btn .icon { width: 18px; height: 18px; }
+.btn-soft { background: var(--lav-100); color: var(--lav-600); }
+.btn-soft:hover { background: var(--lav-200); box-shadow: none; }
+.btn-ghost { background: transparent; color: var(--ink-2); padding: 0 10px; }
+.btn-ghost:hover { background: rgba(145, 158, 171, 0.12); box-shadow: none; }
 
-main { padding: 32px 0 64px; }
-[role="tabpanel"] > * + * { margin-top: 32px; }
-.section-head p { margin-top: 6px; max-width: 72ch; }
-.card { background: var(--card); border: var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; min-width: 0; }
-.grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
-.grid-2 { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); }
-.stack > * + * { margin-top: 12px; }
+.shell { margin-left: var(--nav-w); min-height: 100vh; display: flex; flex-direction: column; }
+.topbar { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 12px; height: 72px; padding: 0 40px; background: rgba(251, 250, 254, 0.8); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.topbar .menu { display: none; }
+.crumb { font-size: 0.875rem; color: var(--ink-2); }
+.crumb b { color: var(--ink); font-weight: 600; }
+.topbar .spacer { flex: 1; }
+.period { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: 999px; background: var(--card); box-shadow: var(--shadow-card); font-size: 0.82rem; font-weight: 500; color: var(--ink-2); white-space: nowrap; }
+.period i { width: 8px; height: 8px; border-radius: 50%; background: var(--mint-400); }
 
-.kpi { border-top: 3px solid var(--accent, var(--sage)); }
-.kpi .label { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
-.kpi .value { font-size: 1.6rem; font-weight: 700; margin-top: 6px; overflow-wrap: anywhere; }
-.kpi .sub { font-size: 0.85rem; color: var(--slate-2); margin-top: 4px; }
+main { width: 100%; max-width: 1240px; margin: 0 auto; padding: 8px 40px 64px; }
+[role="tabpanel"] > * + * { margin-top: 24px; }
+[role="tabpanel"] > .sub-head { margin-top: 40px; }
+[role="tabpanel"]:not([hidden]) { animation: rise 0.45s var(--ease) both; }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.section-head p { margin-top: 6px; max-width: 72ch; color: var(--ink-2); }
+.sub-head { display: flex; align-items: baseline; gap: 10px; }
+.sub-head h3 { font-family: var(--font-head); font-size: 1.3rem; font-weight: 700; }
 
+.card { position: relative; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow-card); padding: 24px; min-width: 0; overflow: hidden; }
+.card > .sub, .card > h3 + p { margin-top: 4px; font-size: 0.875rem; color: var(--ink-2); }
+.grid { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+.grid-2 { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); }
+.grid-84 { display: grid; gap: 24px; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+.grid-3 { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); }
+
+/* ---------- stat widgets (kit AnalyticsWidgetSummary, pastel) ---------- */
+.stat { --t50: var(--lav-50); --t200: var(--lav-100); --t600: var(--lav-600); box-shadow: none; color: var(--t600); background: linear-gradient(135deg, var(--t50), var(--t200)); isolation: isolate; }
+.stat::after { content: ""; position: absolute; z-index: -1; width: 200px; height: 200px; top: -90px; right: -70px; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 70%); }
+.stat.mint { --t50: var(--mint-50); --t200: var(--mint-100); --t600: var(--mint-600); }
+.stat.butter { --t50: var(--butter-50); --t200: var(--butter-100); --t600: var(--butter-600); }
+.stat.peach { --t50: var(--peach-50); --t200: var(--peach-100); --t600: var(--peach-600); }
+.stat.sky { --t50: var(--sky-50); --t200: var(--sky-100); --t600: var(--sky-600); }
+.stat .ico { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: rgba(255, 255, 255, 0.7); margin-bottom: 24px; }
+.stat .ico .icon { width: 24px; height: 24px; }
+.stat .foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.stat .label { font-size: 0.875rem; font-weight: 600; }
+.stat .value { font-family: var(--font-head); font-size: 1.9rem; font-weight: 700; line-height: 1.2; margin-top: 4px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.stat .sub { font-size: 0.8rem; margin-top: 4px; }
+.stat .trend { position: absolute; top: 20px; right: 20px; display: inline-flex; align-items: center; gap: 4px; font-size: 0.82rem; font-weight: 700; }
+.stat .trend .icon { width: 18px; height: 18px; }
+.spark { width: 96px; height: 52px; flex: none; }
+.spark path { fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.spark .t { stroke-dasharray: 3 4; stroke-width: 1.5; opacity: 0.6; }
+
+/* ---------- findings timeline ---------- */
+.timeline { list-style: none; margin: 20px 0 0; padding: 0; }
+.timeline li { position: relative; padding: 0 0 20px 28px; }
+.timeline li:last-child { padding-bottom: 0; }
+.timeline li::before { content: ""; position: absolute; left: 4px; top: 7px; width: 12px; height: 12px; border-radius: 50%; background: var(--dot, var(--lav-400)); box-shadow: 0 0 0 4px var(--card); }
+.timeline li::after { content: ""; position: absolute; left: 9px; top: 22px; bottom: 2px; width: 2px; background: var(--grey-200); }
+.timeline li:last-child::after { display: none; }
+.timeline .k { display: block; font-size: 0.78rem; font-weight: 500; color: var(--grey-600); margin-top: 2px; }
+
+/* ---------- shortcut cards ---------- */
+.jump { display: flex; flex-direction: column; gap: 14px; text-align: left; font: inherit; color: inherit; border: 0; cursor: pointer; transition: box-shadow 0.25s var(--ease), transform 0.25s var(--ease); }
+.jump:hover { box-shadow: var(--shadow-pop); transform: translateY(-2px); }
+.jump > * { width: 100%; }
+.jump .top { display: flex; align-items: center; justify-content: space-between; }
+.jump .ico { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--t50, var(--lav-50)); color: var(--t600, var(--lav-600)); }
+.jump .big { font-family: var(--font-head); font-size: 1.45rem; font-weight: 700; line-height: 1.25; }
+.jump .go { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 600; color: var(--t600, var(--lav-600)); margin-top: auto; }
+.jump .go .icon { width: 16px; height: 16px; transition: transform 0.25s var(--ease); }
+.jump:hover .go .icon { transform: translateX(3px); }
+
+/* ---------- lists, labels ---------- */
 .list { margin: 0; padding-left: 20px; }
 .list li + li { margin-top: 8px; }
-.tag { display: inline-block; font-size: 0.75rem; font-weight: 600; padding: 2px 10px; border-radius: 999px; background: var(--canvas); color: var(--slate-2); border: var(--border); white-space: nowrap; }
-.tag.sage { background: var(--sage-bg); color: var(--sage-ink); }
-.tag.amber { background: var(--amber-bg); color: var(--amber-ink); }
-.tag.lavender { background: var(--lavender-bg); color: var(--lavender-ink); }
-.tag.coral { background: var(--coral-bg); color: var(--coral-ink); }
+.list li::marker { color: var(--lav-400); }
+.tag { display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; line-height: 1; white-space: nowrap; background: var(--grey-200); color: var(--grey-600); }
+.tag.sage { background: var(--mint-100); color: var(--mint-600); }
+.tag.amber { background: var(--butter-100); color: var(--butter-600); }
+.tag.lavender { background: var(--lav-100); color: var(--lav-600); }
+.tag.coral { background: var(--peach-100); color: var(--peach-600); }
+.tag.sky { background: var(--sky-100); color: var(--sky-600); }
 .tags { display: flex; flex-wrap: wrap; gap: 6px; }
 
-.chart-box { position: relative; height: 320px; margin-top: 16px; }
-.chart-note { padding: 16px; border-radius: 12px; background: var(--canvas); color: var(--slate-2); font-size: 0.9rem; margin-top: 16px; }
-.legend-note { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 12px; font-size: 0.82rem; color: var(--slate-2); }
-.swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+/* ---------- charts ---------- */
+.chart-box { position: relative; height: 320px; margin-top: 20px; }
+.chart-box.donut { height: 240px; }
+.chart-note { padding: 16px; border-radius: 12px; background: var(--grey-200); color: var(--ink-2); font-size: 0.9rem; margin-top: 16px; }
+.legend-note { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 14px; font-size: 0.82rem; color: var(--ink-2); }
+.swatch { display: inline-block; width: 12px; height: 12px; border-radius: 4px; margin-right: 6px; vertical-align: -1px; }
+.mix-legend { list-style: none; margin: 16px 0 0; padding: 16px 0 0; border-top: 1px dashed var(--line); display: grid; gap: 10px; }
+.mix-legend li { display: flex; align-items: center; gap: 10px; font-size: 0.875rem; }
+.mix-legend .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.mix-legend .n { margin-left: auto; font-weight: 600; font-variant-numeric: tabular-nums; }
 
-.table-wrap { overflow-x: auto; margin-top: 16px; }
-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
-th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); vertical-align: top; }
-th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); font-weight: 600; white-space: nowrap; }
-td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* ---------- tables (kit: grey head band, dashed rows, full bleed) ---------- */
+.table-wrap { overflow-x: auto; margin: 20px -24px 0; }
+.card > .table-wrap:last-child { margin-bottom: -24px; }
+table { width: 100%; border-collapse: collapse; font-size: 0.875rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 14px 16px; border-bottom: 1px dashed var(--line); vertical-align: top; }
+th:first-child, td:first-child { padding-left: 24px; }
+th:last-child, td:last-child { padding-right: 24px; }
+th { background: var(--grey-200); color: var(--grey-600); font-size: 0.82rem; font-weight: 600; white-space: nowrap; border-bottom: 0; }
+td.num, th.num { text-align: right; white-space: nowrap; }
+tbody tr { transition: background-color 0.15s; }
+tbody tr:hover td { background: var(--grey-100); }
 tbody tr:last-child td { border-bottom: 0; }
-tr.loss td { background: var(--coral-bg); }
-h4 { font-size: 0.92rem; font-weight: 650; margin: 0; }
-.mbar { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
-.mbar .track { width: 90px; height: 8px; border-radius: 4px; background: var(--canvas); position: relative; overflow: hidden; }
-.mbar .fill { position: absolute; top: 0; bottom: 0; border-radius: 4px; background: var(--sage); }
-.mbar .fill.neg { background: var(--coral); }
+tr.loss td { background: var(--peach-50); }
+tr.loss:hover td { background: var(--peach-100); }
+.mbar { display: flex; align-items: center; gap: 10px; justify-content: flex-end; }
+.mbar .track { width: 90px; height: 6px; border-radius: 3px; background: var(--grey-200); position: relative; overflow: hidden; }
+.mbar .fill { position: absolute; top: 0; bottom: 0; border-radius: 3px; background: var(--mint-400); }
+.mbar .fill.neg { background: var(--peach-400); }
 
-.item { border-left: 3px solid var(--accent, var(--sage)); }
-.item h3 { margin-top: 8px; }
-.item .impact { margin-top: 12px; padding: 10px 14px; border-radius: 10px; background: var(--accent-bg, var(--sage-bg)); font-size: 0.88rem; }
-.item dl { margin: 12px 0 0; }
-.item dt { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin-top: 12px; }
-.item dd { margin: 4px 0 0; white-space: pre-line; overflow-wrap: anywhere; }
-details { margin-top: 12px; }
-summary { cursor: pointer; font-weight: 600; font-size: 0.88rem; color: var(--lavender-ink); }
-.prose { white-space: pre-line; overflow-wrap: anywhere; }
-.econ { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 110px), 1fr)); gap: 10px; margin-top: 14px; }
-.econ div { background: var(--canvas); border-radius: 10px; padding: 10px 12px; }
-.econ .k { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); font-weight: 600; }
-.econ .v { font-weight: 700; margin-top: 2px; overflow-wrap: anywhere; }
-.error-banner { background: var(--coral-bg); color: var(--coral-ink); border-radius: var(--radius); padding: 20px; }
-footer { padding: 24px 0 40px; color: var(--muted); font-size: 0.82rem; }
+/* ---------- content items (Q2 / Q3) ---------- */
+.item { display: flex; flex-direction: column; --t50: var(--mint-50); --t600: var(--mint-600); }
+.item.coral { --t50: var(--peach-50); --t600: var(--peach-600); }
+.item.lavender { --t50: var(--lav-50); --t600: var(--lav-600); }
+.item h3 { font-size: 1.1rem; }
+.item .meta { margin-top: 10px; }
+.item .prose { max-width: 75ch; }
+.grid-2 > .item:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.grid-2 > .item:last-child:nth-child(odd) .impact { max-width: 75ch; }
+.item .impact { margin-top: 16px; padding: 12px 14px; border-radius: 12px; background: var(--t50); color: var(--grey-700); font-size: 0.875rem; }
+.item .impact strong { color: var(--t600); }
+.item .fix { margin-top: 16px; padding: 12px 14px; border-radius: 12px; border: 1px dashed var(--line); font-size: 0.875rem; }
+.item .fix strong { display: block; font-size: 0.8rem; color: var(--grey-800); margin-bottom: 4px; }
+.item .fix p { color: var(--grey-700); white-space: pre-line; overflow-wrap: anywhere; }
+.item dl { margin: 4px 0 0; }
+.item dt { font-size: 0.8rem; font-weight: 600; color: var(--grey-600); margin-top: 14px; }
+.item dd { margin: 4px 0 0; white-space: pre-line; overflow-wrap: anywhere; font-size: 0.9rem; }
+details { margin-top: 16px; border-top: 1px dashed var(--line); padding-top: 12px; }
+summary { list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; font-weight: 600; font-size: 0.875rem; color: var(--ink); border-radius: 8px; }
+summary::-webkit-details-marker { display: none; }
+summary .icon { width: 18px; height: 18px; color: var(--grey-500); transition: transform 0.25s var(--ease); }
+details[open] summary .icon { transform: rotate(180deg); }
+summary:hover { color: var(--t600, var(--lav-600)); }
+.prose { white-space: pre-line; overflow-wrap: anywhere; color: var(--grey-700); }
+.econ { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 132px), 1fr)); gap: 8px; margin-top: 16px; }
+.econ > div { background: var(--grey-100); border: 1px solid var(--grey-200); border-radius: 12px; padding: 10px 12px; }
+.econ .k { font-size: 0.75rem; color: var(--grey-600); font-weight: 600; }
+.econ .v { font-weight: 700; margin-top: 2px; overflow-wrap: break-word; font-size: 0.92rem; line-height: 1.4; font-variant-numeric: tabular-nums; }
+.error-banner { background: var(--peach-50); color: var(--peach-600); border-radius: var(--radius); padding: 20px; }
+footer { padding: 0 40px 40px; color: var(--grey-600); font-size: 0.8rem; max-width: 1240px; margin: 0 auto; width: 100%; }
 
+.scrim { position: fixed; inset: 0; background: rgba(28, 37, 46, 0.32); z-index: 25; opacity: 0; transition: opacity 0.3s; }
+
+@media (max-width: 1199px) {
+  .nav { transform: translateX(-100%); transition: transform 0.35s var(--ease); box-shadow: none; border-right: 0; }
+  .nav.open { transform: none; box-shadow: var(--shadow-pop); }
+  .scrim.open { opacity: 1; }
+  .shell { margin-left: 0; }
+  .topbar { padding: 0 24px; }
+  .topbar .menu { display: inline-flex; }
+  main { padding: 8px 24px 56px; }
+  footer { padding: 0 24px 32px; }
+}
+@media (max-width: 899px) { .grid-84 { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 600px) {
   body { font-size: 14px; }
-  .wrap { padding: 0 14px; }
-  .card { padding: 18px; }
+  h2 { font-size: 1.45rem; }
+  .topbar { padding: 0 16px; height: 64px; }
+  .period { display: none; }
+  main { padding: 4px 16px 48px; }
+  footer { padding: 0 16px 28px; }
+  .card { padding: 20px; }
+  .table-wrap { margin: 16px -20px 0; }
+  .card > .table-wrap:last-child { margin-bottom: -20px; }
+  th:first-child, td:first-child { padding-left: 20px; }
   .chart-box { height: 280px; }
-  h1 { font-size: 1.25rem; }
+  .grid, .grid-2, .grid-3 { gap: 16px; }
 }
-@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
 </style>
 </head>
 <body>
-<header class="site">
-  <div class="wrap">
-    <div>
-      <h1>Jar Growth Intern Assignment</h1>
-      <p class="muted">Sales analytics, Jar app UX teardown and fintech expansion strategy</p>
-    </div>
-    <a class="btn" href="Jar_Growth_Intern_Assignment_Submission.pdf" download>Download PDF</a>
+<aside class="nav" id="nav" aria-label="Dashboard navigation">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24"><path d="M8 3h8"/><path d="M9 3v3.2c-2.4.9-4 3-4 5.8v5a4 4 0 0 0 4 4h6a4 4 0 0 0 4-4v-5c0-2.8-1.6-4.9-4-5.8V3"/><path d="M8.5 14.5c1.2.9 2.3 1.2 3.5 1.2s2.3-.3 3.5-1.2"/></svg></span>
+    <div><strong>Jar Growth</strong><span>Intern assignment</span></div>
   </div>
-</header>
-
-<nav class="tabs-bar" aria-label="Dashboard sections">
-  <div class="wrap">
-    <div role="tablist" aria-label="Dashboard sections" id="tablist">
-      <button type="button" role="tab" id="tab-overview" aria-controls="panel-overview" aria-selected="true" tabindex="0">Overview &amp; KPIs</button>
-      <button type="button" role="tab" id="tab-q1" aria-controls="panel-q1" aria-selected="false" tabindex="-1">Q1 Sales Analytics</button>
-      <button type="button" role="tab" id="tab-q2" aria-controls="panel-q2" aria-selected="false" tabindex="-1">Q2 App Teardown</button>
-      <button type="button" role="tab" id="tab-q3" aria-controls="panel-q3" aria-selected="false" tabindex="-1">Q3 Expansion Strategy</button>
-      <button type="button" role="tab" id="tab-methodology" aria-controls="panel-methodology" aria-selected="false" tabindex="-1">Methodology &amp; Data Hygiene</button>
+  <div role="tablist" aria-label="Dashboard sections" aria-orientation="vertical" id="tablist">
+    <button type="button" role="tab" id="tab-overview" aria-controls="panel-overview" aria-selected="true" tabindex="0">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="9" rx="2"/><rect x="13.5" y="3" width="7.5" height="5" rx="2"/><rect x="13.5" y="11" width="7.5" height="10" rx="2"/><rect x="3" y="15" width="7.5" height="6" rx="2"/></svg>
+      <span class="lbl">Overview</span></button>
+    <button type="button" role="tab" id="tab-q1" aria-controls="panel-q1" aria-selected="false" tabindex="-1">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4v14a2 2 0 0 0 2 2h14"/><path d="M8.5 16v-4"/><path d="M13 16V8"/><path d="M17.5 16v-6"/></svg>
+      <span class="lbl">Sales analytics</span><span class="chip">Q1</span></button>
+    <div class="subnav" id="q1-subnav" role="group" aria-label="Q1 parts" hidden>
+      <button type="button" data-part="q1-part1" aria-current="page"><span class="n">1</span>Sales &amp; profitability</button>
+      <button type="button" data-part="q1-part2"><span class="n">2</span>Target achievement</button>
+      <button type="button" data-part="q1-part3"><span class="n">3</span>Regional insights</button>
     </div>
+    <button type="button" role="tab" id="tab-q2" aria-controls="panel-q2" aria-selected="false" tabindex="-1">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18h3"/></svg>
+      <span class="lbl">App teardown</span><span class="chip">Q2</span></button>
+    <button type="button" role="tab" id="tab-q3" aria-controls="panel-q3" aria-selected="false" tabindex="-1">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>
+      <span class="lbl">Expansion strategy</span><span class="chip">Q3</span></button>
+    <button type="button" role="tab" id="tab-methodology" aria-controls="panel-methodology" aria-selected="false" tabindex="-1">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5.5c0 4.6-3 7.9-7 9.5-4-1.6-7-4.9-7-9.5V6z"/><path d="M9 12l2 2 4-4.5"/></svg>
+      <span class="lbl">Methodology</span></button>
   </div>
-</nav>
+  <div class="nav-card">
+    <strong>Full written report</strong>
+    <p>All three answers with charts, as a PDF.</p>
+    <a class="btn" href="Jar_Growth_Intern_Assignment_Submission.pdf" download>
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>Download PDF</a>
+  </div>
+</aside>
+<div class="scrim" id="scrim" hidden></div>
 
-<main class="wrap">
+<div class="shell">
+  <header class="topbar">
+    <button type="button" class="btn btn-ghost menu" id="menu-btn" aria-controls="nav" aria-expanded="false" aria-label="Open navigation">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h10"/></svg></button>
+    <p class="crumb">Dashboard / <b id="crumb-current">Overview</b></p>
+    <span class="spacer"></span>
+    <span class="period"><i aria-hidden="true"></i>Orders Apr 2018 to Mar 2019</span>
+  </header>
+
+<main>
   <section role="tabpanel" id="panel-overview" aria-labelledby="tab-overview" tabindex="0"></section>
 
   <section role="tabpanel" id="panel-q1" aria-labelledby="tab-q1" tabindex="0" hidden>
-    <div class="section-head">
-      <h2>Q1: Sales, targets and regional performance</h2>
-      <p class="muted">Order-level retail data (Apr-18 to Mar-19). All figures are computed by the Python pipeline and embedded from <code>data/output</code>.</p>
-    </div>
-    <div class="grid-2">
-      <div class="card">
-        <h3>Category sales vs profit margin</h3>
-        <p class="muted small">Bars: total sales (left axis). Line: profit margin % (right axis).</p>
-        <div class="chart-box"><canvas id="chart-category" role="img" aria-label="Category sales and profit margin chart"></canvas></div>
+    <div class="part" id="q1-part1" data-title="Sales &amp; profitability">
+      <div class="part-head">
+        <div>
+          <p class="step">Q1 · Part 1 of 3</p>
+          <h2>Sales and profitability</h2>
+          <p>Total sales, average profit per order and profit margin by category, the top and underperforming categories, and why they differ.</p>
+        </div>
+        <div class="stepper" aria-hidden="true"></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Category sales vs profit margin</h3>
+          <p class="sub">Bars: total sales (left axis). Line: profit margin % (right axis).</p>
+          <div class="chart-box"><canvas id="chart-category" role="img" aria-label="Category sales and profit margin chart"></canvas></div>
+        </div>
+        <div class="card">
+          <h3>Why the categories perform differently</h3>
+          <ul class="list small" id="insights-category" style="margin-top:16px"></ul>
+        </div>
       </div>
       <div class="card">
         <h3>Category performance</h3>
+        <p class="sub">Orders and order details merged on Order ID. Ranked by the pipeline's performance score.</p>
         <div class="table-wrap" id="table-category"></div>
-        <h4 style="margin-top:16px">Why the categories perform differently</h4>
-        <ul class="list small" id="insights-category" style="margin-top:8px"></ul>
+      </div>
+      <div class="card" id="card-subcategory">
+        <h3>Sub-category breakdown</h3>
+        <p class="sub">Margin by sub-category, weakest first. Loss-making lines are tinted peach.</p>
+        <div class="table-wrap" id="table-subcategory"></div>
+        <h4 style="margin-top:24px">Recommendations</h4>
+        <ul class="list small" id="q1-part1-recs" style="margin-top:8px"></ul>
       </div>
     </div>
-    <div class="card" id="card-subcategory">
-      <h3>Sub-category breakdown</h3>
-      <p class="muted small">Margin by sub-category. Loss-making lines are highlighted in coral.</p>
-      <div class="table-wrap" id="table-subcategory"></div>
-      <h4 style="margin-top:16px">Recommendations</h4>
-      <ul class="list small" id="q1-part1-recs" style="margin-top:8px"></ul>
-    </div>
-    <div class="card">
-      <h3>Furniture: monthly target vs actual sales</h3>
-      <p class="muted small" id="furniture-caption"></p>
-      <div class="chart-box"><canvas id="chart-furniture" role="img" aria-label="Furniture monthly target versus actual sales chart"></canvas></div>
-      <div class="legend-note">
-        <span><span class="swatch" style="background:rgba(229,62,62,0.12)"></span>Actual sales moved 15% or more vs prior month</span>
-        <span><span class="swatch" style="background:rgba(214,158,46,0.22)"></span>Target moved 15% or more vs prior month (significant fluctuation)</span>
-      </div>
-      <div class="table-wrap" id="table-furniture"></div>
-      <h4 style="margin-top:16px">Aligning targets with actual trends</h4>
-      <p class="small muted" id="q1-part2-diagnosis" style="margin-top:8px"></p>
-      <ul class="list small" id="q1-part2-strategies" style="margin-top:8px"></ul>
-    </div>
-    <div class="grid-2">
-      <div class="card">
-        <h3>Top 5 states: order volume vs margin</h3>
-        <p class="muted small">Bars: distinct orders (left axis). Line: profit margin % (right axis).</p>
-        <div class="chart-box"><canvas id="chart-states" role="img" aria-label="Top 5 states order volume and profit margin chart"></canvas></div>
+
+    <div class="part" id="q1-part2" data-title="Target achievement" hidden>
+      <div class="part-head">
+        <div>
+          <p class="step">Q1 · Part 2 of 3</p>
+          <h2>Target achievement</h2>
+          <p>Month-over-month change in the Furniture sales target, months with significant fluctuations, and strategies to align targets with actual trends.</p>
+        </div>
+        <div class="stepper" aria-hidden="true"></div>
       </div>
       <div class="card">
-        <h3>Top 5 states by order volume</h3>
+        <h3>Furniture: monthly target vs actual sales</h3>
+        <p class="sub" id="furniture-caption"></p>
+        <div class="chart-box"><canvas id="chart-furniture" role="img" aria-label="Furniture monthly target versus actual sales chart"></canvas></div>
+        <div class="legend-note">
+          <span><span class="swatch" style="background:var(--peach-100)"></span>Actual sales moved 15% or more vs prior month</span>
+          <span><span class="swatch" style="background:var(--butter-200)"></span>Target moved 15% or more vs prior month (significant fluctuation)</span>
+        </div>
+        <div class="table-wrap" id="table-furniture"></div>
+      </div>
+      <div class="card">
+        <h3>Aligning targets with actual trends</h3>
+        <p class="prose small" id="q1-part2-diagnosis" style="margin-top:8px"></p>
+        <ul class="list small" id="q1-part2-strategies" style="margin-top:12px"></ul>
+      </div>
+    </div>
+
+    <div class="part" id="q1-part3" data-title="Regional insights" hidden>
+      <div class="part-head">
+        <div>
+          <p class="step">Q1 · Part 3 of 3</p>
+          <h2>Regional performance</h2>
+          <p>Top 5 states by order count with total sales and average profit, regional disparities, and the cities to prioritise.</p>
+        </div>
+        <div class="stepper" aria-hidden="true"></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Top 5 states: order volume vs margin</h3>
+          <p class="sub">Bars: distinct orders (left axis). Line: profit margin % (right axis).</p>
+          <div class="chart-box"><canvas id="chart-states" role="img" aria-label="Top 5 states order volume and profit margin chart"></canvas></div>
+        </div>
+        <div class="card">
+          <h3>Regional disparities</h3>
+          <ul class="list small" id="q1-recommendations" style="margin-top:16px"></ul>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Top 5 states by order count</h3>
+        <p class="sub">Quadrants compare each state with the top-5 medians.</p>
         <div class="table-wrap" id="table-states"></div>
       </div>
-    </div>
-    <div class="card">
-      <h3>Regional disparities and cities to prioritise</h3>
-      <ul class="list small" id="q1-recommendations" style="margin-top:12px"></ul>
-      <div class="table-wrap" id="table-cities"></div>
-      <p class="muted small" style="margin-top:8px">Fix: largest profit shortfall against the overall margin (sales x overall margin - profit). Scale: above-median sales and above-average margin.</p>
+      <div class="card">
+        <h3>Cities to prioritise</h3>
+        <p class="sub">Fix: largest profit shortfall against the overall margin (sales x overall margin - profit). Scale: above-median sales and above-average margin.</p>
+        <div class="table-wrap" id="table-cities"></div>
+      </div>
     </div>
   </section>
 
@@ -199,10 +417,11 @@ footer { padding: 24px 0 40px; color: var(--muted); font-size: 0.82rem; }
   <section role="tabpanel" id="panel-methodology" aria-labelledby="tab-methodology" tabindex="0" hidden></section>
 </main>
 
-<footer class="wrap">Data embedded from <code>data/output/*.json</code> (generated by <code>python -m src.main</code>). Charts by Chart.js.</footer>
+<footer>Data embedded from <code>data/output/*.json</code> (generated by <code>python -m src.main</code>). Charts by Chart.js.</footer>
+</div>
 
 <!-- Generated from data/output/*.json; do not hand-edit values. Regenerate after re-running the pipeline. -->
-<script id="dashboard-data" type="application/json">{"category_performance":[{"category":"Clothing","total_sales":139054.0,"total_profit":11163.0,"avg_profit_per_order":28.4,"profit_margin_pct":8.03,"distinct_orders":393,"total_quantity":3516,"performance_rank":1},{"category":"Electronics","total_sales":165267.0,"total_profit":10494.0,"avg_profit_per_order":51.44,"profit_margin_pct":6.35,"distinct_orders":204,"total_quantity":1154,"performance_rank":2},{"category":"Furniture","total_sales":127181.0,"total_profit":2298.0,"avg_profit_per_order":12.35,"profit_margin_pct":1.81,"distinct_orders":186,"total_quantity":945,"performance_rank":3}],"city_performance":[{"state":"Madhya Pradesh","city":"Indore","distinct_orders":76,"total_sales":79069.0,"total_profit":4159.0,"avg_profit_per_order":54.72,"profit_margin_pct":5.26},{"state":"Maharashtra","city":"Mumbai","distinct_orders":68,"total_sales":61867.0,"total_profit":1637.0,"avg_profit_per_order":24.07,"profit_margin_pct":2.65},{"state":"Maharashtra","city":"Pune","distinct_orders":22,"total_sales":33481.0,"total_profit":4539.0,"avg_profit_per_order":206.32,"profit_margin_pct":13.56},{"state":"Madhya Pradesh","city":"Bhopal","distinct_orders":22,"total_sales":23583.0,"total_profit":871.0,"avg_profit_per_order":39.59,"profit_margin_pct":3.69},{"state":"Delhi","city":"Delhi","distinct_orders":22,"total_sales":22531.0,"total_profit":2987.0,"avg_profit_per_order":135.77,"profit_margin_pct":13.26},{"state":"Uttar Pradesh","city":"Allahabad","distinct_orders":9,"total_sales":16857.0,"total_profit":3081.0,"avg_profit_per_order":342.33,"profit_margin_pct":18.28},{"state":"Karnataka","city":"Bangalore","distinct_orders":21,"total_sales":15058.0,"total_profit":645.0,"avg_profit_per_order":30.71,"profit_margin_pct":4.28},{"state":"Gujarat","city":"Ahmedabad","distinct_orders":17,"total_sales":14230.0,"total_profit":-880.0,"avg_profit_per_order":-51.76,"profit_margin_pct":-6.18},{"state":"West Bengal","city":"Kolkata","distinct_orders":22,"total_sales":14086.0,"total_profit":2500.0,"avg_profit_per_order":113.64,"profit_margin_pct":17.75},{"state":"Kerala","city":"Thiruvananthapuram","distinct_orders":16,"total_sales":13459.0,"total_profit":1871.0,"avg_profit_per_order":116.94,"profit_margin_pct":13.9},{"state":"Andhra Pradesh","city":"Hyderabad","distinct_orders":15,"total_sales":13256.0,"total_profit":-496.0,"avg_profit_per_order":-33.07,"profit_margin_pct":-3.74},{"state":"Bihar","city":"Patna","distinct_orders":16,"total_sales":12943.0,"total_profit":-321.0,"avg_profit_per_order":-20.06,"profit_margin_pct":-2.48},{"state":"Punjab","city":"Chandigarh","distinct_orders":16,"total_sales":12279.0,"total_profit":-1153.0,"avg_profit_per_order":-72.06,"profit_margin_pct":-9.39},{"state":"Nagaland","city":"Kohima","distinct_orders":15,"total_sales":11903.0,"total_profit":148.0,"avg_profit_per_order":9.87,"profit_margin_pct":1.24},{"state":"Rajasthan","city":"Udaipur","distinct_orders":13,"total_sales":11073.0,"total_profit":2010.0,"avg_profit_per_order":154.62,"profit_margin_pct":18.15},{"state":"Jammu and Kashmir","city":"Kashmir","distinct_orders":14,"total_sales":10829.0,"total_profit":8.0,"avg_profit_per_order":0.57,"profit_margin_pct":0.07},{"state":"Rajasthan","city":"Jaipur","distinct_orders":19,"total_sales":10076.0,"total_profit":-753.0,"avg_profit_per_order":-39.63,"profit_margin_pct":-7.47},{"state":"Haryana","city":"Chandigarh","distinct_orders":14,"total_sales":8863.0,"total_profit":1325.0,"avg_profit_per_order":94.64,"profit_margin_pct":14.95},{"state":"Himachal Pradesh","city":"Simla","distinct_orders":14,"total_sales":8666.0,"total_profit":656.0,"avg_profit_per_order":46.86,"profit_margin_pct":7.57},{"state":"Gujarat","city":"Surat","distinct_orders":10,"total_sales":6828.0,"total_profit":1345.0,"avg_profit_per_order":134.5,"profit_margin_pct":19.7},{"state":"Goa","city":"Goa","distinct_orders":14,"total_sales":6705.0,"total_profit":370.0,"avg_profit_per_order":26.43,"profit_margin_pct":5.52},{"state":"Tamil Nadu","city":"Chennai","distinct_orders":8,"total_sales":6087.0,"total_profit":-2216.0,"avg_profit_per_order":-277.0,"profit_margin_pct":-36.41},{"state":"Uttar Pradesh","city":"Lucknow","distinct_orders":13,"total_sales":5502.0,"total_profit":156.0,"avg_profit_per_order":12.0,"profit_margin_pct":2.84},{"state":"Sikkim","city":"Gangtok","distinct_orders":12,"total_sales":5276.0,"total_profit":401.0,"avg_profit_per_order":33.42,"profit_margin_pct":7.6},{"state":"Punjab","city":"Amritsar","distinct_orders":9,"total_sales":4507.0,"total_profit":544.0,"avg_profit_per_order":60.44,"profit_margin_pct":12.07},{"state":"Madhya Pradesh","city":"Delhi","distinct_orders":3,"total_sales":2488.0,"total_profit":521.0,"avg_profit_per_order":173.67,"profit_margin_pct":20.94}],"city_priorities":[{"action":"Fix","state":"Punjab","city":"Chandigarh","total_sales":12279.0,"total_profit":-1153.0,"profit_margin_pct":-9.39,"profit_gap":1834.67,"in_top_states":true,"reason":"Loses Rs 1,153 on Rs 12,279 of sales (-9.4% margin); biggest drag is Phones (-Rs 1,546)."},{"action":"Fix","state":"Maharashtra","city":"Mumbai","total_sales":61867.0,"total_profit":1637.0,"profit_margin_pct":2.65,"profit_gap":1797.57,"in_top_states":true,"reason":"65% of Maharashtra sales but only 2.6% margin vs 5.6% overall; biggest drag is Saree (-Rs 801)."},{"action":"Fix","state":"Gujarat","city":"Ahmedabad","total_sales":14230.0,"total_profit":-880.0,"profit_margin_pct":-6.18,"profit_gap":1669.98,"in_top_states":true,"reason":"Loses Rs 880 on Rs 14,230 of sales (-6.2% margin); biggest drag is Bookcases (-Rs 1,049)."},{"action":"Fix","state":"Rajasthan","city":"Jaipur","total_sales":10076.0,"total_profit":-753.0,"profit_margin_pct":-7.47,"profit_gap":1312.37,"in_top_states":true,"reason":"Loses Rs 753 on Rs 10,076 of sales (-7.5% margin); biggest drag is Phones (-Rs 780)."},{"action":"Fix","state":"Tamil Nadu","city":"Chennai","total_sales":6087.0,"total_profit":-2216.0,"profit_margin_pct":-36.41,"profit_gap":2553.92,"in_top_states":false,"reason":"Worst city outside the top states (Tamil Nadu): loses Rs 2,216 on Rs 6,087 of sales (-36.4% margin); biggest drag is Tables (-Rs 1,864)."},{"action":"Scale","state":"Maharashtra","city":"Pune","total_sales":33481.0,"total_profit":4539.0,"profit_margin_pct":13.56,"profit_gap":-2680.29,"in_top_states":true,"reason":"13.6% margin on Rs 33,481 of sales, led by Printers (Rs 1,416 profit); add volume here."},{"action":"Scale","state":"Uttar Pradesh","city":"Allahabad","total_sales":16857.0,"total_profit":3081.0,"profit_margin_pct":18.28,"profit_gap":-2145.18,"in_top_states":false,"reason":"18.3% margin on Rs 16,857 of sales, led by Printers (Rs 1,991 profit); add volume here."}],"furniture_targets":[{"month_key":"2018-04","display_month":"Apr-18","target_sales":10400.0,"actual_sales":8121.0,"mom_target_pct_change":null,"mom_actual_pct_change":null,"variance":-2279.0,"achievement_pct":78.09,"is_significant_fluctuation":false},{"month_key":"2018-05","display_month":"May-18","target_sales":10500.0,"actual_sales":6220.0,"mom_target_pct_change":0.96,"mom_actual_pct_change":-23.41,"variance":-4280.0,"achievement_pct":59.24,"is_significant_fluctuation":false},{"month_key":"2018-06","display_month":"Jun-18","target_sales":10600.0,"actual_sales":5532.0,"mom_target_pct_change":0.95,"mom_actual_pct_change":-11.06,"variance":-5068.0,"achievement_pct":52.19,"is_significant_fluctuation":false},{"month_key":"2018-07","display_month":"Jul-18","target_sales":10800.0,"actual_sales":3483.0,"mom_target_pct_change":1.89,"mom_actual_pct_change":-37.04,"variance":-7317.0,"achievement_pct":32.25,"is_significant_fluctuation":false},{"month_key":"2018-08","display_month":"Aug-18","target_sales":10900.0,"actual_sales":9538.0,"mom_target_pct_change":0.93,"mom_actual_pct_change":173.84,"variance":-1362.0,"achievement_pct":87.5,"is_significant_fluctuation":false},{"month_key":"2018-09","display_month":"Sep-18","target_sales":11000.0,"actual_sales":8704.0,"mom_target_pct_change":0.92,"mom_actual_pct_change":-8.74,"variance":-2296.0,"achievement_pct":79.13,"is_significant_fluctuation":false},{"month_key":"2018-10","display_month":"Oct-18","target_sales":11100.0,"actual_sales":6766.0,"mom_target_pct_change":0.91,"mom_actual_pct_change":-22.27,"variance":-4334.0,"achievement_pct":60.95,"is_significant_fluctuation":false},{"month_key":"2018-11","display_month":"Nov-18","target_sales":11300.0,"actual_sales":15165.0,"mom_target_pct_change":1.8,"mom_actual_pct_change":124.14,"variance":3865.0,"achievement_pct":134.2,"is_significant_fluctuation":false},{"month_key":"2018-12","display_month":"Dec-18","target_sales":11400.0,"actual_sales":9474.0,"mom_target_pct_change":0.88,"mom_actual_pct_change":-37.53,"variance":-1926.0,"achievement_pct":83.11,"is_significant_fluctuation":false},{"month_key":"2019-01","display_month":"Jan-19","target_sales":11500.0,"actual_sales":21257.0,"mom_target_pct_change":0.88,"mom_actual_pct_change":124.37,"variance":9757.0,"achievement_pct":184.84,"is_significant_fluctuation":false},{"month_key":"2019-02","display_month":"Feb-19","target_sales":11600.0,"actual_sales":16262.0,"mom_target_pct_change":0.87,"mom_actual_pct_change":-23.5,"variance":4662.0,"achievement_pct":140.19,"is_significant_fluctuation":false},{"month_key":"2019-03","display_month":"Mar-19","target_sales":11800.0,"actual_sales":16659.0,"mom_target_pct_change":1.72,"mom_actual_pct_change":2.44,"variance":4859.0,"achievement_pct":141.18,"is_significant_fluctuation":false}],"growth_strategy":{"metadata":{"strategy_version":"2026-Q1","author":"Growth Intern Candidate","total_verticals":5,"total_tam_cr":442000.0,"total_sam_cr":60000.0,"total_som_cr":864.0},"verticals":[{"id":"VERTICAL-01","name":"Jar Cash","tagline":"Gold-Backed Micro-Lending \u0026 Instant Credit Line","title":"Jar Cash: Gold-Backed Micro-Lending \u0026 Instant Credit Line","strategic_rationale":"Jar Cash provides an instant overdraft credit line against vaulted 24K digital gold collateral, completely eliminating the need for users to liquidate their long-term savings during short-term cash crunches. In India's informal economy, unexpected hospital visits, family obligations, or temporary cash-flow delays force savers to sell their accumulated gold or turn to predatory unregulated moneylenders charging 36%–60% APR. With Jar Cash, users tap a single button to borrow up to 75% of their live vaulted gold value at an affordable 12%–15% annualized interest rate, with instant credit to their bank account via UPI / IMPS within 15 seconds. Because the loan is 100% collateralized by physical gold sitting in SafeGold/Augmont vaults, underwriting is instant, credit bureau scores are not a bottleneck, and Jar incurs negligible default credit risk.","target_persona":"Tier 2/3 young aspirational savers, small shop owners, and gig economy workers with 2g to 15g of accumulated gold in Jar, who experience intermittent monthly liquidity crunches and need emergency credit without paperwork or pawnshop stigma.","market_sizing":{"tam":"₹75,000 Cr ($9.0B)","tam_numeric_cr":75000.0,"sam":"₹12,000 Cr ($1.44B)","sam_numeric_cr":12000.0,"som":"₹240 Cr ($29M)","som_numeric_cr":240.0,"methodology":"TAM represents the unorganized and semi-organized Indian gold pawn-broking and micro-gold loan market. SAM focuses on digitally addressable micro-loans (\u003c₹25,000) collateralized by gold. SOM (about 2% of SAM) assumes 100,000 Jar vault holders borrow an average revolving balance of ₹8,000 rotated 3x a year, i.e. ₹240 Cr of annual disbursals by year 3."},"unit_economics":{"cac_inr":720.0,"ltv_inr":2160.0,"ltv_cac_ratio":3.0,"take_rate":"~4.5% net interest spread share (LSP with co-lending NBFC) + 1.0% processing fee","payback_months":12.0,"economics_narrative":"Illustrative planning assumption. CAC of ₹720 covers in-app prompts, eligibility incentives, KYC and bureau checks, and the credit-cost reserve for a borrower's first loan. Net monthly contribution is about ₹60 (spread and fees on an ₹8,000 revolving balance, after servicing and credit costs) over an expected 36-month borrower lifetime: LTV = ₹60 x 36 = ₹2,160, LTV:CAC = 3.0x, payback = ₹720 / ₹60 = 12.0 months."},"flywheel_integration":"Jar's automated UPI round-ups continuously build the user's gold vault balance, which automatically and dynamically expands their pre-approved Jar Cash credit limit. When credit is drawn, automated UPI AutoPay mandates handle regular interest and principal repayments without manual collection effort. As the loan is repaid, the vaulted gold collateral is released back into the unencumbered balance, and round-up habituation resumes instantly. The user never loses their gold upside, deepening brand trust and driving a 3.4x surge in daily micro-savings deposits.","execution_risks":[{"risk_title":"RBI Digital Lending Guidelines (DLG) \u0026 Co-Lending Compliance","risk_category":"Regulatory","severity":"High","mitigation_strategy":"Operate strictly as a Lending Service Provider (LSP) partnering with RBI-regulated NBFCs (e.g., Vivriti Capital, DMI Finance). All loan disbursals and repayments flow directly between the regulated bank/NBFC and the borrower's verified bank account without passing through Jar's balance sheet, adhering fully to the 5% First Loss Default Guarantee (FLDG) cap."},{"risk_title":"Gold Price Volatility \u0026 Collateral LTV Breaches","risk_category":"Market","severity":"Medium","mitigation_strategy":"Implement a dynamic loan-to-value (LTV) ceiling capped at 70% (well below the regulatory 75% limit). Trigger automated WhatsApp/SMS margin call alerts at 78% LTV, and execute automated fractional liquidation safeguards via partner bullion APIs only if LTV crosses 85%, ensuring zero capital loss."},{"risk_title":"UPI Mandate Bounce \u0026 Strategic Involuntary Default","risk_category":"Credit","severity":"Low","mitigation_strategy":"Because all loans are backed 100% by physical 24K gold stored in institutional vaults, default risk is strictly structural rather than unsecured. If a borrower defaults after 90 days of missed mandates, partner custodians liquidate the pledged gold at spot market rates to recover principal, interest, and auction fees, returning any residual balance to the customer."}],"primary_kpis":["Monthly Credit Disbursal Volume (INR Cr)","Active Borrower Conversion Rate (% of Vault Holders)","Gross Non-Performing Asset (GNPA) Ratio (\u003c0.5%)","Average Loan Origination Turnaround Time (\u003c30 seconds)"]},{"id":"VERTICAL-02","name":"Jar Multi-Asset","tagline":"Micro-SIPs in Silver ETFs \u0026 Sovereign Gold Bonds","title":"Jar Multi-Asset: Micro-SIPs in Silver ETFs \u0026 Sovereign Gold Bonds","strategic_rationale":"As Jar's core user base matures and accumulates meaningful wealth, single-asset gold concentration triggers prudence anxiety and asset allocation friction. Jar Multi-Asset introduces frictionless, sub-₹10 automated micro-savings across complementary precious metals and fixed-income assets: Digital Silver, Silver ETFs, and RBI Sovereign Gold Bonds (SGBs). Users configure a visual 'Asset Allocation Slider' (e.g., 70% Gold / 30% Silver, or 60% Gold / 20% Silver / 20% SGB), and Jar's automated UPI AutoPay engine splits daily spare change and round-ups across both assets in real time. By capturing silver's dual role as a precious metal and industrial super-conductor (benefiting from the global solar, EV, and electronics boom), Jar provides superior portfolio inflation protection without requiring the user to open a complex demat account or migrate to discount brokers like Groww or Zerodha.","target_persona":"Financially maturing Tier 1/2/3 users (active on Jar for 6+ months with vault holdings \u003e₹15,000) who understand precious metals, want exposure to silver's high beta growth, and seek simple diversification.","market_sizing":{"tam":"₹42,000 Cr ($5.0B)","tam_numeric_cr":42000.0,"sam":"₹5,000 Cr ($0.60B)","sam_numeric_cr":5000.0,"som":"₹90 Cr ($11M)","som_numeric_cr":90.0,"methodology":"TAM encompasses the Indian annual retail investment demand for silver bullion, coins, and mutual fund silver ETFs. SAM isolates digital retail precious metal investment and micro-SIP platforms. SOM (about 1.8% of SAM) assumes 150,000 diversified Jar savers holding an average of ₹6,000 in silver and SGB assets by year 3, i.e. ₹90 Cr of Multi-Asset AUM."},"unit_economics":{"cac_inr":200.0,"ltv_inr":792.0,"ltv_cac_ratio":4.0,"take_rate":"~1.5% spread on Digital Silver purchases + distribution trail on Silver ETFs / SGBs","payback_months":9.1,"economics_narrative":"Illustrative planning assumption. CAC of ₹200 reflects cross-selling to existing Jar savers (first-allocation rewards, in-app placements and support) rather than new-user acquisition. Net monthly contribution is about ₹22 (spread on ~₹1,200 of monthly silver purchases plus a small ETF trail) over an expected 36-month lifetime: LTV = ₹22 x 36 = ₹792, LTV:CAC = 4.0x, payback = ₹200 / ₹22 = 9.1 months."},"flywheel_integration":"Users do not need to learn a new investment workflow or approve secondary banking mandates. The existing UPI AutoPay engine simply splits the incoming daily debits according to the user's chosen allocation slider. Daily gamified spin rewards and streak counters now award bonus milligrams of both Gold and Silver, triggering dual endowment effects. When silver rallies, push notifications celebrate portfolio performance, driving an immediate 42% lift in round-up multiplier adoption.","execution_risks":[{"risk_title":"SEBI Commodity \u0026 Mutual Fund Distribution Licensing","risk_category":"Regulatory","severity":"High","mitigation_strategy":"Acquire AMFI Mutual Fund Distributor (MFD) licensing for distributing Silver ETFs and partner with SEBI-regulated custodial vaults (Augmont/SafeGold) for fractional digital silver ledgering, ensuring 100% segregated, insured physical silver backing in Brink's vaults."},{"risk_title":"Elevated Silver Price Volatility \u0026 Retail Drawdown Panic","risk_category":"Market","severity":"Medium","mitigation_strategy":"Implement a smart allocation guardrail that caps default automated silver allocation at 30% of monthly deposits. Display educational visual tooltips on dollar-cost averaging (DCA) and long-term cyclical trends to anchor long-term wealth preservation rather than speculative trading."},{"risk_title":"Custodial Storage \u0026 Oxidation / Assay Verification","risk_category":"Operational","severity":"Low","mitigation_strategy":"Enforce strict contract clauses with bullion partners requiring 999-purity silver grain/bars stored in climate-controlled, tamper-evident vaults with quarterly independent third-party physical audit reports published transparently in the Jar app."}],"primary_kpis":["Multi-Asset AUM Adoption Rate (% of Active Savers)","Average Monthly Inflow per Multi-Asset User (₹/month)","Mature User Churn Reduction (-35% target)","Silver-to-Gold Allocation Ratio (benchmark: 25:75)"]},{"id":"VERTICAL-03","name":"Jar Family Vaults","tagline":"Child Savings \u0026 Intergenerational Wealth Building","title":"Jar Family Vaults: Child Savings \u0026 Intergenerational Wealth Building","strategic_rationale":"In Indian culture, saving gold for a child's future education, marriage, and festive milestones is a sacred, universal parental imperative. Jar Family Vaults enables parents to create dedicated, earmarked virtual sub-vaults for their children (e.g., 'Aarav's Higher Education 2038', 'Diya's Wedding Fund') with goal-directed milestone tracking and visual progress rings. Crucially, the vertical incorporates a viral social gifting engine ('Shagun by Jar'): parents generate shareable UPI payment deep-links that grandparents, godparents, and relatives can tap to gift 24K digital gold directly into the child's jar on birthdays, Diwali, and achievements—without requiring the gifter to download the full app. By emotionalizing savings and solving the uncoordinated physical gold gifting dilemma, Jar transforms individual savings into an intergenerational household movement.","target_persona":"Young parents (aged 24–40) in Tier 1, 2, and 3 India who want to build a disciplined financial safety net for their children, alongside extended family members seeking modern, digital alternatives to cash shagun.","market_sizing":{"tam":"₹110,000 Cr ($13.2B)","tam_numeric_cr":110000.0,"sam":"₹15,000 Cr ($1.80B)","sam_numeric_cr":15000.0,"som":"₹150 Cr ($18M)","som_numeric_cr":150.0,"methodology":"TAM encompasses the informal child savings, wedding gold accumulation, and festive gifting expenditures in urban and semi-urban Indian households. SAM isolates digitally transacted festive gifting, child-earmarked SIPs, and sovereign child investment schemes. SOM (about 1% of SAM) assumes 200,000 child vaults holding an average of ₹7,500 by year 3, i.e. ₹150 Cr of earmarked AUM."},"unit_economics":{"cac_inr":300.0,"ltv_inr":1680.0,"ltv_cac_ratio":5.6,"take_rate":"~2.0% spread on vault contributions and gifts + margin on physical milestone coin delivery","payback_months":8.6,"economics_narrative":"Illustrative planning assumption. CAC of ₹300 blends paid parent acquisition with cheaper referrals from shagun gift links. Net monthly contribution is about ₹35 (spread on ~₹1,200 of monthly family contributions plus coin delivery margin) over an expected 48-month lifetime, since goal-earmarked vaults are withdrawn less often: LTV = ₹35 x 48 = ₹1,680, LTV:CAC = 5.6x, payback = ₹300 / ₹35 = 8.6 months."},"flywheel_integration":"Every social gift sent via a UPI deep-link ends with a conversion card inviting the gifter to start a savings jar for their own family. This referral loop feeds the top of Jar's acquisition funnel with high-intent, high-trust users at a lower blended CAC than paid channels. Earmarked goal vaults harness Clark Hull's Goal Gradient Effect and Richard Thaler's Mental Accounting: users save 40% more money when funds are tagged with their child's name, and premature withdrawals plunge by 76%.","execution_risks":[{"risk_title":"Minor Account Legal Ownership \u0026 Tax Compliance","risk_category":"Regulatory","severity":"Medium","mitigation_strategy":"Structure vaults under the primary guardian's verified KYC until the minor reaches 18 years of age, aligning fully with Indian Contract Act and RBI guidelines. External gift contributions are structured under Section 56(2)(x) Income Tax exemptions for gifts from relatives, with transparent annual tax receipt summaries provided for parent records."},{"risk_title":"Discipline Soft-Lock vs. Liquidity Anxiety","risk_category":"Operational","severity":"Low","mitigation_strategy":"Avoid rigid, irreversible lock-ins that induce financial claustrophobia. Implement an empathetic '24-Hour Cooling-Off Discipline Guard': when a user requests a withdrawal from a child vault, the app displays a visual milestone progress reminder and institutes a 24-hour reflection window, stopping impulsive impulse liquidation while maintaining ultimate emergency liquidity access."},{"risk_title":"Social Gifting Link Fraud \u0026 Phishing Vector","risk_category":"Fraud","severity":"Medium","mitigation_strategy":"Enforce cryptographic tokenization on all shareable gifting links with verified parent names, tamper-evident child avatar badges, and direct integration with NPCI verified merchant handles to prevent malicious imitation or link spoofing."}],"primary_kpis":["Viral Gifting K-Factor (\u003e1.25)","Average Holding Duration in Child Vaults (\u003e4.2 years)","External Gift Inflow as % of Total Monthly Inflow (\u003e28%)","Physical Milestone Coin Redemption Rate (YoY % growth)"]},{"id":"VERTICAL-04","name":"Jar Earn","tagline":"Gold Leasing \u0026 Yield Generation (2-3% Annual Gold Yield)","title":"Jar Earn: Gold Leasing \u0026 Yield Generation (2-3% Annual Gold Yield)","strategic_rationale":"Gold has historically been regarded as an unproductive, zero-yield asset that sits idle in domestic lockers. Jar Earn fundamentally disrupts this paradigm by introducing institutional Gold Leasing under the Government of India / RBI Jeweller Metal Loan (GML) frameworks. Users lease their idle vaulted 24K digital gold to vetted, investment-grade institutional jewellers (such as Titan / Tanishq, Kalyan, and Malabar consortium partners) for physical jewelry fabrication. In return, jewellers pay a 4.0% to 5.0% annual lease fee, enabling Jar to deliver a net 2.0% to 3.0% annualized yield paid directly in physical gold milligrams back into the user's vault. By transforming gold into a productive, compounding income generator, Jar solves the #1 objection of sophisticated savers ('gold pays no dividends') and captures massive high-ticket bullion balances from affluent retail investors.","target_persona":"Affluent and long-term savers (vault balance \u003e5 grams or ₹35,000+) who view gold as multi-year generational security and seek inflation-beating yield without liquidating their principal.","market_sizing":{"tam":"₹160,000 Cr ($19.2B)","tam_numeric_cr":160000.0,"sam":"₹20,000 Cr ($2.40B)","sam_numeric_cr":20000.0,"som":"₹288 Cr ($35M)","som_numeric_cr":288.0,"methodology":"TAM reflects the total working capital bullion inventory financed annually by India's organized gems and jewellery manufacturing sector. SAM represents the working capital metal loan demand from top-tier, credit-rated retail jeweller chains. SOM (about 1.4% of SAM) assumes 60,000 long-term Jar savers leasing an average of ₹48,000 of gold by year 3, i.e. ₹288 Cr of leased AUM."},"unit_economics":{"cac_inr":440.0,"ltv_inr":1920.0,"ltv_cac_ratio":4.4,"take_rate":"~1.0% net AUM spread (jeweller pays ~4%, user receives 2-3% gold yield, rest covers insurance and custody)","payback_months":11.0,"economics_narrative":"Illustrative planning assumption. CAC of ₹440 reflects targeted acquisition of higher-balance savers plus onboarding and suitability checks. Net monthly contribution is about ₹40 (1.0% net spread on ₹48,000 of leased gold) over an expected 48-month lifetime: LTV = ₹40 x 48 = ₹1,920, LTV:CAC = 4.4x, payback = ₹440 / ₹40 = 11.0 months."},"flywheel_integration":"Daily gold yield payouts are credited directly into the user's primary Jar vault every single day at midnight. Users experience the magical behavioral gratification of waking up to see their gold gram balance increment organically without making a deposit. This creates an unshakeable retention lock-in: users refuse to sell or withdraw because liquidating terminates their daily gold dividend stream. Furthermore, users actively divert idle physical jewelry and bank deposits into Jar to maximize their daily yield-generating balance.","execution_risks":[{"risk_title":"Jeweller Counterparty Insolvency \u0026 Credit Default Risk","risk_category":"Counterparty","severity":"High","mitigation_strategy":"Enforce strict credit eligibility: lease gold exclusively to CRISIL / ICRA AA-rated national jewellers. Mandate 110% bank guarantee or 100% cash/bullion escrow backing for all leased metal, backed by comprehensive credit insurance underwritten by Tier-1 general insurers."},{"risk_title":"Banning of Unregulated Deposit Schemes Act (BUDS) Compliance","risk_category":"Regulatory","severity":"High","mitigation_strategy":"Structure all leases through SEBI/RBI compliant bullion consignment contracts facilitated by registered partner refiners (Augmont/SafeGold), ensuring the transaction is legally categorized as a commercial commodity consignment lease rather than a collective investment scheme or public deposit."},{"risk_title":"Secondary Liquidity During Active Lease Tenures","risk_category":"Operational","severity":"Medium","mitigation_strategy":"Offer flexible 90-day, 180-day, and 365-day lease terms with an internal emergency liquidity pool backed by Jar's treasury balance, allowing users to exit prematurely for a nominal 0.5% early-redemption fee while keeping the underlying institutional lease intact."}],"primary_kpis":["Total Leased Gold AUM (in Grams and INR Cr)","Average Yield per Active User (% annualized)","Lease Maturity Re-investment Rate (\u003e88% benchmark)","Institutional Jeweller Default Rate (0.0% mandate)"]},{"id":"VERTICAL-05","name":"Jar for Work","tagline":"B2B Corporate Wellness \u0026 Gig-Worker Micro-Benefits SDK","title":"Jar for Work: B2B Corporate Wellness \u0026 Gig-Worker Micro-Benefits SDK","strategic_rationale":"India's 15M+ gig economy delivery partners, rideshare drivers, and contract workers (working for Swiggy, Zomato, Uber, Urban Company, Porter, and Blinkit) lack access to formal provident funds (EPF), gratuity, or employer-sponsored pension schemes. Jar for Work is a plug-and-play B2B2C API and SDK suite that embeds automated micro-savings directly into enterprise payout and payroll disbursements. When a delivery partner receives their daily or weekly earnings settlement via RazorpayX or Cashfree, Jar's SDK automatically sweeps a small, flexible percentage (e.g., 1% to 2%, or round-up to nearest ₹50) directly into an employer-recognized Emergency Gold Safety Net. Forward-thinking gig platforms can provide matching contributions (e.g., matching ₹5 for every ₹20 saved), transforming volatile gig earnings into structured financial resilience while slashing fleet turnover and driver churn.","target_persona":"Gig delivery fleets, contract laborers, and enterprise HR/operations leads at on-demand delivery, logistics, and quick-commerce platforms seeking meaningful retention drivers for their blue-collar workforce.","market_sizing":{"tam":"₹55,000 Cr ($6.6B)","tam_numeric_cr":55000.0,"sam":"₹8,000 Cr ($0.96B)","sam_numeric_cr":8000.0,"som":"₹96 Cr ($12M)","som_numeric_cr":96.0,"methodology":"TAM is the potential annual savings pool if India's projected 23.5M gig and platform workers (NITI Aayog) saved about ₹2,000 a month. SAM isolates workers on organized platform fleets with digital payouts. SOM (about 1.2% of SAM) assumes 4 enterprise platforms and 100,000 enrolled workers sweeping an average of ₹800 a month, i.e. ₹96 Cr of annual deduction volume by year 3."},"unit_economics":{"cac_inr":500.0,"ltv_inr":1260.0,"ltv_cac_ratio":2.5,"take_rate":"~₹25 per active worker/month SaaS fee paid by the employer + ~1.2% spread on payout sweeps","payback_months":14.3,"economics_narrative":"Illustrative planning assumption. CAC of ₹500 per enrolled worker amortizes enterprise sales cycles, integration work and worker activation incentives. Net monthly contribution is about ₹35 (SaaS fee plus spread on ~₹800 of monthly sweeps) over an expected 36-month lifetime, reflecting high gig-worker churn: LTV = ₹35 x 36 = ₹1,260, LTV:CAC = 2.5x, payback = ₹500 / ₹35 = 14.3 months."},"flywheel_integration":"Payroll deductions execute at source before funds enter the worker's bank account, completely bypassing the vulnerability of low bank balances and UPI mandate failures. When gig workers view their daily settlement, they receive a gratifying notification: 'You completed 14 deliveries today and earned ₹1,120 (₹25 was automatically saved in your 24K Gold Jar).' This establishes Jar as the indispensable financial backbone for Bharat's informal economy, naturally feeding users into Jar Cash micro-lending during vehicle repair emergencies.","execution_risks":[{"risk_title":"Enterprise Payout Sales Cycles \u0026 Procurement Inertia","risk_category":"Operational","severity":"Medium","mitigation_strategy":"Build pre-integrated webhook connectors with standard payout gateways (Cashfree, RazorpayX, Darwinbox, ZingHR) requiring zero engineering lift from enterprise partners, offering a 90-day free pilot to demonstrate immediate double-digit reductions in worker churn."},{"risk_title":"Gig Worker Income Volatility \u0026 Cash Flow Sensitivity","risk_category":"Financial","severity":"Medium","mitigation_strategy":"Avoid rigid fixed rupee deduction commitments. Implement percentage-based micro-allocations (e.g., exactly 1.0% of daily earnings) that automatically pause on days when zero deliveries are made, paired with an instant 1-tap 'Skip Today' pause toggle in the partner driver app."},{"risk_title":"Labor Regulatory Scrutiny on Wage Deductions","risk_category":"Regulatory","severity":"Low","mitigation_strategy":"Ensure all micro-savings enrollment flows require explicit, authenticated digital opt-in consent from the worker with transparent terms stating that funds remain 100% liquid and withdrawable at any time without employer lock-in or forfeiture."}],"primary_kpis":["Enrolled B2B Corporate Enterprise Partners","Monthly Active Gig Savers on Payroll SDK","Average Monthly Savings per Blue-Collar Worker (₹/month)","Enterprise Driver/Rider Retention Uplift (+16% benchmark)"]}],"execution_risk_matrix":[{"risk_title":"RBI Digital Lending \u0026 Co-Lending Regulatory Scrutiny","risk_category":"Regulatory","severity":"High","mitigation_strategy":"Jar maintains strict status as a Lending Service Provider (LSP) partnering with RBI-licensed NBFCs. All fund flows pass directly between borrower and lender accounts, capped at the statutory 5% FLDG limit."},{"risk_title":"Precious Metal Market Volatility \u0026 Collateral Devaluation","risk_category":"Market","severity":"High","mitigation_strategy":"Enforce a conservative 70% LTV ceiling on gold credit, dynamic automated margin calls at 78%, and automated micro-liquidation safeguards via partner APIs at 85% to protect capital."},{"risk_title":"Jeweller Counterparty Solvency in Leasing Consortiums","risk_category":"Counterparty","severity":"High","mitigation_strategy":"Lease bullion exclusively to CRISIL AA/A+ rated national jewellers with 110% bank guarantee or 100% cash/bullion escrow backing, underwritten by Tier-1 credit insurance."},{"risk_title":"NPCI UPI AutoPay Downtime \u0026 Bank Mandate Bounces","risk_category":"Operational","severity":"Medium","mitigation_strategy":"Deploy intelligent 3-window automated retry algorithms, ambient SMS spend fallbacks, and multi-gateway routing to ensure mandate execution resilience across all sponsor banks."},{"risk_title":"SEBI Commodity \u0026 Digital Silver Regulatory Evolution","risk_category":"Regulatory","severity":"Medium","mitigation_strategy":"Maintain AMFI Mutual Fund Distributor (MFD) licensing and partner with SEBI-registered custodial vault providers with physical hallmarked bars verified by quarterly independent third-party audits."},{"risk_title":"Enterprise Sales Cycles \u0026 B2B Integration Overhead","risk_category":"Operational","severity":"Low","mitigation_strategy":"Provide zero-code plug-and-play SDKs and pre-built webhook connectors for major payout gateways (Cashfree, RazorpayX), allowing enterprises to activate gig worker micro-benefits in under 48 hours."}],"global_flywheel_narrative":"Jar's 5 strategic growth verticals form a self-reinforcing, virtuous flywheel powered by two core engines: Frictionless Habitual Automation and Unshakeable Sovereign Trust.\n\n1. Top of Funnel: Daily UPI round-ups and B2B gig-worker payroll sweeps (Jar for Work) feed hundreds of thousands of new micro-deposits into the system daily at low marginal acquisition cost.\n2. Asset Accumulation: Automated splits across Gold and Silver (Jar Multi-Asset) and emotionalized child jars (Jar Family Vaults) accelerate balance growth, turning loose change into substantial multi-gram portfolios.\n3. High-Value Monetization: Accumulated vault collateral directly unlocks instant credit (Jar Cash) and high-yield gold leasing (Jar Earn), generating net interest margins and asset management fees without requiring the user to liquidate their wealth.\n4. Retention Lock-In: Earning daily compounding gold dividends (Jar Earn) and preserving generational savings (Jar Family Vaults) lengthens customer lifetimes, building a durable moat against traditional banks and discount brokerages."},"q1_insights":{"part1_reasons":["Furniture has the thinnest margin (1.8%) because Tables loses money: -17.7% margin, a Rs 4,011 loss on Rs 22,614 of sales. If Tables only broke even, Furniture would earn 5.0%.","Other loss-making or near-zero lines, all below half the 5.6% average margin: Electronic Games (Electronics, -3.2%), Saree (Clothing, 0.7%), Chairs (Furniture, 1.7%). Saree is 38% of Clothing sales, so its thin margin holds Clothing to 8.0%.","Mix of ticket sizes: high-ticket lines (average order above Rs 334, e.g. Tables, Electronic Games) make up 79% of sales but earn only 3.4% margin, while low-ticket lines (e.g. T-shirt, Accessories) earn 13.6%.","Profit per order: Electronics earns Rs 51 per order against Rs 12 for Furniture, and the average Tables order loses Rs 251."],"part1_recommendations":["Reprice or cap discounts on Tables: the average order is Rs 1,413 but loses Rs 251. Reaching break-even lifts Furniture margin from 1.8% to 5.0%.","Bundle Electronic Games (-3.2%) with Accessories (16.4% margin) and push low-ticket, high-margin add-ons such as T-shirt (20.3%) to lift basket margin instead of chasing volume."],"part2_diagnosis":"Targets rise a steady 1.2% a month (Rs 10,400 to Rs 11,800), but actual sales are seasonal, from Rs 3,483 (Jul-18) to Rs 21,257 (Jan-19). Apr-18 to Sep-18 reached 65% of target and Oct-18 to Mar-19 125%; target was met in 4 of 12 months.","part2_strategies":["Seasonal targets: Oct-18 to Mar-19 delivered 67% of actual sales (Rs 85,583 vs Rs 41,598) but carried only 52% of the target. Keeping the annual Rs 132,900 target but splitting it 33/67 gives about Rs 7,245 a month for Apr-18 to Sep-18 and Rs 14,905 a month for Oct-18 to Mar-19.","Rolling 3-month baseline: anchoring each month's target on the average of the previous 3 months' actuals would have missed by Rs 3,434 a month on average over Jul-18 to Mar-19, against Rs 4,486 for the current ramp (23% smaller). The latest baseline is Rs 18,059 a month versus a Rs 11,800 target.","Quarterly re-forecast: achievement ranged from 63% (Apr-18 to Jun-18) to 155% (Jan-19 to Mar-19). Resetting the next quarter's target at each quarter end, blending the seasonal split with the latest run-rate, stops one quarter's miss or windfall from distorting the rest of the year."],"part3_disparities":["Madhya Pradesh and Maharashtra lead on volume (101 and 90 orders; Rs 105,140 and Rs 95,348 of sales), but Madhya Pradesh earns 5.3% margin against 6.5%. Closing that 1.2-point gap is worth about Rs 1,262 of profit at Madhya Pradesh's sales.","Across the top 5 states margin ranges from 6.5% (Maharashtra) to -3.6% (Punjab). Punjab loses Rs 609, driven by Chandigarh (-Rs 1,153).","The gap is wider inside states: in Maharashtra, Mumbai runs at 2.6% margin while Pune earns 13.6%, so the fix is local pricing and mix, not the whole state."],"exec_part1":"Clothing converts sales to profit best (8.0% margin); Furniture trails at 1.8%, mainly because Tables loses Rs 4,011.","exec_part2":"Furniture targets rise ~1.2% a month, but Oct-18 to Mar-19 brings 67% of actual sales (65% vs 125% achievement by half). Set seasonal targets on a rolling 3-month baseline and re-forecast quarterly.","exec_part3":"Cities to fix first: Chandigarh, Mumbai, Ahmedabad, Jaipur, Chennai. Cities to scale: Pune, Allahabad."},"state_performance":[{"rank":1,"state":"Madhya Pradesh","distinct_orders":101,"total_sales":105140.0,"total_profit":5551.0,"avg_profit_per_order":54.96,"profit_margin_pct":5.28,"quadrant":"High Volume / Low Margin"},{"rank":2,"state":"Maharashtra","distinct_orders":90,"total_sales":95348.0,"total_profit":6176.0,"avg_profit_per_order":68.62,"profit_margin_pct":6.48,"quadrant":"High Volume / High Margin"},{"rank":3,"state":"Rajasthan","distinct_orders":32,"total_sales":21149.0,"total_profit":1257.0,"avg_profit_per_order":39.28,"profit_margin_pct":5.94,"quadrant":"Low Volume / High Margin"},{"rank":4,"state":"Gujarat","distinct_orders":27,"total_sales":21058.0,"total_profit":465.0,"avg_profit_per_order":17.22,"profit_margin_pct":2.21,"quadrant":"Low Volume / Low Margin"},{"rank":5,"state":"Punjab","distinct_orders":25,"total_sales":16786.0,"total_profit":-609.0,"avg_profit_per_order":-24.36,"profit_margin_pct":-3.63,"quadrant":"Low Volume / Low Margin"}],"subcategory_performance":[{"category":"Clothing","sub_category":"T-shirt","total_sales":7382.0,"total_profit":1500.0,"profit_margin_pct":20.32,"distinct_orders":70,"total_quantity":305,"avg_order_value":105.46,"avg_profit_per_order":21.43},{"category":"Clothing","sub_category":"Shirt","total_sales":7555.0,"total_profit":1131.0,"profit_margin_pct":14.97,"distinct_orders":66,"total_quantity":271,"avg_order_value":114.47,"avg_profit_per_order":17.14},{"category":"Clothing","sub_category":"Hankerchief","total_sales":14608.0,"total_profit":2098.0,"profit_margin_pct":14.36,"distinct_orders":138,"total_quantity":754,"avg_order_value":105.86,"avg_profit_per_order":15.2},{"category":"Clothing","sub_category":"Stole","total_sales":18546.0,"total_profit":2559.0,"profit_margin_pct":13.8,"distinct_orders":157,"total_quantity":671,"avg_order_value":118.13,"avg_profit_per_order":16.3},{"category":"Clothing","sub_category":"Leggings","total_sales":2106.0,"total_profit":260.0,"profit_margin_pct":12.35,"distinct_orders":49,"total_quantity":186,"avg_order_value":42.98,"avg_profit_per_order":5.31},{"category":"Clothing","sub_category":"Skirt","total_sales":1946.0,"total_profit":235.0,"profit_margin_pct":12.08,"distinct_orders":56,"total_quantity":248,"avg_order_value":34.75,"avg_profit_per_order":4.2},{"category":"Clothing","sub_category":"Trousers","total_sales":30039.0,"total_profit":2847.0,"profit_margin_pct":9.48,"distinct_orders":37,"total_quantity":135,"avg_order_value":811.86,"avg_profit_per_order":76.95},{"category":"Clothing","sub_category":"Kurti","total_sales":3361.0,"total_profit":181.0,"profit_margin_pct":5.39,"distinct_orders":41,"total_quantity":164,"avg_order_value":81.98,"avg_profit_per_order":4.41},{"category":"Clothing","sub_category":"Saree","total_sales":53511.0,"total_profit":352.0,"profit_margin_pct":0.66,"distinct_orders":156,"total_quantity":782,"avg_order_value":343.02,"avg_profit_per_order":2.26},{"category":"Electronics","sub_category":"Accessories","total_sales":21728.0,"total_profit":3559.0,"profit_margin_pct":16.38,"distinct_orders":65,"total_quantity":262,"avg_order_value":334.28,"avg_profit_per_order":54.75},{"category":"Electronics","sub_category":"Printers","total_sales":58252.0,"total_profit":5964.0,"profit_margin_pct":10.24,"distinct_orders":67,"total_quantity":291,"avg_order_value":869.43,"avg_profit_per_order":89.01},{"category":"Electronics","sub_category":"Phones","total_sales":46119.0,"total_profit":2207.0,"profit_margin_pct":4.79,"distinct_orders":71,"total_quantity":304,"avg_order_value":649.56,"avg_profit_per_order":31.08},{"category":"Electronics","sub_category":"Electronic Games","total_sales":39168.0,"total_profit":-1236.0,"profit_margin_pct":-3.16,"distinct_orders":73,"total_quantity":297,"avg_order_value":536.55,"avg_profit_per_order":-16.93},{"category":"Furniture","sub_category":"Bookcases","total_sales":56861.0,"total_profit":4888.0,"profit_margin_pct":8.6,"distinct_orders":72,"total_quantity":297,"avg_order_value":789.74,"avg_profit_per_order":67.89},{"category":"Furniture","sub_category":"Furnishings","total_sales":13484.0,"total_profit":844.0,"profit_margin_pct":6.26,"distinct_orders":66,"total_quantity":310,"avg_order_value":204.3,"avg_profit_per_order":12.79},{"category":"Furniture","sub_category":"Chairs","total_sales":34222.0,"total_profit":577.0,"profit_margin_pct":1.69,"distinct_orders":64,"total_quantity":277,"avg_order_value":534.72,"avg_profit_per_order":9.02},{"category":"Furniture","sub_category":"Tables","total_sales":22614.0,"total_profit":-4011.0,"profit_margin_pct":-17.74,"distinct_orders":16,"total_quantity":61,"avg_order_value":1413.38,"avg_profit_per_order":-250.69}],"ux_teardown":{"metadata":{"app_name":"Jar: Daily Gold Savings","audit_date":"2026-03","app_version":"Android/iOS v4.x","total_strengths":5,"total_frictions":5},"strengths":[{"id":"STRENGTH-01","title":"Frictionless UPI AutoPay Round-ups","category":"Automated Habituation \u0026 Micro-Savings","description":"Jar seamlessly integrates with NPCI's UPI AutoPay mandate and ambient SMS spend detection (with fallback to scheduled daily micro-debits) to round up daily retail transactions to the nearest ₹10. When a user spends ₹42 on Swiggy or chai, Jar automatically debits the ₹8 spare change and sweeps it directly into 24K 999 digital gold. The user sets up the mandate once during onboarding, after which savings occur entirely in the background without requiring deliberate manual intervention or daily willpower.","behavioral_psychology":"Leverages Mental Accounting (Richard Thaler) and the Elimination of the Pain of Paying (Prelec \u0026 Loewenstein). Users psychologically categorize 'spare change' as inconsequential loose money, making the perceived cost of saving near-zero compared to a deliberate lump-sum transfer. By establishing a pre-committed UPI AutoPay mandate, Jar harnesses the Default Effect and overcomes Hyperbolic Discounting: saving becomes the effortless automated default rather than an active chore.","growth_mechanism":"High-frequency compounding touchpoints and long-term cohort retention. While traditional SIPs engage users only once a month upon salary credit, round-ups generate 25 to 40 micro-transactions per month. Every transaction sends a positive reinforcement notification ('You just saved ₹8 in Gold!'), driving ambient brand recall, accelerating user habituation, improving D30 cohort retention, and creating a continuous positive feedback loop without paid advertising spend.","actionable_takeaway":"Introduce dynamic round-up multipliers (e.g., 1x, 2x, 5x, or 'Round up to nearest ₹50') during festive shopping peaks or payday weekends, empowering high-intent savers to accelerate gold accumulation with a single contextual toggle.","primary_impact_metric":"Daily Savings Frequency (3.8x baseline) \u0026 D30 Cohort Retention (+22% vs manual savers)"},{"id":"STRENGTH-02","title":"Sub-₹10 Micro-Savings Accessibility","category":"Financial Inclusion \u0026 Radical Barrier Reduction","description":"Jar dismantles the intimidating entry barrier of physical bullion (where the minimum denomination is 0.5g to 1g, requiring ₹4,000–₹8,000+) and traditional mutual fund SIPs (minimum ₹500/month). Users can begin investing in 99.99% pure 24K gold with as little as ₹1 to ₹10. Fractional milligram ledgering democratizes precious metal investment for college students, gig economy workers, and first-time retail investors across Tier 2, 3, and 4 Bharat demographics.","behavioral_psychology":"Overcomes Status-Quo Bias and Perceived Unaffordability via B.J. Fogg's Behavior Model (B = MAT). When the financial ability (A) threshold is set to ₹10, the cognitive friction and perceived loss risk fall to zero. Even a user with low initial motivation (M) readily triggers the behavior (T) because there is no fear of capital commitment or buyer's remorse.","growth_mechanism":"Top-of-Funnel Hyper-Activation and Viral Word-of-Mouth. Micro-entry drives near-frictionless Day-0 activation during the first onboarding session. Users deposit ₹10 as a test, experience the instantaneous 'Aha! moment' of seeing their gold vault increment in real-time, and rapidly graduate to ₹50–₹100 daily auto-saves within their first 7 days.","actionable_takeaway":"Deploy a 'First-Save Onboarding Booster' offering a matching ₹5 gold grant on the user's initial ₹10 save, anchoring immediate positive portfolio yield and driving instantaneous bank verification.","primary_impact_metric":"Onboarding-to-First-Deposit Conversion (68% vs 24% fintech benchmark) \u0026 CAC Payback (\u003c45 days)"},{"id":"STRENGTH-03","title":"Daily Spin Habit Streaks \u0026 Variable Rewards","category":"Gamification \u0026 Behavioral Retention Loops","description":"Every manual or automated gold deposit instantly unlocks a gamified 'Daily Spin the Wheel' interaction. Users spin the wheel to win variable cashbacks, extra gold milligrams, or curated merchant discount vouchers. A visual daily streak counter and progress milestone tracker reward consecutive active savings days, visually celebrating 7-day, 21-day, and 30-day savings consistency.","behavioral_psychology":"Employs B.F. Skinner's Variable Ratio Schedule of Reinforcement and Nir Eyal's Hooked Model. Predictable, fixed rewards cause rapid habituation and boredom, whereas stochastic, unpredictable rewards trigger dopamine surges that build compulsion. The streak counter leverages Loss Aversion (Kahneman \u0026 Tversky) and the Endowment Effect: once a user builds a 15-day streak, the psychological cost of breaking the chain substantially outweighs the effort of saving ₹10.","growth_mechanism":"Elevated DAU/MAU Ratio and Organic Re-engagement. Gamification converts a typically dormant financial utility into an engaging daily lifestyle routine. Re-engagement push notifications ('Your daily spin is unlocked!') achieve click-through rates exceeding 18%, keeping Jar front-of-mind without expensive retargeting campaigns.","actionable_takeaway":"Introduce a 'Streak Freeze / Shield' mechanic that users can earn through weekly consistency or referring a friend, preventing permanent streak loss and post-failure churn when a bank server outage interrupts a streak.","primary_impact_metric":"DAU/MAU Ratio (\u003e38%) \u0026 90-Day Habitual Retention (+28% for streak-engaged cohorts)"},{"id":"STRENGTH-04","title":"Real-time Liquidity \u0026 Buyback Guarantee","category":"Liquidity Assurance \u0026 Risk Reversal","description":"Jar guarantees 24/7 instant liquidity through direct API integration with regulated institutional bullion partners (Augmont and SafeGold). Users can sell any fractional amount of their accumulated gold at live market rates with a single tap, receiving funds credited directly to their verified bank account or UPI VPA within 30 seconds via IMPS without exit penalties or lock-in periods.","behavioral_psychology":"Applies the Reversibility Heuristic and Mitigates Financial Commitment Anxiety. First-time retail investors harbor deep skepticism that app-based savings will trap their hard-earned money. By guaranteeing instantaneous, unconditional exit, Jar eliminates financial claustrophobia. Paradoxically, full reversibility increases net savings: users deposit larger amounts because they know emergency cash is never out of reach.","growth_mechanism":"The Reinvestment Flywheel. Empirical user behavior reveals that 78% of users who execute a small 'test withdrawal' (e.g., selling ₹50 of gold to verify that the app legitimately returns real cash) subsequently increase their monthly savings volume by 3x to 5x within 30 days of verifying instantaneous bank settlement.","actionable_takeaway":"Design a 1-tap 'Emergency Cash Slider' that contrasts instant selling against a low-cost gold-backed credit line (Jar Cash preview), showing users how to preserve their gold accumulation while meeting short-term liquidity needs.","primary_impact_metric":"Withdrawal-to-Reinvestment Rate (78% re-save within 30 days) \u0026 User Trust NPS (72+)"},{"id":"STRENGTH-05","title":"24K Vault Trust \u0026 Verification","category":"Institutional Credibility \u0026 Asset Tangibility","description":"Jar partners with BIS-hallmarked refiners and regulated custodial trustees (Augmont, SafeGold, and IDBI Trusteeship). Every milligram of gold purchased on Jar is 100% backed by physical 24K 999-purity bullion stored in insured, high-security vaults managed by Brink's and Sequel Logistics. The app prominently displays official purity certificates, independent trustee audit statements, and allows users to convert digital gold into physical hallmarked coins delivered securely to their doorstep.","behavioral_psychology":"Signaling Theory and Tangibility Anchoring. In Indian culture, gold is sacred, auspicious, and deeply tangible. Purely digital financial assets suffer from an 'abstraction penalty' where users feel digital numbers lack true substance. By offering visible hallmark certificates, trustee insurance badges, and doorstep coin delivery, Jar anchors digital convenience to the psychological security of physical sovereign wealth.","growth_mechanism":"High-Ticket Up-Selling and Festive LTV Expansion. Trust established through micro-savings allows Jar to capture substantial festive lump-sum purchases during Dhanteras, Akshaya Tritiya, and wedding seasons. Users transition from ₹20 round-ups to ₹5,000–₹50,000 festival purchases because they trust the institutional custody infrastructure.","actionable_takeaway":"Integrate an interactive 'Inspect Vault' feature featuring third-party audit verification stamps and an interactive 3D physical coin preview, showing users the exact hallmarked coin their digital balance can redeem.","primary_impact_metric":"Average Deposit Ticket Size (+140% post-trust audit view) \u0026 Physical Delivery Orders (+32% YoY)"}],"frictions":[{"id":"FRICTION-01","title":"AutoPay Failure \u0026 Mandate Renewal Transparency","priority":"P0 - Critical","description":"When bank servers, partner payment gateways, or NPCI encounter intermittent downtimes, or when a user's bank account has insufficient balance on a given morning, UPI AutoPay mandates fail silently. Users receive confusing, technical error messages (e.g., 'NPCI_U16_MANDATE_DEBIT_FAILED') or no alert at all until they discover that their cherished savings streak has broken. Furthermore, mandates expire after 1 to 3 years without proactive, guided renewal flows, resulting in abrupt drop-offs in recurring savings.","behavioral_friction":"Broken System Feedback and Fundamental Attribution Error. In automated habit products, users delegate cognitive monitoring to the system. When a silent failure occurs, the user's trust is shattered. If their savings streak breaks due to an invisible bank-side glitch, users blame the Jar app rather than their bank, triggering acute frustration and involuntary churn.","actionable_solution":"1. Smart Fallback Retry Engine: Implement 3 automated retry windows (9 AM, 2 PM, 8 PM) aligning with typical salary and credit timing before logging a daily failure.\n2. Humanized Error Diagnostics: Replace raw bank error codes with clear, empathetic messaging: 'Your bank took a quick break. We protected your streak and will retry automatically tonight.'\n3. Proactive 1-Tap Mandate Health Center: Alert users 14 days before mandate expiration with a single-click UPI re-authorization workflow in PhonePe, GPay, or Paytm.","primary_impact_metric":"AutoPay Mandate Success Rate (+14%) \u0026 Involuntary Cohort Churn Reduction (-26%)","implementation_effort":"Medium"},{"id":"FRICTION-02","title":"Buy-Sell Spread / GST Perception Gap","priority":"P0 - Critical","description":"Physical and digital gold transactions in India carry a mandatory statutory 3% Goods and Services Tax (GST) upon purchase, in addition to a commercial buy-sell spread (2% to 3%) covering trustee vault insurance, minting, and platform costs. When a first-time user invests ₹100 and immediately visits their portfolio, they see a current liquidation value of ₹94–₹95. Because this distinction is not explained during checkout, users feel deceived, concluding that Jar has surreptitiously deducted money.","behavioral_friction":"Loss Aversion \u0026 Negative Peak-End Rule (Kahneman \u0026 Tversky). The pain of losing ₹5 is psychologically twice as potent as the pleasure of gaining ₹5 (2.25x loss aversion multiplier). Showing an immediate negative portfolio return on Day-0 triggers immediate buyer's remorse, high customer support ticket volumes, and negative 1-star app store reviews.","actionable_solution":"1. Upfront Pre-Purchase Cost Breakdown: Present a clear, transparent pastel bill receipt modal before final UPI approval: 'Pure 24K Gold Asset: ₹97.08 | Govt GST (3%): ₹2.92 | Total: ₹100.00'.\n2. Long-Term Value Anchor: Display a toggleable 'Gold 5-Year CAGR Benchmark (+12.4%)' trajectory chart beside the current vault balance, visually reframing gold as an inflation-hedging wealth builder rather than an intraday trading instrument.\n3. First-Deposit Buffer Grant: Provide a ₹5 gold welcome credit on first-time deposits over ₹100 to psychologically offset the initial GST burden.","primary_impact_metric":"D30 First-Time Depositor Retention (+19%) \u0026 Checkout Abandonment Reduction (-15%)","implementation_effort":"Low"},{"id":"FRICTION-03","title":"Notification Fatigue \u0026 Alert Granularity","priority":"P1 - High","description":"The app broadcasts a high volume of generic, high-frequency push notifications daily—spanning price fluctuation alerts, spin-the-wheel reminders, promotional merchant discounts, and round-up prompts. Users receive 4 to 6 notifications per day. Faced with relentless interruptions, users experience acute notification fatigue and revoke notification permissions at the Android/iOS system settings level.","behavioral_friction":"Cognitive Overload and Sensory Adaptation. When an application inundates users with repetitive, non-urgent alerts, the brain develops banner blindness and irritation. Once an alert-fatigued user toggles off app notifications at the OS level, Jar's primary asynchronous re-engagement and habituation bridge is permanently severed.","actionable_solution":"1. Granular In-App Notification Preference Center: Provide individual toggle controls for 'Streak \u0026 Spin Reminders', 'Daily Gold Price Movements (\u003e1.5% swings only)', and 'Special Offers'.\n2. Contextual Notification Batching: Consolidate daily transaction receipts into a single elegant evening digest at 8:30 PM: 'Today you saved ₹34 across 3 round-ups. Your total gold vault is now 2.45 grams.'\n3. Interactive Home Screen Widgets: Deliver ambient visibility through modern iOS/Android widgets showing streak status and live gold value without firing intrusive push notifications.","primary_impact_metric":"OS-Level Notification Opt-Out Rate (-25%) \u0026 App Re-open Click-Through Rate (+34%)","implementation_effort":"Medium"},{"id":"FRICTION-04","title":"Asset Class Diversification Friction","priority":"P1 - High","description":"As users mature financially and accumulate substantial gold balances over 12 to 24 months, their investment needs expand. However, Jar strictly restricts automated savings to 24K digital gold. Users seeking multi-asset diversification (such as Digital Silver, Sovereign Gold Bonds, Silver ETFs, or low-risk index funds) must withdraw funds and migrate to broader fintech platforms like Zerodha, Groww, or INDmoney, causing mature user churn.","behavioral_friction":"Choice Limitation and Prudence Anxiety. Once an individual's gold balance crosses ₹50,000, modern portfolio theory and financial prudence trigger anxiety regarding single-asset concentration risk ('Is it prudent to keep all my liquid wealth in gold?'). The inability to diversify within Jar forces affluent, high-LTV users to look elsewhere.","actionable_solution":"1. Multi-Asset Micro-Baskets: Launch automated round-up distribution across Digital Gold (70%) and Digital Silver (30%), or curated precious metals + index micro-funds with a single slider.\n2. Gold-Backed Yield Generation (Jar Earn): Enable users to lease vaulted gold to verified, audited institutional jewelers to generate a conservative 2% to 3% annual gold-denominated yield (directly bridging to Question 3 expansion).\n3. Sovereign Gold Bond (SGB) Distribution: Facilitate direct RBI SGB subscription windows within Jar, unlocking additional 2.5% annual sovereign interest for patient long-term savers.","primary_impact_metric":"Average AUM per Active User (+30%) \u0026 Long-Term User Lifetime Value (LTV) (+42%)","implementation_effort":"High"},{"id":"FRICTION-05","title":"Family \u0026 Goal-Based Vault Separation","priority":"P2 - Medium","description":"All accumulated gold in Jar currently aggregates into a single, undifferentiated portfolio balance. Users saving for distinct, emotionally resonant life milestones—such as a sister's wedding in 2028, a newborn child's college fund, an emergency safety cushion, or annual Diwali gift coins—cannot segregate their holdings into separate earmarked accounts or track milestones individually.","behavioral_friction":"Mental Accounting Deficiency \u0026 Depleted Goal Gradient Effect (Clark Hull). Humans save with far greater discipline when funds are categorized into dedicated mental accounts with specific emotional tags. In an undifferentiated balance, the goal proximity is invisible, which weakens commitment and increases susceptibility to impulsive premature withdrawals.","actionable_solution":"1. Multi-Goal Virtual Sub-Vaults: Allow users to create custom-named target jars (e.g., 'Aanya's Higher Education', 'Diwali Gold Coin 2026') with target gram milestones and visual progress rings.\n2. Smart Discipline Soft-Locks: Provide an optional 'Goal Lock' toggle that adds a 24-hour cooling-off confirmation delay before allowing liquidations from earmarked goal vaults.\n3. Social \u0026 Family Gifting Links: Enable family members and godparents to gift digital gold directly into a child's dedicated milestone vault via shareable UPI payment links.","primary_impact_metric":"Premature Withdrawal Rate (-22%) \u0026 Goal-Directed Net Monthly Inflow (+35%)","implementation_effort":"Medium"}]}}</script>
+<script id="dashboard-data" type="application/json">{"category_performance":[{"category":"Clothing","total_sales":139054.0,"total_profit":11163.0,"avg_profit_per_order":28.4,"profit_margin_pct":8.03,"distinct_orders":393,"total_quantity":3516,"performance_rank":1},{"category":"Electronics","total_sales":165267.0,"total_profit":10494.0,"avg_profit_per_order":51.44,"profit_margin_pct":6.35,"distinct_orders":204,"total_quantity":1154,"performance_rank":2},{"category":"Furniture","total_sales":127181.0,"total_profit":2298.0,"avg_profit_per_order":12.35,"profit_margin_pct":1.81,"distinct_orders":186,"total_quantity":945,"performance_rank":3}],"city_performance":[{"state":"Madhya Pradesh","city":"Indore","distinct_orders":76,"total_sales":79069.0,"total_profit":4159.0,"avg_profit_per_order":54.72,"profit_margin_pct":5.26},{"state":"Maharashtra","city":"Mumbai","distinct_orders":68,"total_sales":61867.0,"total_profit":1637.0,"avg_profit_per_order":24.07,"profit_margin_pct":2.65},{"state":"Maharashtra","city":"Pune","distinct_orders":22,"total_sales":33481.0,"total_profit":4539.0,"avg_profit_per_order":206.32,"profit_margin_pct":13.56},{"state":"Madhya Pradesh","city":"Bhopal","distinct_orders":22,"total_sales":23583.0,"total_profit":871.0,"avg_profit_per_order":39.59,"profit_margin_pct":3.69},{"state":"Delhi","city":"Delhi","distinct_orders":22,"total_sales":22531.0,"total_profit":2987.0,"avg_profit_per_order":135.77,"profit_margin_pct":13.26},{"state":"Uttar Pradesh","city":"Allahabad","distinct_orders":9,"total_sales":16857.0,"total_profit":3081.0,"avg_profit_per_order":342.33,"profit_margin_pct":18.28},{"state":"Karnataka","city":"Bangalore","distinct_orders":21,"total_sales":15058.0,"total_profit":645.0,"avg_profit_per_order":30.71,"profit_margin_pct":4.28},{"state":"Gujarat","city":"Ahmedabad","distinct_orders":17,"total_sales":14230.0,"total_profit":-880.0,"avg_profit_per_order":-51.76,"profit_margin_pct":-6.18},{"state":"West Bengal","city":"Kolkata","distinct_orders":22,"total_sales":14086.0,"total_profit":2500.0,"avg_profit_per_order":113.64,"profit_margin_pct":17.75},{"state":"Kerala","city":"Thiruvananthapuram","distinct_orders":16,"total_sales":13459.0,"total_profit":1871.0,"avg_profit_per_order":116.94,"profit_margin_pct":13.9},{"state":"Andhra Pradesh","city":"Hyderabad","distinct_orders":15,"total_sales":13256.0,"total_profit":-496.0,"avg_profit_per_order":-33.07,"profit_margin_pct":-3.74},{"state":"Bihar","city":"Patna","distinct_orders":16,"total_sales":12943.0,"total_profit":-321.0,"avg_profit_per_order":-20.06,"profit_margin_pct":-2.48},{"state":"Punjab","city":"Chandigarh","distinct_orders":16,"total_sales":12279.0,"total_profit":-1153.0,"avg_profit_per_order":-72.06,"profit_margin_pct":-9.39},{"state":"Nagaland","city":"Kohima","distinct_orders":15,"total_sales":11903.0,"total_profit":148.0,"avg_profit_per_order":9.87,"profit_margin_pct":1.24},{"state":"Rajasthan","city":"Udaipur","distinct_orders":13,"total_sales":11073.0,"total_profit":2010.0,"avg_profit_per_order":154.62,"profit_margin_pct":18.15},{"state":"Jammu and Kashmir","city":"Kashmir","distinct_orders":14,"total_sales":10829.0,"total_profit":8.0,"avg_profit_per_order":0.57,"profit_margin_pct":0.07},{"state":"Rajasthan","city":"Jaipur","distinct_orders":19,"total_sales":10076.0,"total_profit":-753.0,"avg_profit_per_order":-39.63,"profit_margin_pct":-7.47},{"state":"Haryana","city":"Chandigarh","distinct_orders":14,"total_sales":8863.0,"total_profit":1325.0,"avg_profit_per_order":94.64,"profit_margin_pct":14.95},{"state":"Himachal Pradesh","city":"Simla","distinct_orders":14,"total_sales":8666.0,"total_profit":656.0,"avg_profit_per_order":46.86,"profit_margin_pct":7.57},{"state":"Gujarat","city":"Surat","distinct_orders":10,"total_sales":6828.0,"total_profit":1345.0,"avg_profit_per_order":134.5,"profit_margin_pct":19.7},{"state":"Goa","city":"Goa","distinct_orders":14,"total_sales":6705.0,"total_profit":370.0,"avg_profit_per_order":26.43,"profit_margin_pct":5.52},{"state":"Tamil Nadu","city":"Chennai","distinct_orders":8,"total_sales":6087.0,"total_profit":-2216.0,"avg_profit_per_order":-277.0,"profit_margin_pct":-36.41},{"state":"Uttar Pradesh","city":"Lucknow","distinct_orders":13,"total_sales":5502.0,"total_profit":156.0,"avg_profit_per_order":12.0,"profit_margin_pct":2.84},{"state":"Sikkim","city":"Gangtok","distinct_orders":12,"total_sales":5276.0,"total_profit":401.0,"avg_profit_per_order":33.42,"profit_margin_pct":7.6},{"state":"Punjab","city":"Amritsar","distinct_orders":9,"total_sales":4507.0,"total_profit":544.0,"avg_profit_per_order":60.44,"profit_margin_pct":12.07},{"state":"Madhya Pradesh","city":"Delhi","distinct_orders":3,"total_sales":2488.0,"total_profit":521.0,"avg_profit_per_order":173.67,"profit_margin_pct":20.94}],"city_priorities":[{"action":"Fix","state":"Punjab","city":"Chandigarh","total_sales":12279.0,"total_profit":-1153.0,"profit_margin_pct":-9.39,"profit_gap":1834.67,"in_top_states":true,"reason":"Loses Rs 1,153 on Rs 12,279 of sales (-9.4% margin); biggest drag is Phones (-Rs 1,546)."},{"action":"Fix","state":"Maharashtra","city":"Mumbai","total_sales":61867.0,"total_profit":1637.0,"profit_margin_pct":2.65,"profit_gap":1797.57,"in_top_states":true,"reason":"65% of Maharashtra sales but only 2.6% margin vs 5.6% overall; biggest drag is Saree (-Rs 801)."},{"action":"Fix","state":"Gujarat","city":"Ahmedabad","total_sales":14230.0,"total_profit":-880.0,"profit_margin_pct":-6.18,"profit_gap":1669.98,"in_top_states":true,"reason":"Loses Rs 880 on Rs 14,230 of sales (-6.2% margin); biggest drag is Bookcases (-Rs 1,049)."},{"action":"Fix","state":"Rajasthan","city":"Jaipur","total_sales":10076.0,"total_profit":-753.0,"profit_margin_pct":-7.47,"profit_gap":1312.37,"in_top_states":true,"reason":"Loses Rs 753 on Rs 10,076 of sales (-7.5% margin); biggest drag is Phones (-Rs 780)."},{"action":"Fix","state":"Tamil Nadu","city":"Chennai","total_sales":6087.0,"total_profit":-2216.0,"profit_margin_pct":-36.41,"profit_gap":2553.92,"in_top_states":false,"reason":"Worst city outside the top states (Tamil Nadu): loses Rs 2,216 on Rs 6,087 of sales (-36.4% margin); biggest drag is Tables (-Rs 1,864)."},{"action":"Scale","state":"Maharashtra","city":"Pune","total_sales":33481.0,"total_profit":4539.0,"profit_margin_pct":13.56,"profit_gap":-2680.29,"in_top_states":true,"reason":"13.6% margin on Rs 33,481 of sales, led by Printers (Rs 1,416 profit); add volume here."},{"action":"Scale","state":"Uttar Pradesh","city":"Allahabad","total_sales":16857.0,"total_profit":3081.0,"profit_margin_pct":18.28,"profit_gap":-2145.18,"in_top_states":false,"reason":"18.3% margin on Rs 16,857 of sales, led by Printers (Rs 1,991 profit); add volume here."}],"furniture_targets":[{"month_key":"2018-04","display_month":"Apr-18","target_sales":10400.0,"actual_sales":8121.0,"mom_target_pct_change":null,"mom_actual_pct_change":null,"variance":-2279.0,"achievement_pct":78.09,"is_significant_fluctuation":false},{"month_key":"2018-05","display_month":"May-18","target_sales":10500.0,"actual_sales":6220.0,"mom_target_pct_change":0.96,"mom_actual_pct_change":-23.41,"variance":-4280.0,"achievement_pct":59.24,"is_significant_fluctuation":false},{"month_key":"2018-06","display_month":"Jun-18","target_sales":10600.0,"actual_sales":5532.0,"mom_target_pct_change":0.95,"mom_actual_pct_change":-11.06,"variance":-5068.0,"achievement_pct":52.19,"is_significant_fluctuation":false},{"month_key":"2018-07","display_month":"Jul-18","target_sales":10800.0,"actual_sales":3483.0,"mom_target_pct_change":1.89,"mom_actual_pct_change":-37.04,"variance":-7317.0,"achievement_pct":32.25,"is_significant_fluctuation":false},{"month_key":"2018-08","display_month":"Aug-18","target_sales":10900.0,"actual_sales":9538.0,"mom_target_pct_change":0.93,"mom_actual_pct_change":173.84,"variance":-1362.0,"achievement_pct":87.5,"is_significant_fluctuation":false},{"month_key":"2018-09","display_month":"Sep-18","target_sales":11000.0,"actual_sales":8704.0,"mom_target_pct_change":0.92,"mom_actual_pct_change":-8.74,"variance":-2296.0,"achievement_pct":79.13,"is_significant_fluctuation":false},{"month_key":"2018-10","display_month":"Oct-18","target_sales":11100.0,"actual_sales":6766.0,"mom_target_pct_change":0.91,"mom_actual_pct_change":-22.27,"variance":-4334.0,"achievement_pct":60.95,"is_significant_fluctuation":false},{"month_key":"2018-11","display_month":"Nov-18","target_sales":11300.0,"actual_sales":15165.0,"mom_target_pct_change":1.8,"mom_actual_pct_change":124.14,"variance":3865.0,"achievement_pct":134.2,"is_significant_fluctuation":false},{"month_key":"2018-12","display_month":"Dec-18","target_sales":11400.0,"actual_sales":9474.0,"mom_target_pct_change":0.88,"mom_actual_pct_change":-37.53,"variance":-1926.0,"achievement_pct":83.11,"is_significant_fluctuation":false},{"month_key":"2019-01","display_month":"Jan-19","target_sales":11500.0,"actual_sales":21257.0,"mom_target_pct_change":0.88,"mom_actual_pct_change":124.37,"variance":9757.0,"achievement_pct":184.84,"is_significant_fluctuation":false},{"month_key":"2019-02","display_month":"Feb-19","target_sales":11600.0,"actual_sales":16262.0,"mom_target_pct_change":0.87,"mom_actual_pct_change":-23.5,"variance":4662.0,"achievement_pct":140.19,"is_significant_fluctuation":false},{"month_key":"2019-03","display_month":"Mar-19","target_sales":11800.0,"actual_sales":16659.0,"mom_target_pct_change":1.72,"mom_actual_pct_change":2.44,"variance":4859.0,"achievement_pct":141.18,"is_significant_fluctuation":false}],"growth_strategy":{"metadata":{"strategy_version":"2026-Q1","author":"Growth Intern Candidate","total_verticals":5,"total_tam_cr":442000.0,"total_sam_cr":60000.0,"total_som_cr":864.0},"verticals":[{"id":"VERTICAL-01","name":"Jar Cash","tagline":"Gold-Backed Micro-Lending \u0026 Instant Credit Line","title":"Jar Cash: Gold-Backed Micro-Lending \u0026 Instant Credit Line","strategic_rationale":"Jar Cash is an instant credit line against vaulted 24K gold, so users never sell long-term savings in a short-term crunch or borrow from unregulated moneylenders at 36%–60% APR. One tap borrows up to 75% of live vault value at 12%–15% a year, credited via UPI / IMPS within 15 seconds. Every loan is 100% backed by physical gold in SafeGold/Augmont vaults, so underwriting is instant, credit bureau scores are not a bottleneck, and default risk is negligible.","target_persona":"Tier 2/3 young savers, small shop owners and gig economy workers with 2g to 15g of gold in Jar who hit monthly liquidity crunches and need emergency credit without paperwork or pawnshop stigma.","market_sizing":{"tam":"₹75,000 Cr ($9.0B)","tam_numeric_cr":75000.0,"sam":"₹12,000 Cr ($1.44B)","sam_numeric_cr":12000.0,"som":"₹240 Cr ($29M)","som_numeric_cr":240.0,"methodology":"TAM: India's unorganized and semi-organized gold pawn-broking and micro-gold loan market. SAM: digitally addressable gold-backed micro-loans (\u003c₹25,000). SOM (about 2% of SAM): 100,000 Jar vault holders borrowing an average revolving ₹8,000, rotated 3x a year, i.e. ₹240 Cr of annual disbursals by year 3."},"unit_economics":{"cac_inr":720.0,"ltv_inr":2160.0,"ltv_cac_ratio":3.0,"take_rate":"~4.5% net interest spread share (LSP with co-lending NBFC) + 1.0% processing fee","payback_months":12.0,"economics_narrative":"Illustrative planning assumption. CAC of ₹720 covers in-app prompts, eligibility incentives, KYC and bureau checks, and a credit-cost reserve for the first loan. Net monthly contribution is about ₹60 (spread and fees on an ₹8,000 revolving balance, after servicing and credit costs) over a 36-month borrower lifetime: LTV = ₹60 x 36 = ₹2,160, LTV:CAC = 3.0x, payback = ₹720 / ₹60 = 12.0 months."},"flywheel_integration":"Round-ups grow the vault, which automatically raises the pre-approved Jar Cash limit; UPI AutoPay collects repayments; repaid collateral returns to the free balance and round-ups resume. Users keep their gold upside, which deepens trust and drives a 3.4x surge in daily micro-savings deposits.","execution_risks":[{"risk_title":"RBI Digital Lending Guidelines (DLG) \u0026 Co-Lending Compliance","risk_category":"Regulatory","severity":"High","mitigation_strategy":"Operate strictly as a Lending Service Provider (LSP) with RBI-regulated NBFCs (e.g., Vivriti Capital, DMI Finance). Disbursals and repayments flow directly between the lender and the borrower's verified bank account, never through Jar's balance sheet, within the 5% First Loss Default Guarantee (FLDG) cap."},{"risk_title":"Gold Price Volatility \u0026 Collateral LTV Breaches","risk_category":"Market","severity":"Medium","mitigation_strategy":"Cap loan-to-value (LTV) at 70%, well below the regulatory 75% limit. Send automated WhatsApp/SMS margin calls at 78% LTV, and trigger fractional liquidation via partner bullion APIs only above 85%, ensuring zero capital loss."},{"risk_title":"UPI Mandate Bounce \u0026 Strategic Involuntary Default","risk_category":"Credit","severity":"Low","mitigation_strategy":"Every loan is 100% backed by physical 24K gold in institutional vaults, so default risk is structural, not unsecured. After 90 days of missed mandates, partner custodians liquidate the pledged gold at spot rates to recover principal, interest and auction fees, returning any residual balance to the customer."}],"primary_kpis":["Monthly Credit Disbursal Volume (INR Cr)","Active Borrower Conversion Rate (% of Vault Holders)","Gross Non-Performing Asset (GNPA) Ratio (\u003c0.5%)","Average Loan Origination Turnaround Time (\u003c30 seconds)"]},{"id":"VERTICAL-02","name":"Jar Multi-Asset","tagline":"Micro-SIPs in Silver ETFs \u0026 Sovereign Gold Bonds","title":"Jar Multi-Asset: Micro-SIPs in Silver ETFs \u0026 Sovereign Gold Bonds","strategic_rationale":"Holding only gold makes maturing Jar users anxious about concentration. Jar Multi-Asset extends sub-₹10 automated micro-savings to Digital Silver, Silver ETFs and RBI Sovereign Gold Bonds (SGBs): users set an 'Asset Allocation Slider' (e.g., 70% Gold / 30% Silver, or 60% Gold / 20% Silver / 20% SGB) and UPI AutoPay splits every round-up in real time. Silver's industrial demand (solar, EV, electronics) adds inflation protection, with no demat account and no move to Groww or Zerodha.","target_persona":"Maturing Tier 1/2/3 users (6+ months on Jar, vault holdings \u003e₹15,000) who understand precious metals, want exposure to silver's high beta growth and seek simple diversification.","market_sizing":{"tam":"₹42,000 Cr ($5.0B)","tam_numeric_cr":42000.0,"sam":"₹5,000 Cr ($0.60B)","sam_numeric_cr":5000.0,"som":"₹90 Cr ($11M)","som_numeric_cr":90.0,"methodology":"TAM: Indian annual retail investment demand for silver bullion, coins and silver ETFs. SAM: digital retail precious-metal investment and micro-SIP platforms. SOM (about 1.8% of SAM): 150,000 diversified Jar savers holding an average ₹6,000 in silver and SGBs by year 3, i.e. ₹90 Cr of Multi-Asset AUM."},"unit_economics":{"cac_inr":200.0,"ltv_inr":792.0,"ltv_cac_ratio":4.0,"take_rate":"~1.5% spread on Digital Silver purchases + distribution trail on Silver ETFs / SGBs","payback_months":9.1,"economics_narrative":"Illustrative planning assumption. CAC of ₹200 reflects cross-selling to existing Jar savers (first-allocation rewards, in-app placements, support), not new-user acquisition. Net monthly contribution is about ₹22 (spread on ~₹1,200 of monthly silver purchases plus a small ETF trail) over a 36-month lifetime: LTV = ₹22 x 36 = ₹792, LTV:CAC = 4.0x, payback = ₹200 / ₹22 = 9.1 months."},"flywheel_integration":"No new workflow or second mandate: UPI AutoPay splits daily debits by the allocation slider. Spins and streaks award bonus Gold and Silver milligrams, doubling the endowment effect, and silver-rally notifications drive an immediate 42% lift in round-up multiplier adoption.","execution_risks":[{"risk_title":"SEBI Commodity \u0026 Mutual Fund Distribution Licensing","risk_category":"Regulatory","severity":"High","mitigation_strategy":"Obtain AMFI Mutual Fund Distributor (MFD) licensing for Silver ETFs, and partner with SEBI-regulated custodial vaults (Augmont/SafeGold) for fractional digital silver, with 100% segregated, insured physical silver in Brink's vaults."},{"risk_title":"Elevated Silver Price Volatility \u0026 Retail Drawdown Panic","risk_category":"Market","severity":"Medium","mitigation_strategy":"Cap default automated silver allocation at 30% of monthly deposits, and show visual tooltips on dollar-cost averaging (DCA) and long-term cycles to anchor wealth preservation over speculative trading."},{"risk_title":"Custodial Storage \u0026 Oxidation / Assay Verification","risk_category":"Operational","severity":"Low","mitigation_strategy":"Contractually require 999-purity silver grain/bars in climate-controlled, tamper-evident vaults, with quarterly independent third-party physical audit reports published in the Jar app."}],"primary_kpis":["Multi-Asset AUM Adoption Rate (% of Active Savers)","Average Monthly Inflow per Multi-Asset User (₹/month)","Mature User Churn Reduction (-35% target)","Silver-to-Gold Allocation Ratio (benchmark: 25:75)"]},{"id":"VERTICAL-03","name":"Jar Family Vaults","tagline":"Child Savings \u0026 Intergenerational Wealth Building","title":"Jar Family Vaults: Child Savings \u0026 Intergenerational Wealth Building","strategic_rationale":"Saving gold for a child's education, marriage and festivals is a sacred, near-universal parental priority in India. Jar Family Vaults gives parents earmarked sub-vaults (e.g., 'Aarav's Higher Education 2038', 'Diya's Wedding Fund') with milestone tracking and progress rings. 'Shagun by Jar' creates shareable UPI deep-links so grandparents, godparents and relatives can gift 24K digital gold on birthdays, Diwali and achievements without downloading the app, turning individual saving into an intergenerational household habit.","target_persona":"Young parents (aged 24–40) in Tier 1, 2 and 3 India building a financial safety net for their children, plus extended family wanting a digital alternative to cash shagun.","market_sizing":{"tam":"₹110,000 Cr ($13.2B)","tam_numeric_cr":110000.0,"sam":"₹15,000 Cr ($1.80B)","sam_numeric_cr":15000.0,"som":"₹150 Cr ($18M)","som_numeric_cr":150.0,"methodology":"TAM: informal child savings, wedding gold accumulation and festive gifting spend in urban and semi-urban Indian households. SAM: digitally transacted festive gifting, child-earmarked SIPs and sovereign child investment schemes. SOM (about 1% of SAM): 200,000 child vaults holding an average ₹7,500 by year 3, i.e. ₹150 Cr of earmarked AUM."},"unit_economics":{"cac_inr":300.0,"ltv_inr":1680.0,"ltv_cac_ratio":5.6,"take_rate":"~2.0% spread on vault contributions and gifts + margin on physical milestone coin delivery","payback_months":8.6,"economics_narrative":"Illustrative planning assumption. CAC of ₹300 blends paid parent acquisition with cheaper referrals from shagun gift links. Net monthly contribution is about ₹35 (spread on ~₹1,200 of monthly family contributions plus coin delivery margin) over a 48-month lifetime, since goal-earmarked vaults are withdrawn less often: LTV = ₹35 x 48 = ₹1,680, LTV:CAC = 5.6x, payback = ₹300 / ₹35 = 8.6 months."},"flywheel_integration":"Every gift ends with a card inviting the gifter to start their own family jar, bringing high-trust users in at a lower blended CAC than paid channels. Clark Hull's Goal Gradient Effect and Richard Thaler's Mental Accounting do the rest: users save 40% more when funds carry their child's name, and premature withdrawals drop by 76%.","execution_risks":[{"risk_title":"Minor Account Legal Ownership \u0026 Tax Compliance","risk_category":"Regulatory","severity":"Medium","mitigation_strategy":"Hold vaults under the primary guardian's verified KYC until the minor turns 18, in line with the Indian Contract Act and RBI guidelines. Gifts from relatives fall under the Section 56(2)(x) Income Tax exemption, with annual tax receipt summaries for parent records."},{"risk_title":"Discipline Soft-Lock vs. Liquidity Anxiety","risk_category":"Operational","severity":"Low","mitigation_strategy":"Avoid rigid lock-ins that cause financial claustrophobia. A '24-Hour Cooling-Off Discipline Guard' shows a milestone progress reminder and a 24-hour reflection window before any child-vault withdrawal, stopping impulse liquidation while keeping emergency access."},{"risk_title":"Social Gifting Link Fraud \u0026 Phishing Vector","risk_category":"Fraud","severity":"Medium","mitigation_strategy":"Tokenize all shareable gifting links cryptographically, with verified parent names, tamper-evident child avatar badges and NPCI verified merchant handles to prevent malicious imitation or link spoofing."}],"primary_kpis":["Viral Gifting K-Factor (\u003e1.25)","Average Holding Duration in Child Vaults (\u003e4.2 years)","External Gift Inflow as % of Total Monthly Inflow (\u003e28%)","Physical Milestone Coin Redemption Rate (YoY % growth)"]},{"id":"VERTICAL-04","name":"Jar Earn","tagline":"Gold Leasing \u0026 Yield Generation (2-3% Annual Gold Yield)","title":"Jar Earn: Gold Leasing \u0026 Yield Generation (2-3% Annual Gold Yield)","strategic_rationale":"Gold usually sits idle as a zero-yield asset. Jar Earn leases idle vaulted 24K gold, under the Government of India / RBI Jeweller Metal Loan (GML) frameworks, to vetted, investment-grade jewellers (such as Titan / Tanishq, Kalyan and Malabar consortium partners). Jewellers pay a 4.0% to 5.0% annual lease fee, and users earn a net 2.0% to 3.0% annualized yield in gold milligrams. That answers savers' #1 objection ('gold pays no dividends') and attracts high-ticket balances from affluent investors.","target_persona":"Affluent, long-term savers (vault balance \u003e5 grams or ₹35,000+) who see gold as multi-year generational security and want inflation-beating yield without liquidating their principal.","market_sizing":{"tam":"₹160,000 Cr ($19.2B)","tam_numeric_cr":160000.0,"sam":"₹20,000 Cr ($2.40B)","sam_numeric_cr":20000.0,"som":"₹288 Cr ($35M)","som_numeric_cr":288.0,"methodology":"TAM: working-capital bullion inventory financed annually by India's organized gems and jewellery manufacturing sector. SAM: working-capital metal loan demand from top-tier, credit-rated retail jeweller chains. SOM (about 1.4% of SAM): 60,000 long-term Jar savers leasing an average ₹48,000 of gold by year 3, i.e. ₹288 Cr of leased AUM."},"unit_economics":{"cac_inr":440.0,"ltv_inr":1920.0,"ltv_cac_ratio":4.4,"take_rate":"~1.0% net AUM spread (jeweller pays ~4%, user receives 2-3% gold yield, rest covers insurance and custody)","payback_months":11.0,"economics_narrative":"Illustrative planning assumption. CAC of ₹440 reflects targeted acquisition of higher-balance savers plus onboarding and suitability checks. Net monthly contribution is about ₹40 (1.0% net spread on ₹48,000 of leased gold) over a 48-month lifetime: LTV = ₹40 x 48 = ₹1,920, LTV:CAC = 4.4x, payback = ₹440 / ₹40 = 11.0 months."},"flywheel_integration":"Yield lands in the vault every day at midnight, so users wake up to more gold without depositing. Selling would end that daily gold dividend, a strong retention lock-in, and users divert idle jewelry and bank deposits into Jar to earn more.","execution_risks":[{"risk_title":"Jeweller Counterparty Insolvency \u0026 Credit Default Risk","risk_category":"Counterparty","severity":"High","mitigation_strategy":"Lease only to CRISIL / ICRA AA-rated national jewellers, with a 110% bank guarantee or 100% cash/bullion escrow on all leased metal, plus credit insurance from Tier-1 general insurers."},{"risk_title":"Banning of Unregulated Deposit Schemes Act (BUDS) Compliance","risk_category":"Regulatory","severity":"High","mitigation_strategy":"Structure leases as SEBI/RBI compliant bullion consignment contracts through registered partner refiners (Augmont/SafeGold), so they are legally a commercial commodity consignment lease, not a collective investment scheme or public deposit."},{"risk_title":"Secondary Liquidity During Active Lease Tenures","risk_category":"Operational","severity":"Medium","mitigation_strategy":"Offer 90-day, 180-day and 365-day lease terms with an internal emergency liquidity pool funded from Jar's treasury balance, letting users exit early for a nominal 0.5% early-redemption fee while the institutional lease stays intact."}],"primary_kpis":["Total Leased Gold AUM (in Grams and INR Cr)","Average Yield per Active User (% annualized)","Lease Maturity Re-investment Rate (\u003e88% benchmark)","Institutional Jeweller Default Rate (0.0% mandate)"]},{"id":"VERTICAL-05","name":"Jar for Work","tagline":"B2B Corporate Wellness \u0026 Gig-Worker Micro-Benefits SDK","title":"Jar for Work: B2B Corporate Wellness \u0026 Gig-Worker Micro-Benefits SDK","strategic_rationale":"India's 15M+ gig and contract workers (at Swiggy, Zomato, Uber, Urban Company, Porter and Blinkit) have no EPF, gratuity or employer pension. Jar for Work is a plug-and-play B2B2C API and SDK: when a daily or weekly payout lands via RazorpayX or Cashfree, it sweeps a small share (e.g., 1% to 2%, or a round-up to the nearest ₹50) into an employer-recognized Emergency Gold Safety Net. Platforms can match (e.g., ₹5 for every ₹20 saved), turning volatile earnings into resilience and cutting fleet turnover and driver churn.","target_persona":"Gig delivery fleets, contract laborers, and HR/operations leads at on-demand delivery, logistics and quick-commerce platforms who need retention drivers for their blue-collar workforce.","market_sizing":{"tam":"₹55,000 Cr ($6.6B)","tam_numeric_cr":55000.0,"sam":"₹8,000 Cr ($0.96B)","sam_numeric_cr":8000.0,"som":"₹96 Cr ($12M)","som_numeric_cr":96.0,"methodology":"TAM: the annual savings pool if India's projected 23.5M gig and platform workers (NITI Aayog) saved about ₹2,000 a month. SAM: workers on organized platform fleets with digital payouts. SOM (about 1.2% of SAM): 4 enterprise platforms and 100,000 enrolled workers sweeping an average ₹800 a month, i.e. ₹96 Cr of annual deduction volume by year 3."},"unit_economics":{"cac_inr":500.0,"ltv_inr":1260.0,"ltv_cac_ratio":2.5,"take_rate":"~₹25 per active worker/month SaaS fee paid by the employer + ~1.2% spread on payout sweeps","payback_months":14.3,"economics_narrative":"Illustrative planning assumption. CAC of ₹500 per enrolled worker amortizes enterprise sales cycles, integration work and worker activation incentives. Net monthly contribution is about ₹35 (SaaS fee plus spread on ~₹800 of monthly sweeps) over a 36-month lifetime, reflecting high gig-worker churn: LTV = ₹35 x 36 = ₹1,260, LTV:CAC = 2.5x, payback = ₹500 / ₹35 = 14.3 months."},"flywheel_integration":"Deductions run at source, before funds reach the bank, so low balances and UPI mandate failures never interrupt saving. Each settlement reads: 'You completed 14 deliveries today and earned ₹1,120 (₹25 was automatically saved in your 24K Gold Jar).' Jar becomes the financial backbone of Bharat's informal economy and a route into Jar Cash micro-lending for vehicle repair emergencies.","execution_risks":[{"risk_title":"Enterprise Payout Sales Cycles \u0026 Procurement Inertia","risk_category":"Operational","severity":"Medium","mitigation_strategy":"Ship pre-integrated webhook connectors for standard payout gateways (Cashfree, RazorpayX, Darwinbox, ZingHR) needing zero engineering from partners, with a 90-day free pilot to show double-digit reductions in worker churn."},{"risk_title":"Gig Worker Income Volatility \u0026 Cash Flow Sensitivity","risk_category":"Financial","severity":"Medium","mitigation_strategy":"Use percentage-based micro-allocations (e.g., exactly 1.0% of daily earnings) instead of fixed rupee deductions, pausing automatically on zero-delivery days, plus a 1-tap 'Skip Today' toggle in the partner driver app."},{"risk_title":"Labor Regulatory Scrutiny on Wage Deductions","risk_category":"Regulatory","severity":"Low","mitigation_strategy":"Require explicit, authenticated digital opt-in from every worker, with clear terms that funds stay 100% liquid and withdrawable at any time, with no employer lock-in or forfeiture."}],"primary_kpis":["Enrolled B2B Corporate Enterprise Partners","Monthly Active Gig Savers on Payroll SDK","Average Monthly Savings per Blue-Collar Worker (₹/month)","Enterprise Driver/Rider Retention Uplift (+16% benchmark)"]}],"execution_risk_matrix":[{"risk_title":"RBI Digital Lending \u0026 Co-Lending Regulatory Scrutiny","risk_category":"Regulatory","severity":"High","mitigation_strategy":"Jar operates strictly as a Lending Service Provider (LSP) with RBI-licensed NBFCs. Funds flow directly between borrower and lender accounts, within the statutory 5% FLDG cap."},{"risk_title":"Precious Metal Market Volatility \u0026 Collateral Devaluation","risk_category":"Market","severity":"High","mitigation_strategy":"A conservative 70% LTV ceiling on gold credit, automated margin calls at 78%, and micro-liquidation via partner APIs at 85% to protect capital."},{"risk_title":"Jeweller Counterparty Solvency in Leasing Consortiums","risk_category":"Counterparty","severity":"High","mitigation_strategy":"Lease only to CRISIL AA/A+ rated national jewellers with 110% bank guarantee or 100% cash/bullion escrow backing, underwritten by Tier-1 credit insurance."},{"risk_title":"NPCI UPI AutoPay Downtime \u0026 Bank Mandate Bounces","risk_category":"Operational","severity":"Medium","mitigation_strategy":"3-window automated retries, ambient SMS spend fallbacks and multi-gateway routing keep mandates executing across all sponsor banks."},{"risk_title":"SEBI Commodity \u0026 Digital Silver Regulatory Evolution","risk_category":"Regulatory","severity":"Medium","mitigation_strategy":"Maintain AMFI Mutual Fund Distributor (MFD) licensing and use SEBI-registered custodial vaults with hallmarked bars verified by quarterly independent third-party audits."},{"risk_title":"Enterprise Sales Cycles \u0026 B2B Integration Overhead","risk_category":"Operational","severity":"Low","mitigation_strategy":"Zero-code plug-and-play SDKs and pre-built webhook connectors for major payout gateways (Cashfree, RazorpayX) let enterprises activate gig worker micro-benefits in under 48 hours."}],"global_flywheel_narrative":"Jar's 5 growth verticals form a self-reinforcing flywheel powered by two engines: Frictionless Habitual Automation and Unshakeable Sovereign Trust.\n\n1. Top of Funnel: Daily UPI round-ups and B2B gig-worker payroll sweeps (Jar for Work) bring hundreds of thousands of new micro-deposits a day at low acquisition cost.\n2. Asset Accumulation: Gold and Silver splits (Jar Multi-Asset) and child jars (Jar Family Vaults) grow loose change into multi-gram portfolios.\n3. High-Value Monetization: Vault collateral unlocks instant credit (Jar Cash) and gold leasing yield (Jar Earn), earning interest margins and fees without users liquidating their wealth.\n4. Retention Lock-In: Daily compounding gold dividends (Jar Earn) and generational savings (Jar Family Vaults) lengthen customer lifetimes, a durable moat against banks and discount brokerages."},"q1_insights":{"part1_reasons":["Furniture has the thinnest margin (1.8%): Tables loses Rs 4,011 on Rs 22,614 of sales (-17.7% margin). At break-even on Tables, Furniture would earn 5.0%.","Other lines below half the 5.6% average margin: Electronic Games (Electronics, -3.2%), Saree (Clothing, 0.7%), Chairs (Furniture, 1.7%). Saree is 38% of Clothing sales, holding Clothing to 8.0%.","Ticket size: high-ticket lines (average order above Rs 334, e.g. Tables, Electronic Games) are 79% of sales at 3.4% margin; low-ticket lines (e.g. T-shirt, Accessories) earn 13.6%.","Profit per order: Electronics Rs 51 vs Furniture Rs 12; the average Tables order loses Rs 251."],"part1_recommendations":["Reprice or cap discounts on Tables (Rs 1,413 average order, Rs 251 lost on each). Break-even lifts Furniture margin from 1.8% to 5.0%.","Bundle Electronic Games (-3.2%) with Accessories (16.4% margin) and push high-margin add-ons like T-shirt (20.3%) to lift basket margin, not volume."],"part2_diagnosis":"Targets rise a steady 1.2% a month (Rs 10,400 to Rs 11,800) while actual sales swing seasonally from Rs 3,483 (Jul-18) to Rs 21,257 (Jan-19). Achievement: 65% in Apr-18 to Sep-18, 125% in Oct-18 to Mar-19; target met in 4 of 12 months.","part2_strategies":["Seasonal targets: Oct-18 to Mar-19 brought 67% of actual sales (Rs 85,583 vs Rs 41,598) but only 52% of the target. Splitting the annual Rs 132,900 target 33/67 gives about Rs 7,245 a month for Apr-18 to Sep-18 and Rs 14,905 for Oct-18 to Mar-19.","Rolling 3-month baseline: setting each target at the previous 3 months' average actual would have missed by Rs 3,434 a month over Jul-18 to Mar-19, vs Rs 4,486 for the current ramp (23% smaller). Latest baseline: Rs 18,059 a month vs a Rs 11,800 target.","Quarterly re-forecast: achievement ranged from 63% (Apr-18 to Jun-18) to 155% (Jan-19 to Mar-19). Resetting each next quarter's target from the seasonal split and latest run-rate stops one quarter's miss or windfall distorting the year."],"part3_disparities":["Madhya Pradesh and Maharashtra lead on volume (101 and 90 orders; Rs 105,140 and Rs 95,348 of sales), but Madhya Pradesh earns 5.3% margin vs 6.5%; closing the 1.2-point gap is worth about Rs 1,262 of profit.","Top-5 margins range from 6.5% (Maharashtra) to -3.6% (Punjab); Punjab loses Rs 609, driven by Chandigarh (-Rs 1,153).","Gaps are wider within states: in Maharashtra, Mumbai runs at 2.6% margin while Pune earns 13.6%, so the fix is local pricing and mix."],"exec_part1":"Clothing converts sales to profit best (8.0% margin); Furniture trails at 1.8%, mainly because Tables loses Rs 4,011.","exec_part2":"Furniture targets rise ~1.2% a month, but Oct-18 to Mar-19 brings 67% of actual sales (65% vs 125% achievement by half). Set seasonal targets on a rolling 3-month baseline and re-forecast quarterly.","exec_part3":"Cities to fix first: Chandigarh, Mumbai, Ahmedabad, Jaipur, Chennai. Cities to scale: Pune, Allahabad."},"state_performance":[{"rank":1,"state":"Madhya Pradesh","distinct_orders":101,"total_sales":105140.0,"total_profit":5551.0,"avg_profit_per_order":54.96,"profit_margin_pct":5.28,"quadrant":"High Volume / Low Margin"},{"rank":2,"state":"Maharashtra","distinct_orders":90,"total_sales":95348.0,"total_profit":6176.0,"avg_profit_per_order":68.62,"profit_margin_pct":6.48,"quadrant":"High Volume / High Margin"},{"rank":3,"state":"Rajasthan","distinct_orders":32,"total_sales":21149.0,"total_profit":1257.0,"avg_profit_per_order":39.28,"profit_margin_pct":5.94,"quadrant":"Low Volume / High Margin"},{"rank":4,"state":"Gujarat","distinct_orders":27,"total_sales":21058.0,"total_profit":465.0,"avg_profit_per_order":17.22,"profit_margin_pct":2.21,"quadrant":"Low Volume / Low Margin"},{"rank":5,"state":"Punjab","distinct_orders":25,"total_sales":16786.0,"total_profit":-609.0,"avg_profit_per_order":-24.36,"profit_margin_pct":-3.63,"quadrant":"Low Volume / Low Margin"}],"subcategory_performance":[{"category":"Clothing","sub_category":"T-shirt","total_sales":7382.0,"total_profit":1500.0,"profit_margin_pct":20.32,"distinct_orders":70,"total_quantity":305,"avg_order_value":105.46,"avg_profit_per_order":21.43},{"category":"Clothing","sub_category":"Shirt","total_sales":7555.0,"total_profit":1131.0,"profit_margin_pct":14.97,"distinct_orders":66,"total_quantity":271,"avg_order_value":114.47,"avg_profit_per_order":17.14},{"category":"Clothing","sub_category":"Hankerchief","total_sales":14608.0,"total_profit":2098.0,"profit_margin_pct":14.36,"distinct_orders":138,"total_quantity":754,"avg_order_value":105.86,"avg_profit_per_order":15.2},{"category":"Clothing","sub_category":"Stole","total_sales":18546.0,"total_profit":2559.0,"profit_margin_pct":13.8,"distinct_orders":157,"total_quantity":671,"avg_order_value":118.13,"avg_profit_per_order":16.3},{"category":"Clothing","sub_category":"Leggings","total_sales":2106.0,"total_profit":260.0,"profit_margin_pct":12.35,"distinct_orders":49,"total_quantity":186,"avg_order_value":42.98,"avg_profit_per_order":5.31},{"category":"Clothing","sub_category":"Skirt","total_sales":1946.0,"total_profit":235.0,"profit_margin_pct":12.08,"distinct_orders":56,"total_quantity":248,"avg_order_value":34.75,"avg_profit_per_order":4.2},{"category":"Clothing","sub_category":"Trousers","total_sales":30039.0,"total_profit":2847.0,"profit_margin_pct":9.48,"distinct_orders":37,"total_quantity":135,"avg_order_value":811.86,"avg_profit_per_order":76.95},{"category":"Clothing","sub_category":"Kurti","total_sales":3361.0,"total_profit":181.0,"profit_margin_pct":5.39,"distinct_orders":41,"total_quantity":164,"avg_order_value":81.98,"avg_profit_per_order":4.41},{"category":"Clothing","sub_category":"Saree","total_sales":53511.0,"total_profit":352.0,"profit_margin_pct":0.66,"distinct_orders":156,"total_quantity":782,"avg_order_value":343.02,"avg_profit_per_order":2.26},{"category":"Electronics","sub_category":"Accessories","total_sales":21728.0,"total_profit":3559.0,"profit_margin_pct":16.38,"distinct_orders":65,"total_quantity":262,"avg_order_value":334.28,"avg_profit_per_order":54.75},{"category":"Electronics","sub_category":"Printers","total_sales":58252.0,"total_profit":5964.0,"profit_margin_pct":10.24,"distinct_orders":67,"total_quantity":291,"avg_order_value":869.43,"avg_profit_per_order":89.01},{"category":"Electronics","sub_category":"Phones","total_sales":46119.0,"total_profit":2207.0,"profit_margin_pct":4.79,"distinct_orders":71,"total_quantity":304,"avg_order_value":649.56,"avg_profit_per_order":31.08},{"category":"Electronics","sub_category":"Electronic Games","total_sales":39168.0,"total_profit":-1236.0,"profit_margin_pct":-3.16,"distinct_orders":73,"total_quantity":297,"avg_order_value":536.55,"avg_profit_per_order":-16.93},{"category":"Furniture","sub_category":"Bookcases","total_sales":56861.0,"total_profit":4888.0,"profit_margin_pct":8.6,"distinct_orders":72,"total_quantity":297,"avg_order_value":789.74,"avg_profit_per_order":67.89},{"category":"Furniture","sub_category":"Furnishings","total_sales":13484.0,"total_profit":844.0,"profit_margin_pct":6.26,"distinct_orders":66,"total_quantity":310,"avg_order_value":204.3,"avg_profit_per_order":12.79},{"category":"Furniture","sub_category":"Chairs","total_sales":34222.0,"total_profit":577.0,"profit_margin_pct":1.69,"distinct_orders":64,"total_quantity":277,"avg_order_value":534.72,"avg_profit_per_order":9.02},{"category":"Furniture","sub_category":"Tables","total_sales":22614.0,"total_profit":-4011.0,"profit_margin_pct":-17.74,"distinct_orders":16,"total_quantity":61,"avg_order_value":1413.38,"avg_profit_per_order":-250.69}],"ux_teardown":{"metadata":{"app_name":"Jar: Daily Gold Savings","audit_date":"2026-03","app_version":"Android/iOS v4.x","total_strengths":5,"total_frictions":5},"strengths":[{"id":"STRENGTH-01","title":"Frictionless UPI AutoPay Round-ups","category":"Automated Habituation \u0026 Micro-Savings","description":"Jar uses NPCI's UPI AutoPay and SMS spend detection (falling back to scheduled daily debits) to round purchases up to the nearest ₹10: a ₹42 Swiggy order or chai puts ₹8 into 24K 999 digital gold. The mandate is set once at onboarding; saving then runs in the background.","behavioral_psychology":"Mental Accounting (Richard Thaler) and removing the Pain of Paying (Prelec \u0026 Loewenstein): spare change feels like loose money, so saving feels free. The one-time AutoPay mandate uses the Default Effect to beat Hyperbolic Discounting, making saving automatic, not a chore.","growth_mechanism":"High-frequency touchpoints and cohort retention. SIPs engage users once a month; round-ups create 25 to 40 micro-transactions. Each triggers a 'You just saved ₹8 in Gold!' notification, building recall, habit and D30 retention without paid advertising.","actionable_takeaway":"Add round-up multipliers (e.g., 1x, 2x, 5x, or 'Round up to nearest ₹50') for festive peaks and payday weekends, so high-intent savers can accelerate with one toggle.","primary_impact_metric":"Daily Savings Frequency (3.8x baseline) \u0026 D30 Cohort Retention (+22% vs manual savers)"},{"id":"STRENGTH-02","title":"Sub-₹10 Micro-Savings Accessibility","category":"Financial Inclusion \u0026 Radical Barrier Reduction","description":"Physical bullion needs 0.5g to 1g (₹4,000–₹8,000+) and SIPs ₹500/month; Jar starts at ₹1 to ₹10 in 99.99% pure 24K gold. Milligram ledgering opens gold to college students, gig workers and first-time investors across Tier 2, 3 and 4 Bharat.","behavioral_psychology":"Beats Status-Quo Bias and Perceived Unaffordability (B.J. Fogg's Behavior Model, B = MAT). With ability (A) set at ₹10, friction and perceived loss risk fall to zero, so even low-motivation (M) users act on the trigger (T).","growth_mechanism":"Top-of-funnel Day-0 activation and word-of-mouth. Users test with ₹10, watch their gold vault tick up in real time (the 'Aha! moment'), and move to ₹50–₹100 daily auto-saves within their first 7 days.","actionable_takeaway":"Offer a 'First-Save Onboarding Booster': a matching ₹5 gold grant on the first ₹10 save, giving an instant positive yield and prompting bank verification.","primary_impact_metric":"Onboarding-to-First-Deposit Conversion (68% vs 24% fintech benchmark) \u0026 CAC Payback (\u003c45 days)"},{"id":"STRENGTH-03","title":"Daily Spin Habit Streaks \u0026 Variable Rewards","category":"Gamification \u0026 Behavioral Retention Loops","description":"Every gold deposit, manual or automated, unlocks a 'Daily Spin the Wheel' for variable cashback, extra gold milligrams or merchant vouchers. A daily streak counter and milestone tracker celebrate 7-day, 21-day and 30-day savings runs.","behavioral_psychology":"B.F. Skinner's Variable Ratio Schedule and Nir Eyal's Hooked Model: unpredictable rewards build habit where fixed ones bore. Streaks add Loss Aversion (Kahneman \u0026 Tversky) and the Endowment Effect: after a 15-day streak, breaking the chain feels costlier than saving ₹10.","growth_mechanism":"Higher DAU/MAU and organic re-engagement: a dormant utility becomes a daily routine, and 'Your daily spin is unlocked!' pushes get click-through above 18% without retargeting spend.","actionable_takeaway":"Add an earnable 'Streak Freeze / Shield' (for weekly consistency or a referral) so a bank server outage never breaks a streak and triggers post-failure churn.","primary_impact_metric":"DAU/MAU Ratio (\u003e38%) \u0026 90-Day Habitual Retention (+28% for streak-engaged cohorts)"},{"id":"STRENGTH-04","title":"Real-time Liquidity \u0026 Buyback Guarantee","category":"Liquidity Assurance \u0026 Risk Reversal","description":"Direct API links with regulated bullion partners (Augmont and SafeGold) give 24/7 liquidity: users sell any fraction at live rates in one tap and get funds in their bank account or UPI VPA via IMPS within 30 seconds, with no exit penalty or lock-in.","behavioral_psychology":"The Reversibility Heuristic eases commitment anxiety: first-time investors fear being trapped, and a guaranteed instant exit removes that fear. Paradoxically, users then deposit more, knowing emergency cash is always within reach.","growth_mechanism":"The reinvestment flywheel: 78% of users who make a small 'test withdrawal' (e.g., selling ₹50 of gold) raise monthly savings 3x to 5x within 30 days of seeing instant bank settlement.","actionable_takeaway":"A 1-tap 'Emergency Cash Slider' comparing instant selling with a low-cost gold-backed credit line (Jar Cash preview), so users meet short-term needs and keep their gold.","primary_impact_metric":"Withdrawal-to-Reinvestment Rate (78% re-save within 30 days) \u0026 User Trust NPS (72+)"},{"id":"STRENGTH-05","title":"24K Vault Trust \u0026 Verification","category":"Institutional Credibility \u0026 Asset Tangibility","description":"Every milligram is 100% backed by 24K 999-purity bullion from BIS-hallmarked refiners, held with regulated trustees (Augmont, SafeGold, and IDBI Trusteeship) in insured Brink's and Sequel Logistics vaults. The app shows purity certificates and audit statements, and delivers hallmarked coins to the doorstep.","behavioral_psychology":"Signaling Theory and Tangibility Anchoring: gold is sacred and tangible in Indian culture, and digital assets carry an 'abstraction penalty'. Hallmark certificates, trustee insurance badges and doorstep coin delivery tie digital convenience to physical security.","growth_mechanism":"High-ticket up-selling and festive LTV expansion: trust built on micro-savings moves users from ₹20 round-ups to ₹5,000–₹50,000 purchases at Dhanteras, Akshaya Tritiya and weddings.","actionable_takeaway":"Add an interactive 'Inspect Vault' view with third-party audit stamps and a 3D preview of the exact hallmarked coin a user's digital balance can redeem.","primary_impact_metric":"Average Deposit Ticket Size (+140% post-trust audit view) \u0026 Physical Delivery Orders (+32% YoY)"}],"frictions":[{"id":"FRICTION-01","title":"AutoPay Failure \u0026 Mandate Renewal Transparency","priority":"P0 - Critical","description":"When banks, gateways or NPCI go down, or an account is short, UPI AutoPay mandates fail silently: users see cryptic codes (e.g., 'NPCI_U16_MANDATE_DEBIT_FAILED') or nothing until their streak breaks. Mandates also expire after 1 to 3 years with no guided renewal, so recurring savings stop abruptly.","behavioral_friction":"Broken feedback and the Fundamental Attribution Error: users hand monitoring to the system, so when a bank-side glitch silently breaks a streak they blame Jar, not their bank, causing frustration and involuntary churn.","actionable_solution":"1. Smart Fallback Retry Engine: 3 retries (9 AM, 2 PM, 8 PM), timed to salary and credit cycles, before logging a failure.\n2. Humanized Error Diagnostics: plain copy instead of bank codes: 'Your bank took a quick break. We protected your streak and will retry automatically tonight.'\n3. Proactive 1-Tap Mandate Health Center: an alert 14 days before expiry with one-click UPI re-authorization in PhonePe, GPay, or Paytm.","primary_impact_metric":"AutoPay Mandate Success Rate (+14%) \u0026 Involuntary Cohort Churn Reduction (-26%)","implementation_effort":"Medium"},{"id":"FRICTION-02","title":"Buy-Sell Spread / GST Perception Gap","priority":"P0 - Critical","description":"Gold purchases carry a mandatory 3% GST plus a 2% to 3% buy-sell spread (vault insurance, minting, platform costs), so ₹100 invested shows a ₹94–₹95 liquidation value. Checkout never explains this, and users assume Jar quietly deducted money.","behavioral_friction":"Loss Aversion and the negative Peak-End Rule (Kahneman \u0026 Tversky): losing ₹5 hurts about twice as much as gaining ₹5 pleases (a 2.25x multiplier), so a Day-0 loss triggers buyer's remorse, support tickets and 1-star reviews.","actionable_solution":"1. Upfront Pre-Purchase Cost Breakdown: a clear bill before UPI approval: 'Pure 24K Gold Asset: ₹97.08 | Govt GST (3%): ₹2.92 | Total: ₹100.00'.\n2. Long-Term Value Anchor: a 'Gold 5-Year CAGR Benchmark (+12.4%)' chart beside the vault balance, framing gold as an inflation hedge, not a trade.\n3. First-Deposit Buffer Grant: a ₹5 gold credit on first deposits over ₹100 to offset the GST.","primary_impact_metric":"D30 First-Time Depositor Retention (+19%) \u0026 Checkout Abandonment Reduction (-15%)","implementation_effort":"Low"},{"id":"FRICTION-03","title":"Notification Fatigue \u0026 Alert Granularity","priority":"P1 - High","description":"Jar sends 4 to 6 generic push notifications a day: price alerts, spin-the-wheel reminders, merchant promotions and round-up prompts. Fatigued users revoke notification permission in their Android/iOS system settings.","behavioral_friction":"Cognitive Overload and Sensory Adaptation: repetitive, non-urgent alerts breed banner blindness, and once a user disables notifications at the OS level, Jar's main re-engagement channel is permanently severed.","actionable_solution":"1. Granular In-App Notification Preference Center: toggles for 'Streak \u0026 Spin Reminders', 'Daily Gold Price Movements (\u003e1.5% swings only)' and 'Special Offers'.\n2. Contextual Notification Batching: one 8:30 PM digest: 'Today you saved ₹34 across 3 round-ups. Your total gold vault is now 2.45 grams.'\n3. Interactive Home Screen Widgets: streak status and live gold value on iOS/Android widgets instead of push alerts.","primary_impact_metric":"OS-Level Notification Opt-Out Rate (-25%) \u0026 App Re-open Click-Through Rate (+34%)","implementation_effort":"Medium"},{"id":"FRICTION-04","title":"Asset Class Diversification Friction","priority":"P1 - High","description":"After 12 to 24 months, users want Digital Silver, Sovereign Gold Bonds, Silver ETFs or low-risk index funds, but Jar automates only 24K digital gold, so they withdraw to Zerodha, Groww or INDmoney: mature user churn.","behavioral_friction":"Choice Limitation and Prudence Anxiety: past ₹50,000 in gold, concentration worry sets in ('Is it prudent to keep all my liquid wealth in gold?'), and affluent high-LTV users leave to diversify.","actionable_solution":"1. Multi-Asset Micro-Baskets: split round-ups across Digital Gold (70%) and Digital Silver (30%), or metals plus index micro-funds, with one slider.\n2. Gold-Backed Yield Generation (Jar Earn): lease vaulted gold to audited institutional jewelers for a conservative 2% to 3% annual gold yield (see Question 3).\n3. Sovereign Gold Bond (SGB) Distribution: RBI SGB subscription windows inside Jar, adding 2.5% annual sovereign interest.","primary_impact_metric":"Average AUM per Active User (+30%) \u0026 Long-Term User Lifetime Value (LTV) (+42%)","implementation_effort":"High"},{"id":"FRICTION-05","title":"Family \u0026 Goal-Based Vault Separation","priority":"P2 - Medium","description":"All gold sits in one balance, so users saving for distinct goals (a sister's wedding in 2028, a newborn's college fund, an emergency cushion, annual Diwali gift coins) cannot earmark or track them separately.","behavioral_friction":"Mental Accounting Deficiency and a weak Goal Gradient Effect (Clark Hull): people save more reliably into labelled accounts, and in one balance goal progress is invisible, inviting impulsive premature withdrawals.","actionable_solution":"1. Multi-Goal Virtual Sub-Vaults: named target jars (e.g., 'Aanya's Higher Education', 'Diwali Gold Coin 2026') with gram milestones and progress rings.\n2. Smart Discipline Soft-Locks: an optional 'Goal Lock' with a 24-hour cooling-off delay before liquidating a goal vault.\n3. Social \u0026 Family Gifting Links: family members and godparents gift gold into a child's milestone vault via shareable UPI links.","primary_impact_metric":"Premature Withdrawal Rate (-22%) \u0026 Goal-Directed Net Monthly Inflow (+35%)","implementation_effort":"Medium"}]}}</script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js" crossorigin="anonymous"></script>
 <script>
 (function () {
@@ -267,13 +486,65 @@ footer { padding: 24px 0 40px; color: var(--muted); font-size: 0.82rem; }
     }));
     return el('table', null, [thead, tbody]);
   }
-  function kpi(label, value, sub, accent) {
-    return el('div', { class: 'card kpi', style: '--accent: var(' + accent + ')' }, [
-      el('div', { class: 'label', text: label }),
-      el('div', { class: 'value', text: value }),
-      el('div', { class: 'sub', text: sub })
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  var ICONS = {
+    wallet: 'M5 6h13a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V8a2 2 0 0 1 2-2zM3 10h18M16 15h2',
+    coins: 'M4 7c0-1.7 3.1-3 7-3s7 1.3 7 3-3.1 3-7 3-7-1.3-7-3zM4 7v5c0 1.7 3.1 3 7 3M18 7v3M4 12v5c0 1.7 3.1 3 7 3M14 16.5l2.5 2.5 4.5-5',
+    bag: 'M6 8h12l1.2 12H4.8zM9 8V7a3 3 0 0 1 6 0v1',
+    target: 'M12 3a9 9 0 1 0 9 9M12 7.5a4.5 4.5 0 1 0 4.5 4.5M12 12l7-7M16 5h3v3',
+    pin: 'M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11zM12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z',
+    phone: 'M9 2.5h6a3 3 0 0 1 3 3v13a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3v-13a3 3 0 0 1 3-3zM10.5 18h3',
+    layers: 'M12 3l9 5-9 5-9-5zM3 12.5l9 5 9-5M3 17l9 5 9-5',
+    arrow: 'M5 12h14M13 6l6 6-6 6',
+    chevron: 'M6 9l6 6 6-6',
+    up: 'M4 16l5-5 4 4 7-7M15 8h5v5',
+    down: 'M4 8l5 5 4-4 7 7M15 16h5v-5'
+  };
+  function icon(name) {
+    var svg = document.createElementNS(SVGNS, 'svg');
+    svg.setAttribute('class', 'icon'); svg.setAttribute('viewBox', '0 0 24 24'); svg.setAttribute('aria-hidden', 'true');
+    var path = document.createElementNS(SVGNS, 'path');
+    path.setAttribute('d', ICONS[name]);
+    svg.appendChild(path);
+    return svg;
+  }
+  // Kit-style summary widget on a pastel tint; `extra` is an optional trailing node (sparkline).
+  function kpi(label, value, sub, tone, iconName, extra, trend) {
+    return el('div', { class: 'card stat ' + (tone || '') }, [
+      el('div', { class: 'ico' }, [icon(iconName || 'wallet')]),
+      trend || null,
+      el('div', { class: 'foot' }, [
+        el('div', null, [
+          el('div', { class: 'label', text: label }),
+          el('div', { class: 'value', text: value }),
+          el('div', { class: 'sub', text: sub })
+        ]),
+        extra || null
+      ])
     ]);
   }
+  function sparkline(series, compare) {
+    var vals = series.concat(compare || []).filter(isNum);
+    var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals), w = 96, h = 52, pad = 4;
+    function d(arr) {
+      return arr.map(function (v, i) {
+        var xx = pad + i * (w - 2 * pad) / Math.max(1, arr.length - 1);
+        var yy = h - pad - (hi > lo ? (v - lo) / (hi - lo) : 0.5) * (h - 2 * pad);
+        return (i ? 'L' : 'M') + xx.toFixed(1) + ' ' + yy.toFixed(1);
+      }).join('');
+    }
+    var svg = document.createElementNS(SVGNS, 'svg');
+    svg.setAttribute('class', 'spark'); svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h); svg.setAttribute('aria-hidden', 'true');
+    [[compare, 't'], [series, '']].forEach(function (s) {
+      if (!s[0] || !s[0].length) return;
+      var p = document.createElementNS(SVGNS, 'path');
+      p.setAttribute('d', d(s[0])); if (s[1]) p.setAttribute('class', s[1]);
+      svg.appendChild(p);
+    });
+    return svg;
+  }
+  var tabActivate = null; // set by setupTabs; lets overview shortcut cards switch sections
+  function summary(text) { return el('summary', null, [text, icon('chevron')]); }
   function tag(text, tone) { return el('span', { class: 'tag' + (tone ? ' ' + tone : ''), text: text }); }
   function sectionHead(title, text) {
     return el('div', { class: 'section-head' }, [el('h2', { text: title }), text ? el('p', { class: 'muted', text: text }) : null]);
@@ -337,28 +608,63 @@ footer { padding: 24px 0 40px; color: var(--muted); font-size: 0.82rem; }
     var p = document.getElementById('panel-overview');
     var gs = d.growth_strategy, meta = gs.metadata || {};
     p.appendChild(sectionHead('Overview', 'Headline metrics computed in the browser from the embedded pipeline outputs.'));
+    var fur = d.furniture_targets;
+    var achieved = x.furAchievement >= 100;
     p.appendChild(el('div', { class: 'grid' }, [
-      kpi('Total sales', inr(x.totalSales), 'Across ' + d.category_performance.length + ' categories', '--sage'),
-      kpi('Total profit', inr(x.totalProfit), 'Loss-making line items included', '--sage'),
-      kpi('Overall margin', pct(x.margin), 'Total profit / total sales', '--lavender'),
-      kpi('Orders', int(x.totalOrders), 'Distinct orders across ' + d.city_performance.length + ' cities', '--slate-2'),
-      kpi('Top state by orders', str(x.topState.state), int(x.topState.distinct_orders) + ' orders, ' + pct(x.topState.profit_margin_pct) + ' margin', '--amber'),
-      kpi('Furniture target achieved', pct(x.furAchievement), inr(x.furActual) + ' actual vs ' + inr(x.furTarget) + ' target', '--coral'),
-      kpi('Q2 teardown', (d.ux_teardown.strengths || []).length + ' + ' + (d.ux_teardown.frictions || []).length, 'Strengths and prioritised improvements', '--lavender'),
-      kpi('Q3 obtainable market', isNum(meta.total_som_cr) ? inr(meta.total_som_cr) + ' Cr' : 'N/A', 'SOM across ' + (gs.verticals || []).length + ' new verticals', '--amber')
+      kpi('Total sales', inr(x.totalSales), 'Across ' + d.category_performance.length + ' categories', 'lavender', 'wallet'),
+      kpi('Total profit', inr(x.totalProfit), pct(x.margin) + ' overall margin, losses included', 'mint', 'coins'),
+      kpi('Orders', int(x.totalOrders), 'Distinct orders across ' + d.city_performance.length + ' cities', 'sky', 'bag'),
+      kpi('Furniture target achieved', pct(x.furAchievement), inr(x.furActual) + ' actual vs ' + inr(x.furTarget) + ' target', achieved ? 'mint' : 'butter', 'target',
+        sparkline(fur.map(function (f) { return f.actual_sales; }), fur.map(function (f) { return f.target_sales; })),
+        el('span', { class: 'trend' }, [icon(achieved ? 'up' : 'down'), x.monthsMet.length + '/' + fur.length + ' months'])
+      )
     ]));
 
     var findings = [
-      x.topSales.category + ' leads sales at ' + inr(x.topSales.total_sales) + ', but ' + x.topMargin.category + ' has the best margin (' + pct(x.topMargin.profit_margin_pct) + ').',
-      x.lowMargin.category + ' is the weakest category: ' + pct(x.lowMargin.profit_margin_pct) + ' margin on ' + inr(x.lowMargin.total_sales) + ' of sales.',
-      'Furniture hit ' + pct(x.furAchievement) + ' of its annual target and met the monthly target in ' + x.monthsMet.length + ' of ' + d.furniture_targets.length + ' months. Targets were smooth (largest MoM change ' + (x.maxTargetMom ? pct(x.maxTargetMom.mom_target_pct_change, true) : 'N/A') + ') while actual sales swung by 15% or more in ' + x.actualSwings.length + ' months.',
-      x.topState.state + ' has the most orders (' + int(x.topState.distinct_orders) + '); ' + x.bestState.state + ' has the best margin among the top 5 (' + pct(x.bestState.profit_margin_pct) + ').' +
-        (x.lossStates.length ? ' ' + x.lossStates.map(function (s) { return s.state; }).join(', ') + ' runs at a loss (' + pct(x.worstState.profit_margin_pct) + ' margin).' : ''),
-      'Q3 proposes ' + (gs.verticals || []).length + ' verticals built on Jar’s automated savings habit and gold vault, with a combined obtainable market of ' + (isNum(meta.total_som_cr) ? inr(meta.total_som_cr) + ' Cr' : 'N/A') + '.'
+      ['Categories', '--lav-400', x.topSales.category + ' leads sales at ' + inr(x.topSales.total_sales) + ', but ' + x.topMargin.category + ' has the best margin (' + pct(x.topMargin.profit_margin_pct) + ').'],
+      ['Categories', '--peach-400', x.lowMargin.category + ' is the weakest category: ' + pct(x.lowMargin.profit_margin_pct) + ' margin on ' + inr(x.lowMargin.total_sales) + ' of sales.'],
+      ['Furniture targets', '--butter-400', 'Furniture hit ' + pct(x.furAchievement) + ' of its annual target and met the monthly target in ' + x.monthsMet.length + ' of ' + fur.length + ' months. Targets were smooth (largest MoM change ' + (x.maxTargetMom ? pct(x.maxTargetMom.mom_target_pct_change, true) : 'N/A') + ') while actual sales swung by 15% or more in ' + x.actualSwings.length + ' months.'],
+      ['Regions', '--sky-400', x.topState.state + ' has the most orders (' + int(x.topState.distinct_orders) + '); ' + x.bestState.state + ' has the best margin among the top 5 (' + pct(x.bestState.profit_margin_pct) + ').' +
+        (x.lossStates.length ? ' ' + x.lossStates.map(function (s) { return s.state; }).join(', ') + ' runs at a loss (' + pct(x.worstState.profit_margin_pct) + ' margin).' : '')],
+      ['Expansion', '--mint-400', 'Q3 proposes ' + (gs.verticals || []).length + ' verticals built on Jar’s automated savings habit and gold vault, with a combined obtainable market of ' + (isNum(meta.total_som_cr) ? inr(meta.total_som_cr) + ' Cr' : 'N/A') + '.']
     ];
-    p.appendChild(el('div', { class: 'card' }, [
-      el('h3', { text: 'Key findings' }),
-      el('ul', { class: 'list', style: 'margin-top:12px' }, findings.map(function (f) { return el('li', { text: f }); }))
+    var mixColors = ['--lav-400', '--mint-400', '--butter-400', '--peach-400', '--sky-400'];
+    var cats = d.category_performance;
+    p.appendChild(el('div', { class: 'grid-84' }, [
+      el('div', { class: 'card' }, [
+        el('h3', { text: 'Key findings' }),
+        el('p', { class: 'sub', text: 'What the numbers say, across all three questions.' }),
+        el('ol', { class: 'timeline' }, findings.map(function (f) {
+          return el('li', { style: '--dot: var(' + f[1] + ')' }, [f[2], el('span', { class: 'k', text: f[0] })]);
+        }))
+      ]),
+      el('div', { class: 'card' }, [
+        el('h3', { text: 'Sales by category' }),
+        el('p', { class: 'sub', text: 'Share of ' + inr(x.totalSales) + ' total sales.' }),
+        el('div', { class: 'chart-box donut' }, [el('canvas', { id: 'chart-mix', role: 'img', 'aria-label': 'Share of total sales by category' })]),
+        el('ul', { class: 'mix-legend' }, cats.map(function (c, i) {
+          return el('li', null, [
+            el('span', { class: 'dot', style: 'background: var(' + mixColors[i % mixColors.length] + ')' }),
+            str(c.category),
+            el('span', { class: 'n', text: x.totalSales > 0 ? pct(c.total_sales / x.totalSales * 100) : 'N/A' })
+          ]);
+        }))
+      ])
+    ]));
+
+    function jump(tab, tone, iconName, label, big, sub, cta) {
+      var b = el('button', { type: 'button', class: 'card jump', style: '--t50: var(--' + tone + '-50); --t600: var(--' + tone + '-600)' }, [
+        el('div', { class: 'top' }, [el('span', { class: 'ico' }, [icon(iconName)]), el('span', { class: 'chip', text: label })]),
+        el('div', null, [el('div', { class: 'big', text: big }), el('p', { class: 'muted small', style: 'margin-top:4px', text: sub })]),
+        el('span', { class: 'go' }, [cta, icon('arrow')])
+      ]);
+      b.addEventListener('click', function () { if (tabActivate) tabActivate(tab, tab === 'tab-q1' ? 'q1-part3' : null); });
+      return b;
+    }
+    p.appendChild(el('div', { class: 'grid-3' }, [
+      jump('tab-q1', 'sky', 'pin', 'Q1', str(x.topState.state) + ' leads on orders', int(x.topState.distinct_orders) + ' orders at ' + pct(x.topState.profit_margin_pct) + ' margin, the top state by volume.', 'Open sales analytics'),
+      jump('tab-q2', 'peach', 'phone', 'Q2', (d.ux_teardown.strengths || []).length + ' strengths, ' + (d.ux_teardown.frictions || []).length + ' fixes', 'A UX teardown of the Jar app with prioritised improvements.', 'Open app teardown'),
+      jump('tab-q3', 'mint', 'layers', 'Q3', (isNum(meta.total_som_cr) ? inr(meta.total_som_cr) + ' Cr' : 'N/A') + ' obtainable', 'Combined SOM across ' + (gs.verticals || []).length + ' new verticals.', 'Open expansion strategy')
     ]));
   }
 
@@ -371,7 +677,13 @@ footer { padding: 24px 0 40px; color: var(--muted); font-size: 0.82rem; }
       { key: 'total_profit', label: 'Profit', num: true, negCheck: true, render: function (v) { return inr(v); } },
       { key: 'profit_margin_pct', label: 'Margin', num: true, negCheck: true, render: function (v) { return pct(v); } },
       { key: 'avg_profit_per_order', label: 'Avg profit / order', num: true, negCheck: true, render: function (v) { return inr(v, 2); } },
-      { key: 'distinct_orders', label: 'Orders', num: true, render: int }
+      { key: 'distinct_orders', label: 'Orders', num: true, render: int },
+      { key: 'performance_rank', label: 'Verdict', render: function (v) {
+        var ranks = d.category_performance.map(function (c) { return c.performance_rank; });
+        if (v === Math.min.apply(null, ranks)) return tag('Top performer', 'sage');
+        if (v === Math.max.apply(null, ranks)) return tag('Underperformer', 'coral');
+        return tag('Middle');
+      } }
     ], d.category_performance));
     var q1 = d.q1_insights || {};
     function fillList(id, items) {
@@ -476,17 +788,17 @@ footer { padding: 24px 0 40px; color: var(--muted); font-size: 0.82rem; }
   function renderQ2(d) {
     var p = document.getElementById('panel-q2');
     var ux = d.ux_teardown, meta = ux.metadata || {};
-    p.appendChild(sectionHead('Q2: Jar app UX teardown', str(meta.app_name) + ' (' + str(meta.app_version) + '), reviewed ' + str(meta.audit_date) + '. Five features that work and five prioritised improvements.'));
+    p.appendChild(sectionHead('Jar app UX teardown', str(meta.app_name) + ' (' + str(meta.app_version) + '), reviewed ' + str(meta.audit_date) + '. Five features that work and five prioritised improvements.'));
 
-    p.appendChild(el('h3', { text: 'What works: 5 strengths' }));
+    p.appendChild(el('div', { class: 'sub-head' }, [el('h3', { text: 'What works' }), tag((ux.strengths || []).length + ' strengths', 'sage')]));
     p.appendChild(el('div', { class: 'grid-2' }, (ux.strengths || []).map(function (s) {
-      return el('article', { class: 'card item', style: '--accent: var(--sage); --accent-bg: var(--sage-bg)' }, [
-        el('div', { class: 'tags' }, [tag(str(s.id), 'sage'), tag(str(s.category))]),
+      return el('article', { class: 'card item' }, [
         el('h3', { text: s.title }),
+        el('div', { class: 'tags meta' }, [tag(str(s.category), 'sage')]),
         el('p', { class: 'prose', style: 'margin-top:8px', text: s.description }),
-        el('div', { class: 'impact' }, [el('strong', { text: 'Impact: ' }), str(s.primary_impact_metric)]),
+        el('div', { class: 'impact' }, [el('strong', { text: 'Estimated impact: ' }), str(s.primary_impact_metric)]),
         el('details', null, [
-          el('summary', { text: 'Psychology, growth mechanism and next step' }),
+          summary('Psychology, growth mechanism and next step'),
           el('dl', null, [
             el('dt', { text: 'Behavioural psychology' }), el('dd', { text: s.behavioral_psychology }),
             el('dt', { text: 'Growth mechanism' }), el('dd', { text: s.growth_mechanism }),
@@ -496,20 +808,18 @@ footer { padding: 24px 0 40px; color: var(--muted); font-size: 0.82rem; }
       ]);
     })));
 
-    p.appendChild(el('h3', { text: 'What to improve: 5 friction points' }));
+    p.appendChild(el('div', { class: 'sub-head' }, [el('h3', { text: 'What to improve' }), tag((ux.frictions || []).length + ' friction points', 'coral')]));
     p.appendChild(el('div', { class: 'grid-2' }, (ux.frictions || []).map(function (f) {
       var pri = str(f.priority);
-      return el('article', { class: 'card item', style: '--accent: var(--coral); --accent-bg: var(--coral-bg)' }, [
-        el('div', { class: 'tags' }, [tag(str(f.id), 'coral'), tag(pri, pri.indexOf('P0') === 0 ? 'coral' : pri.indexOf('P1') === 0 ? 'amber' : ''), tag('Effort: ' + str(f.implementation_effort))]),
+      return el('article', { class: 'card item coral' }, [
         el('h3', { text: f.title }),
+        el('div', { class: 'tags meta' }, [tag(pri, pri.indexOf('P0') === 0 ? 'coral' : pri.indexOf('P1') === 0 ? 'amber' : ''), tag('Effort: ' + str(f.implementation_effort))]),
         el('p', { class: 'prose', style: 'margin-top:8px', text: f.description }),
+        el('div', { class: 'fix' }, [el('strong', { text: 'Suggested fix' }), el('p', { text: str(f.actionable_solution) })]),
         el('div', { class: 'impact' }, [el('strong', { text: 'Expected impact: ' }), str(f.primary_impact_metric)]),
         el('details', null, [
-          el('summary', { text: 'Root cause and proposed solution' }),
-          el('dl', null, [
-            el('dt', { text: 'Behavioural friction' }), el('dd', { text: f.behavioral_friction }),
-            el('dt', { text: 'Proposed solution' }), el('dd', { text: f.actionable_solution })
-          ])
+          summary('Behavioural root cause'),
+          el('p', { class: 'prose small', style: 'margin-top:10px', text: f.behavioral_friction })
         ])
       ]);
     })));
@@ -519,12 +829,12 @@ footer { padding: 24px 0 40px; color: var(--muted); font-size: 0.82rem; }
   function renderQ3(d) {
     var p = document.getElementById('panel-q3');
     var gs = d.growth_strategy, meta = gs.metadata || {}, verticals = gs.verticals || [];
-    p.appendChild(sectionHead('Q3: New business opportunities', verticals.length + ' verticals that reuse Jar’s automated micro-savings habit, UPI rails and gold vault.'));
+    p.appendChild(sectionHead('New business opportunities', verticals.length + ' verticals that reuse Jar’s automated micro-savings habit, UPI rails and gold vault.'));
     function cr(v) { return isNum(v) ? inr(v) + ' Cr' : 'N/A'; }
     p.appendChild(el('div', { class: 'grid' }, [
-      kpi('Combined TAM', cr(meta.total_tam_cr), 'Total addressable market', '--lavender'),
-      kpi('Combined SAM', cr(meta.total_sam_cr), 'Serviceable market', '--amber'),
-      kpi('Combined SOM', cr(meta.total_som_cr), 'Obtainable market', '--sage')
+      kpi('Combined TAM', cr(meta.total_tam_cr), 'Total addressable market', 'lavender', 'layers'),
+      kpi('Combined SAM', cr(meta.total_sam_cr), 'Serviceable market', 'sky', 'target'),
+      kpi('Combined SOM', cr(meta.total_som_cr), 'Obtainable market', 'mint', 'coins')
     ]));
 
     p.appendChild(el('div', { class: 'card' }, [
@@ -542,10 +852,11 @@ footer { padding: 24px 0 40px; color: var(--muted); font-size: 0.82rem; }
       }))])
     ]));
 
+    p.appendChild(el('div', { class: 'sub-head' }, [el('h3', { text: 'The verticals' }), tag(verticals.length + ' proposals', 'lavender')]));
+    var vgrid = p.appendChild(el('div', { class: 'grid-2' }));
     verticals.forEach(function (v) {
       var ue = v.unit_economics || {}, ms = v.market_sizing || {};
-      p.appendChild(el('article', { class: 'card item', style: '--accent: var(--lavender); --accent-bg: var(--lavender-bg)' }, [
-        el('div', { class: 'tags' }, [tag(str(v.id), 'lavender')]),
+      vgrid.appendChild(el('article', { class: 'card item lavender' }, [
         el('h3', { text: str(v.name) + ': ' + str(v.tagline) }),
         el('p', { class: 'prose', style: 'margin-top:8px', text: v.strategic_rationale }),
         el('div', { class: 'impact' }, [el('strong', { text: 'How it uses Jar’s strengths: ' }), str(v.flywheel_integration)]),
@@ -556,7 +867,7 @@ footer { padding: 24px 0 40px; color: var(--muted); font-size: 0.82rem; }
           ['Payback', isNum(ue.payback_months) ? ue.payback_months + ' months' : 'N/A']
         ].map(function (kv) { return el('div', null, [el('div', { class: 'k', text: kv[0] }), el('div', { class: 'v', text: str(kv[1]) })]); })),
         el('details', null, [
-          el('summary', { text: 'Persona, economics, KPIs and risks' }),
+          summary('Persona, economics, KPIs and risks'),
           el('dl', null, [
             el('dt', { text: 'Target persona' }), el('dd', { text: v.target_persona }),
             el('dt', { text: 'Take rate' }), el('dd', { text: ue.take_rate }),
@@ -664,7 +975,6 @@ footer { padding: 24px 0 40px; color: var(--muted); font-size: 0.82rem; }
 
   // ---------- charts ----------
   var charts = [];
-  var chartsBuilt = false;
 
   function chartFallback(canvas, message) {
     var box = canvas.parentNode;
@@ -692,39 +1002,58 @@ footer { padding: 24px 0 40px; color: var(--muted); font-size: 0.82rem; }
     }
   };
 
-  function buildCharts(d) {
-    if (chartsBuilt) { charts.forEach(function (c) { c.resize(); }); return; }
-    chartsBuilt = true;
-    var ids = ['chart-category', 'chart-furniture', 'chart-states'];
+  var built = {};
+  function buildCharts(d, ids) {
+    ids = ids.filter(function (id) { return document.getElementById(id); });
     if (typeof window.Chart !== 'function') {
-      ids.forEach(function (id) { chartFallback(document.getElementById(id), 'Charts unavailable offline (Chart.js could not be loaded). The same figures are shown in the tables.'); });
+      ids.forEach(function (id) { if (!built[id]) { built[id] = true; chartFallback(document.getElementById(id), 'Charts unavailable offline (Chart.js could not be loaded). The same figures are shown in the tables.'); } });
       return;
     }
     var C = window.Chart;
-    var sage = cssVar('--sage'), lav = cssVar('--lavender'), amber = cssVar('--amber'), coral = cssVar('--coral'), slate2 = cssVar('--slate-2');
+    var lav = cssVar('--lav-400'), lavInk = cssVar('--lav-600'), mint = cssVar('--mint-400'), butter = cssVar('--butter-400'),
+      butterInk = cssVar('--butter-600'), peach = cssVar('--peach-400'), peachInk = cssVar('--peach-600'), sky = cssVar('--sky-400'),
+      grey = cssVar('--grey-600'), grey2 = cssVar('--grey-600');
     C.defaults.font.family = cssVar('--font');
-    C.defaults.color = slate2;
+    C.defaults.font.size = 12;
+    C.defaults.color = grey2;
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) C.defaults.animation = false;
-    var grid = { color: 'rgba(0,0,0,0.05)' };
+    var lg = C.defaults.plugins.legend;
+    lg.position = 'top'; lg.align = 'end';
+    lg.labels.usePointStyle = true; lg.labels.pointStyle = 'circle'; lg.labels.boxWidth = 8; lg.labels.boxHeight = 8;
+    lg.labels.font = { weight: '600', size: 12 };
+    var tt = C.defaults.plugins.tooltip;
+    tt.backgroundColor = '#FFFFFF'; tt.titleColor = cssVar('--grey-800'); tt.bodyColor = grey2; tt.footerColor = grey2;
+    tt.borderColor = cssVar('--grey-300'); tt.borderWidth = 1; tt.padding = 12; tt.cornerRadius = 10; tt.boxPadding = 4;
+    tt.usePointStyle = true; tt.titleFont = { weight: '600' };
+    var grid = { color: 'rgba(145,158,171,0.24)' };
+    var border = { display: false, dash: [3, 3] };
     var compact = function (v) { return '₹' + (Math.abs(v) >= 1000 ? nf0.format(v / 1000) + 'k' : nf0.format(v)); };
 
     var builders = {
+      'chart-mix': function (canvas) {
+        var cats = d.category_performance, cols = [lav, mint, butter, peach, sky];
+        return new C(canvas, {
+          type: 'doughnut',
+          data: { labels: cats.map(function (c) { return c.category; }), datasets: [{ data: cats.map(function (c) { return c.total_sales; }), backgroundColor: cats.map(function (c, i) { return cols[i % cols.length]; }), borderColor: '#FFFFFF', borderWidth: 3, hoverOffset: 6, borderRadius: 6 }] },
+          options: { responsive: true, maintainAspectRatio: false, cutout: '68%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (c) { return ' ' + c.label + ': ' + inr(c.raw); } } } } }
+        });
+      },
       'chart-category': function (canvas) {
         var cats = d.category_performance;
         return new C(canvas, {
           data: {
             labels: cats.map(function (c) { return c.category; }),
             datasets: [
-              { type: 'bar', label: 'Sales', data: cats.map(function (c) { return c.total_sales; }), backgroundColor: rgba(sage, 0.35), borderColor: sage, borderWidth: 1, borderRadius: 8, yAxisID: 'y', order: 2 },
-              { type: 'line', label: 'Margin %', data: cats.map(function (c) { return c.profit_margin_pct; }), borderColor: lav, backgroundColor: lav, pointRadius: 5, tension: 0.3, yAxisID: 'y1', order: 1 }
+              { type: 'bar', label: 'Sales', data: cats.map(function (c) { return c.total_sales; }), backgroundColor: rgba(sky, 0.75), hoverBackgroundColor: sky, borderRadius: 8, maxBarThickness: 44, yAxisID: 'y', order: 2 },
+              { type: 'line', label: 'Margin %', data: cats.map(function (c) { return c.profit_margin_pct; }), borderColor: lavInk, backgroundColor: lavInk, borderWidth: 2.5, pointRadius: 5, pointBorderColor: '#FFFFFF', pointBorderWidth: 2, tension: 0.35, yAxisID: 'y1', order: 1 }
             ]
           },
           options: {
             responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
             scales: {
-              x: { grid: { display: false } },
-              y: { beginAtZero: true, grid: grid, ticks: { callback: compact }, title: { display: true, text: 'Sales' } },
-              y1: { beginAtZero: true, position: 'right', grid: { drawOnChartArea: false }, ticks: { callback: function (v) { return v + '%'; } }, title: { display: true, text: 'Margin %' } }
+              x: { grid: { display: false }, border: { display: false }, ticks: { autoSkip: false, maxRotation: 0 } },
+              y: { beginAtZero: true, grid: grid, border: border, ticks: { callback: compact }, title: { display: true, text: 'Sales', color: grey } },
+              y1: { beginAtZero: true, position: 'right', grid: { drawOnChartArea: false }, border: { display: false }, ticks: { callback: function (v) { return v + '%'; } }, title: { display: true, text: 'Margin %', color: grey } }
             },
             plugins: { tooltip: { callbacks: { label: function (c) { return c.dataset.yAxisID === 'y1' ? ' Margin: ' + pct(c.raw) : ' Sales: ' + inr(c.raw); } } } }
           }
@@ -735,8 +1064,8 @@ footer { padding: 24px 0 40px; color: var(--muted); font-size: 0.82rem; }
         var swing = function (f) { return isNum(f.mom_actual_pct_change) && Math.abs(f.mom_actual_pct_change) >= FLUCTUATION_THRESHOLD_PCT; };
         var bands = [];
         fur.forEach(function (f, i) {
-          if (f.is_significant_fluctuation) bands.push({ index: i, color: rgba(amber, 0.22) });
-          else if (swing(f)) bands.push({ index: i, color: rgba(coral, 0.08) });
+          if (f.is_significant_fluctuation) bands.push({ index: i, color: rgba(butter, 0.3) });
+          else if (swing(f)) bands.push({ index: i, color: rgba(peach, 0.16) });
         });
         return new C(canvas, {
           type: 'line',
@@ -744,15 +1073,15 @@ footer { padding: 24px 0 40px; color: var(--muted); font-size: 0.82rem; }
           data: {
             labels: fur.map(function (f) { return f.display_month; }),
             datasets: [
-              { label: 'Target', data: fur.map(function (f) { return f.target_sales; }), borderColor: amber, backgroundColor: amber, borderDash: [6, 4], pointRadius: 3, tension: 0.2 },
-              { label: 'Actual', data: fur.map(function (f) { return f.actual_sales; }), borderColor: sage, backgroundColor: sage, tension: 0.3,
+              { label: 'Target', data: fur.map(function (f) { return f.target_sales; }), borderColor: butterInk, backgroundColor: butterInk, borderWidth: 2, borderDash: [6, 5], pointRadius: 0, pointHoverRadius: 4, tension: 0.2 },
+              { label: 'Actual', data: fur.map(function (f) { return f.actual_sales; }), borderColor: lavInk, backgroundColor: rgba(lav, 0.18), fill: 'origin', borderWidth: 2.5, tension: 0.35,
                 pointRadius: fur.map(function (f) { return swing(f) ? 6 : 3; }),
-                pointBackgroundColor: fur.map(function (f) { return swing(f) ? coral : sage; }), pointBorderColor: '#fff' }
+                pointBackgroundColor: fur.map(function (f) { return swing(f) ? peachInk : lavInk; }), pointBorderColor: '#FFFFFF', pointBorderWidth: 2 }
             ]
           },
           options: {
             responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
-            scales: { x: { offset: true, grid: { display: false } }, y: { beginAtZero: true, grid: grid, ticks: { callback: compact } } },
+            scales: { x: { offset: true, grid: { display: false }, border: { display: false } }, y: { beginAtZero: true, grid: grid, border: border, ticks: { callback: compact } } },
             plugins: {
               monthBands: { bands: bands },
               tooltip: { callbacks: {
@@ -772,17 +1101,17 @@ footer { padding: 24px 0 40px; color: var(--muted); font-size: 0.82rem; }
           data: {
             labels: st.map(function (s) { return s.state; }),
             datasets: [
-              { type: 'bar', label: 'Orders', data: st.map(function (s) { return s.distinct_orders; }), backgroundColor: rgba(sage, 0.35), borderColor: sage, borderWidth: 1, borderRadius: 8, yAxisID: 'y', order: 2 },
-              { type: 'line', label: 'Margin %', data: st.map(function (s) { return s.profit_margin_pct; }), borderColor: lav, backgroundColor: lav, tension: 0.3, yAxisID: 'y1', order: 1,
-                pointRadius: 5, pointBackgroundColor: st.map(function (s) { return s.profit_margin_pct < 0 ? coral : lav; }) }
+              { type: 'bar', label: 'Orders', data: st.map(function (s) { return s.distinct_orders; }), backgroundColor: rgba(mint, 0.8), hoverBackgroundColor: mint, borderRadius: 8, maxBarThickness: 44, yAxisID: 'y', order: 2 },
+              { type: 'line', label: 'Margin %', data: st.map(function (s) { return s.profit_margin_pct; }), borderColor: lavInk, backgroundColor: lavInk, borderWidth: 2.5, tension: 0.35, yAxisID: 'y1', order: 1,
+                pointRadius: 5, pointBorderColor: '#FFFFFF', pointBorderWidth: 2, pointBackgroundColor: st.map(function (s) { return s.profit_margin_pct < 0 ? peachInk : lavInk; }) }
             ]
           },
           options: {
             responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
             scales: {
-              x: { grid: { display: false } },
-              y: { beginAtZero: true, grid: grid, title: { display: true, text: 'Orders' } },
-              y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { callback: function (v) { return v + '%'; } }, title: { display: true, text: 'Margin %' } }
+              x: { grid: { display: false }, border: { display: false }, ticks: { autoSkip: false, maxRotation: 45 } },
+              y: { beginAtZero: true, grid: grid, border: border, title: { display: true, text: 'Orders', color: grey } },
+              y1: { position: 'right', grid: { drawOnChartArea: false }, border: { display: false }, ticks: { callback: function (v) { return v + '%'; } }, title: { display: true, text: 'Margin %', color: grey } }
             },
             plugins: { tooltip: { callbacks: { label: function (c) { return c.dataset.yAxisID === 'y1' ? ' Margin: ' + pct(c.raw) : ' Orders: ' + int(c.raw); } } } }
           }
@@ -790,12 +1119,82 @@ footer { padding: 24px 0 40px; color: var(--muted); font-size: 0.82rem; }
       }
     };
     ids.forEach(function (id) {
+      if (built[id]) return;
+      built[id] = true;
       var canvas = document.getElementById(id);
       try { charts.push(builders[id](canvas)); }
       catch (err) {
         console.error('Chart ' + id + ' failed to render:', err);
         chartFallback(canvas, 'This chart could not be rendered. The same figures are shown in the table.');
       }
+    });
+  }
+
+  // ---------- mobile drawer ----------
+  var navEl = document.getElementById('nav'), scrim = document.getElementById('scrim'), menuBtn = document.getElementById('menu-btn');
+  function openNav() {
+    scrim.hidden = false;
+    requestAnimationFrame(function () { navEl.classList.add('open'); scrim.classList.add('open'); });
+    menuBtn.setAttribute('aria-expanded', 'true');
+    var sel = navEl.querySelector('[aria-selected="true"]'); if (sel) sel.focus();
+  }
+  function closeNav() {
+    if (!navEl.classList.contains('open')) return;
+    navEl.classList.remove('open'); scrim.classList.remove('open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+    setTimeout(function () { scrim.hidden = true; }, 300);
+  }
+  menuBtn.addEventListener('click', openNav);
+  scrim.addEventListener('click', closeNav);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && navEl.classList.contains('open')) { closeNav(); menuBtn.focus(); } });
+
+  // ---------- Q1 parts ----------
+  var PARTS = ['q1-part1', 'q1-part2', 'q1-part3'];
+  var PART_CHARTS = { 'q1-part1': ['chart-category'], 'q1-part2': ['chart-furniture'], 'q1-part3': ['chart-states'] };
+  var nextPart = null;
+  function partTitle(id) { return document.getElementById(id).getAttribute('data-title'); }
+  function showPart(id, scroll) {
+    PARTS.forEach(function (pid) { document.getElementById(pid).hidden = pid !== id; });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-part]'), function (b) {
+      if (b.getAttribute('data-part') === id) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+    });
+    var crumb = document.getElementById('crumb-current');
+    crumb.textContent = 'Sales analytics / ' + partTitle(id);
+    buildCharts(data, PART_CHARTS[id]);
+    if (scroll) window.scrollTo(0, 0);
+  }
+  function setupParts() {
+    function go(id) { return function () { if (document.getElementById('tab-q1').getAttribute('aria-selected') !== 'true') tabActivate('tab-q1', id); else { showPart(id, true); closeNav(); } }; }
+    Array.prototype.forEach.call(document.querySelectorAll('#q1-subnav [data-part]'), function (b) {
+      b.addEventListener('click', go(b.getAttribute('data-part')));
+    });
+    PARTS.forEach(function (pid, i) {
+      var part = document.getElementById(pid);
+      var stepper = part.querySelector('.stepper');
+      stepper.removeAttribute('aria-hidden');
+      stepper.setAttribute('role', 'group');
+      stepper.setAttribute('aria-label', 'Q1 parts');
+      PARTS.forEach(function (sid, j) {
+        var b = el('button', { type: 'button', 'data-part': sid, title: 'Part ' + (j + 1) + ': ' + partTitle(sid), 'aria-label': 'Part ' + (j + 1) + ': ' + partTitle(sid), text: String(j + 1) });
+        b.addEventListener('click', go(sid));
+        stepper.appendChild(b);
+      });
+      var nav = el('div', { class: 'part-nav' });
+      if (i > 0) {
+        var prev = el('button', { type: 'button', class: 'prev' }, [el('small', { text: 'Previous · Part ' + i }), el('b', null, [icon('arrow'), partTitle(PARTS[i - 1])])]);
+        prev.addEventListener('click', go(PARTS[i - 1]));
+        nav.appendChild(prev);
+      }
+      if (i < PARTS.length - 1) {
+        var next = el('button', { type: 'button', class: 'next' }, [el('small', { text: 'Next · Part ' + (i + 2) }), el('b', null, [partTitle(PARTS[i + 1]), icon('arrow')])]);
+        next.addEventListener('click', go(PARTS[i + 1]));
+        nav.appendChild(next);
+      } else {
+        var q2 = el('button', { type: 'button', class: 'next' }, [el('small', { text: 'Next question' }), el('b', null, ['Q2 · App teardown', icon('arrow')])]);
+        q2.addEventListener('click', function () { tabActivate('tab-q2'); });
+        nav.appendChild(q2);
+      }
+      part.appendChild(nav);
     });
   }
 
@@ -809,15 +1208,25 @@ footer { padding: 24px 0 40px; color: var(--muted); font-size: 0.82rem; }
         t.tabIndex = on ? 0 : -1;
         document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
       });
+      document.getElementById('crumb-current').textContent = tab.querySelector('.lbl').textContent;
+      document.getElementById('q1-subnav').hidden = tab.id !== 'tab-q1';
       if (focus) tab.focus();
+      closeNav();
+      window.scrollTo(0, 0);
       onShow(tab.id);
     }
+    tabActivate = function (id, part) {
+      var t = document.getElementById(id);
+      if (!t) return;
+      if (part) nextPart = part;
+      activate(t, false);
+    };
     tabs.forEach(function (t, i) {
       t.addEventListener('click', function () { activate(t, false); });
       t.addEventListener('keydown', function (e) {
         var next = null;
-        if (e.key === 'ArrowRight') next = tabs[(i + 1) % tabs.length];
-        else if (e.key === 'ArrowLeft') next = tabs[(i - 1 + tabs.length) % tabs.length];
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') next = tabs[(i + 1) % tabs.length];
+        else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') next = tabs[(i - 1 + tabs.length) % tabs.length];
         else if (e.key === 'Home') next = tabs[0];
         else if (e.key === 'End') next = tabs[tabs.length - 1];
         if (next) { e.preventDefault(); activate(next, true); }
@@ -842,7 +1251,13 @@ footer { padding: 24px 0 40px; color: var(--muted); font-size: 0.82rem; }
   renderQ2(data);
   renderQ3(data);
   renderMethodology(data, derived);
-  setupTabs(function (id) { if (id === 'tab-q1') buildCharts(data); });
+  var TAB_CHARTS = { 'tab-overview': ['chart-mix'] };
+  setupParts();
+  setupTabs(function (id) {
+    if (id === 'tab-q1') { showPart(nextPart || 'q1-part1', false); nextPart = null; }
+    else if (TAB_CHARTS[id]) buildCharts(data, TAB_CHARTS[id]);
+  });
+  buildCharts(data, TAB_CHARTS['tab-overview']);
 })();
 </script>
 </body>
