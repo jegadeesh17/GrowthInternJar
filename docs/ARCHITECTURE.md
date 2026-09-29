@@ -37,7 +37,7 @@ python -m pytest -v
 
 ```mermaid
 flowchart TD
-    subgraph Data Sources ["Data Sources (Workspace Root)"]
+    subgraph Data Sources ["Data Sources (data/input/)"]
         RawOrders["List of Orders.xlsx"]
         RawDetails["Order Details.xlsx"]
         RawTargets["Sales target.xlsx"]
@@ -426,7 +426,7 @@ class PdfGenerator:
 | :--- | :--- | :--- |
 | `python -m src.main` | Runs ingestion, analytics engine, prints console summaries, and exports data. | `data/output/*.json`, `data/output/*.csv` |
 | `python -m src.build_dashboard` | Embeds every `data/output/*.json` into the `<script id="dashboard-data">` block of `index.html`. Run after `src.main`. | `index.html` (rewritten in place) |
-| `python -m src.generate_pdf` | Renders pastel charts and builds the executive PDF report. | `Jar_Growth_Intern_Assignment_Submission.pdf`, `assets/charts/*.png` |
+| `python -m src.generate_pdf` | Renders pastel charts and builds the executive PDF report. | `data/output/Jar_Growth_Intern_Assignment_Submission.pdf`, `assets/charts/*.png` |
 | `python -m pytest -v` | Executes complete automated test suite across all units. | Terminal test results report |
 
 ---
@@ -435,11 +435,6 @@ class PdfGenerator:
 
 ```
 GrowthInternJar/
-├── Jar - Growth Intern Assignment.pdf     # Original assignment brief
-├── List of Orders.xlsx                    # Raw order headers dataset
-├── Order Details.xlsx                     # Raw order line items dataset
-├── Sales target.xlsx                      # Raw sales targets dataset
-├── Jar_Growth_Intern_Assignment_Submission.pdf  # Generated executive PDF deliverable
 ├── index.html                             # Interactive minimal-UI pastel web dashboard
 ├── DESIGN.md                              # Dashboard design system (tokens, type, components)
 ├── PRODUCT.md                             # Dashboard purpose, audience and constraints
@@ -447,6 +442,7 @@ GrowthInternJar/
 ├── .env.example                           # Template environment configuration
 ├── requirements.txt                       # Production & development dependencies
 ├── docs/
+│   ├── Jar - Growth Intern Assignment.pdf # Original assignment brief
 │   ├── PROJECT_MENTAL_MODEL.md            # Vision, posture, milestones, core assumptions
 │   ├── SPEC.md                            # Detailed product specification & acceptance criteria
 │   ├── ARCHITECTURE.md                    # Technical architecture & interface contracts
@@ -470,9 +466,11 @@ GrowthInternJar/
 ├── assets/
 │   └── charts/                            # Pre-rendered 300 DPI pastel chart PNGs
 ├── data/
+│   ├── input/                             # Source Excel files: List of Orders, Order Details, Sales target
 │   └── output/                            # JSON/CSV outputs: category_performance, furniture_targets,
 │                                          # state_performance, city_performance, city_priorities,
-│                                          # subcategory_performance, q1_insights, ux_teardown, growth_strategy
+│                                          # subcategory_performance, q1_insights, ux_teardown, growth_strategy,
+│                                          # and the generated submission PDF
 └── tests/
     ├── __init__.py
     ├── conftest.py                        # Pytest fixtures and mock dataset generators
@@ -503,8 +501,8 @@ APP_ENV=production
 # Logging Level: DEBUG, INFO, WARNING, ERROR
 LOG_LEVEL=INFO
 
-# Input Data Directory (defaults to workspace root)
-DATA_DIR=.
+# Input Data Directory (the three Excel files)
+DATA_DIR=data/input
 
 # Output Directory for Processed Analytical Files
 OUTPUT_DATA_DIR=data/output
@@ -513,7 +511,7 @@ OUTPUT_DATA_DIR=data/output
 CHART_ASSETS_DIR=assets/charts
 
 # Target Filepath for Generated Executive PDF
-OUTPUT_PDF_PATH=Jar_Growth_Intern_Assignment_Submission.pdf
+OUTPUT_PDF_PATH=data/output/Jar_Growth_Intern_Assignment_Submission.pdf
 
 # Fluctuation Cutoff for Furniture Targets (in percent)
 FURNITURE_MOM_FLUCTUATION_THRESHOLD=15.0
@@ -551,4 +549,4 @@ The dashboard was redesigned after M3 (see ADR-008). **`DESIGN.md` is the source
   3. *Q2: App teardown* (5 strengths, 5 frictions)
   4. *Q3: Expansion strategy*
   5. *Methodology* (including in-browser consistency checks)
-- **Download PDF** links to `Jar_Growth_Intern_Assignment_Submission.pdf`, which is gitignored and must be generated first.
+- **Download PDF** links to `data/output/Jar_Growth_Intern_Assignment_Submission.pdf`, which is gitignored and must be generated first.

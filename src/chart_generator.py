@@ -903,7 +903,7 @@ class ChartGenerator:
         """
         from src.data_loader import DataLoader
 
-        resolved_data = Path(data_dir) if data_dir else Path(os.getenv("DATA_DIR", "."))
+        resolved_data = Path(data_dir) if data_dir else Path(os.getenv("DATA_DIR", "data/input"))
         orders_path = resolved_data / "List of Orders.xlsx"
         details_path = resolved_data / "Order Details.xlsx"
         targets_path = resolved_data / "Sales target.xlsx"
@@ -937,8 +937,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Render 300 DPI pastel charts for Jar assignment")
     parser.add_argument(
         "--data-dir",
-        default=os.getenv("DATA_DIR", "."),
-        help="Path to input Excel directory (defaults to workspace root)",
+        default=os.getenv("DATA_DIR", "data/input"),
+        help="Path to input Excel directory (defaults to data/input)",
     )
     parser.add_argument(
         "--output-dir",

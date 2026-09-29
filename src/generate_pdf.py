@@ -5,9 +5,9 @@ charts (assets/charts/*.png) via ChartGenerator, and generates the executive
 PDF submission document: Jar_Growth_Intern_Assignment_Submission.pdf
 
 Environment variables:
-    DATA_DIR          Directory holding the input Excel files (default: workspace root).
+    DATA_DIR          Directory holding the input Excel files (default: <workspace>/data/input).
     CHART_ASSETS_DIR  Chart output directory (default: <workspace>/assets/charts).
-    OUTPUT_PDF_PATH   PDF destination (default: <workspace>/Jar_Growth_Intern_Assignment_Submission.pdf).
+    OUTPUT_PDF_PATH   PDF destination (default: <workspace>/data/output/Jar_Growth_Intern_Assignment_Submission.pdf).
     CANDIDATE_NAME    Name printed on the cover page.
 
 Exit codes: 0 on success, 1 on a data/rendering/output error.
@@ -77,14 +77,14 @@ def run() -> int:
     from src.analytics_engine import AnalyticsEngine
     from src.pdf_generator import PdfGenerator
 
-    data_dir = Path(os.getenv("DATA_DIR", str(workspace)))
+    data_dir = Path(os.getenv("DATA_DIR", str(workspace / "data" / "input")))
     charts_dir = Path(
         os.getenv("CHART_ASSETS_DIR", str(workspace / "assets" / "charts"))
     )
     output_path = Path(
         os.getenv(
             "OUTPUT_PDF_PATH",
-            str(workspace / "Jar_Growth_Intern_Assignment_Submission.pdf"),
+            str(workspace / "data" / "output" / "Jar_Growth_Intern_Assignment_Submission.pdf"),
         )
     )
 

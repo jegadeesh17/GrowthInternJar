@@ -600,13 +600,13 @@ class DataLoader:
     @classmethod
     def load_all(
         cls,
-        data_dir: Union[str, Path] = ".",
+        data_dir: Union[str, Path] = "data/input",
     ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         """Loads all three normalized datasets from the specified directory.
 
         Args:
             data_dir: Directory containing List of Orders.xlsx, Order Details.xlsx,
-                      and Sales target.xlsx. Defaults to current working directory.
+                      and Sales target.xlsx. Defaults to data/input.
 
         Returns:
             Tuple of (orders_df, order_details_df, sales_targets_df)

@@ -34,8 +34,8 @@ from src.data_loader import (
 
 def test_load_orders_real_dataset() -> None:
     """Verifies successful loading of real List of Orders.xlsx."""
-    orders_path = Path("List of Orders.xlsx")
-    assert orders_path.exists(), "List of Orders.xlsx must exist in workspace root"
+    orders_path = Path("data/input/List of Orders.xlsx")
+    assert orders_path.exists(), "List of Orders.xlsx must exist in data/input"
 
     df = DataLoader.load_orders(orders_path)
 
@@ -61,8 +61,8 @@ def test_load_orders_real_dataset() -> None:
 
 def test_load_order_details_real_dataset() -> None:
     """Verifies successful loading of real Order Details.xlsx."""
-    details_path = Path("Order Details.xlsx")
-    assert details_path.exists(), "Order Details.xlsx must exist in workspace root"
+    details_path = Path("data/input/Order Details.xlsx")
+    assert details_path.exists(), "Order Details.xlsx must exist in data/input"
 
     df = DataLoader.load_order_details(details_path)
 
@@ -94,8 +94,8 @@ def test_load_order_details_real_dataset() -> None:
 
 def test_load_sales_targets_real_dataset() -> None:
     """Verifies successful loading of real Sales target.xlsx."""
-    targets_path = Path("Sales target.xlsx")
-    assert targets_path.exists(), "Sales target.xlsx must exist in workspace root"
+    targets_path = Path("data/input/Sales target.xlsx")
+    assert targets_path.exists(), "Sales target.xlsx must exist in data/input"
 
     df = DataLoader.load_sales_targets(targets_path)
 
@@ -430,7 +430,7 @@ def test_raw_sales_target_record_validation() -> None:
 
 def test_load_all_convenience() -> None:
     """Verifies DataLoader.load_all loads all three real workbooks in tandem."""
-    orders_df, details_df, targets_df = DataLoader.load_all(".")
+    orders_df, details_df, targets_df = DataLoader.load_all("data/input")
 
     assert len(orders_df) == 500
     assert len(details_df) == 1500

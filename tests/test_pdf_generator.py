@@ -13,7 +13,7 @@ Tests:
 10. Page count is between 6 and 12 (exact /Type /Page count, excluding /Pages).
 11. draw_card can be called without raising.
 12. CLI runner 'python -m src.generate_pdf' exits 0 and writes a 6-12 page PDF
-    to the workspace root (integration test).
+    to data/output/ (integration test).
 13+ Embedded chart images, Q1/Q2/Q3 section content (decompressed streams),
     running headers/footers, missing/corrupt chart placeholders, invalid
     inputs, and CLI failure on a nonexistent DATA_DIR.
@@ -42,7 +42,7 @@ from src.content.ux_teardown import get_ux_frictions, get_ux_strengths
 from src.pdf_generator import PdfGenerator, JarPDF, MARGIN, INNER_W, SAGE_BG, SAGE, SLATE
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-WORKSPACE_PDF = PROJECT_ROOT / "Jar_Growth_Intern_Assignment_Submission.pdf"
+WORKSPACE_PDF = PROJECT_ROOT / "data" / "output" / "Jar_Growth_Intern_Assignment_Submission.pdf"
 CHART_KEYS = (
     "category_profitability",
     "furniture_target_vs_actual",
@@ -465,7 +465,7 @@ def test_draw_card_does_not_raise(pdf_gen: PdfGenerator) -> None:
 
 def test_cli_generate_pdf_exits_zero() -> None:
     """Test 12: 'python -m src.generate_pdf' exits 0 and writes a 6-12 page PDF
-    with all three charts to the workspace root."""
+    with all three charts to data/output/."""
     started = time.time()
     result = subprocess.run(
         [sys.executable, "-m", "src.generate_pdf"],

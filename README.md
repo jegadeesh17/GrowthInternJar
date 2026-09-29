@@ -2,7 +2,7 @@
 
 Submission for the Jar Growth Intern assignment:
 
-- **Q1 - Sales analysis:** category and sub-category performance, the Furniture target month-over-month trend against actual sales, the top states by performance, and the cities to fix or scale. The data comes from `List of Orders.xlsx`, `Order Details.xlsx` and `Sales target.xlsx`.
+- **Q1 - Sales analysis:** category and sub-category performance, the Furniture target month-over-month trend against actual sales, the top states by performance, and the cities to fix or scale. The data comes from `List of Orders.xlsx`, `Order Details.xlsx` and `Sales target.xlsx` in `data/input/`. The assignment brief is `docs/Jar - Growth Intern Assignment.pdf`.
 - **Q2 - App teardown:** a UX teardown of the Jar app.
 - **Q3 - Growth strategy:** a fintech growth and expansion roadmap.
 
@@ -14,11 +14,11 @@ pip install -r requirements.txt
 
 ## Run the analytics CLI
 
-Run this from the repository root. The three Excel files must be in the root, or in the folder given by `--data-dir`.
+Run this from the repository root. The three Excel files are read from `data/input/`, or from the folder given by `--data-dir`.
 
 ```bash
 python -m src.main
-python -m src.main --data-dir . --output-dir data/output --top-states 5 --quiet
+python -m src.main --data-dir data/input --output-dir data/output --top-states 5 --quiet
 ```
 
 The CLI prints the Q1, Q2 and Q3 sections and writes JSON/CSV files to `data/output/`. Environment variables can override the defaults: `DATA_DIR`, `OUTPUT_DATA_DIR`, `FURNITURE_MOM_FLUCTUATION_THRESHOLD`, `TOP_STATES_COUNT` and `LOG_LEVEL`. See `.env.example` for the full list.
@@ -29,7 +29,7 @@ The CLI prints the Q1, Q2 and Q3 sections and writes JSON/CSV files to `data/out
 python -m src.generate_pdf
 ```
 
-This writes `Jar_Growth_Intern_Assignment_Submission.pdf` to the repository root. Set `OUTPUT_PDF_PATH` to write it somewhere else, and `CANDIDATE_NAME` to set the author name on the cover. The charts are rendered to `assets/charts/` (override with `CHART_ASSETS_DIR`).
+This writes `data/output/Jar_Growth_Intern_Assignment_Submission.pdf`. Set `OUTPUT_PDF_PATH` to write it somewhere else, and `CANDIDATE_NAME` to set the author name on the cover. The charts are rendered to `assets/charts/` (override with `CHART_ASSETS_DIR`).
 
 The PDF is gitignored, so generate it before opening the dashboard; its Download PDF link points to this file.
 
@@ -68,7 +68,8 @@ src/
   build_dashboard.py    Embeds data/output/*.json into index.html
 tests/                  pytest suite (fixtures in conftest.py)
 docs/                   Spec, architecture, decisions, tasks
-data/output/            Generated JSON/CSV files
+data/input/             Source Excel files (tracked)
+data/output/            Generated JSON/CSV files and the PDF (gitignored)
 assets/charts/          Generated chart images
 index.html              Interactive dashboard
 DESIGN.md               Dashboard design system (colours, type, components)

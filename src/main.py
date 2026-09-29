@@ -462,7 +462,7 @@ def parse_args(args: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument(
         "--data-dir",
         type=str,
-        default=os.environ.get("DATA_DIR", "."),
+        default=os.environ.get("DATA_DIR", "data/input"),
         help="Input directory containing raw Excel workbooks (List of Orders.xlsx, etc.)",
     )
     parser.add_argument(

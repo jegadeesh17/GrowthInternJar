@@ -516,9 +516,9 @@ def test_pastel_tokens_constants() -> None:
 
 def test_generate_from_data_dir_integration(tmp_path: Path) -> None:
     """Tests the complete end-to-end orchestration pipeline from raw data to 300 DPI charts."""
-    # Run against workspace root raw datasets
+    # Run against the real datasets in data/input
     manifest = ChartGenerator.generate_from_data_dir(
-        data_dir=".",
+        data_dir="data/input",
         output_dir=tmp_path / "integration_charts",
         dpi=300,
     )
@@ -538,7 +538,7 @@ def test_chart_generator_cli_execution(tmp_path: Path) -> None:
         "-m",
         "src.chart_generator",
         "--data-dir",
-        ".",
+        "data/input",
         "--output-dir",
         str(out_dir),
         "--dpi",
@@ -567,7 +567,7 @@ def test_production_assets_charts_generation() -> None:
     # 2. Render charts into assets/charts
     output_dir = Path("assets/charts")
     manifest = ChartGenerator.generate_from_data_dir(
-        data_dir=".",
+        data_dir="data/input",
         output_dir=output_dir,
         dpi=300,
     )

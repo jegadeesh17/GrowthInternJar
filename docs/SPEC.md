@@ -19,7 +19,7 @@
 
 ### Journey 1: Growth Evaluator Runs Analytics Engine & Verifies Calculations (Question 1)
 1. **Trigger**: The evaluator clones the repository and runs `python -m src.main` or `pytest`.
-2. **Data Ingestion**: The system reads `List of Orders.xlsx`, `Order Details.xlsx`, and `Sales target.xlsx` from the workspace root.
+2. **Data Ingestion**: The system reads `List of Orders.xlsx`, `Order Details.xlsx`, and `Sales target.xlsx` from `data/input/`.
 3. **Validation & Cleansing**: Dates are normalized into standard ISO timestamps; currency figures, profits, and quantities are parsed into numeric types; missing and negative values are handled deterministically.
 4. **Execution of Question 1 Part 1 (Sales & Profitability)**:
    - Merges `List of Orders` and `Order Details` on `Order ID`.
@@ -148,7 +148,7 @@
   - **Given** the Python PDF generation script `src/generate_pdf.py`,
   - **When** executed via Python,
   - **Then**:
-    1. A valid, uncorrupted PDF file `Jar_Growth_Intern_Assignment_Submission.pdf` is generated in the workspace root.
+    1. A valid, uncorrupted PDF file `Jar_Growth_Intern_Assignment_Submission.pdf` is generated in `data/output/`.
     2. The PDF contains formatted executive cover page, executive summary, analytical tables with pastel styling, embedded high-DPI charts, complete Question 2 teardown, and Question 3 expansion roadmap.
     3. Total page count is between 6 and 12 pages with proper headers, footers, and page numbers.
 

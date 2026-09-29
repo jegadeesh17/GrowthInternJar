@@ -30,8 +30,8 @@ from src.data_loader import DataLoader
 
 def test_merge_orders_real_dataset() -> None:
     """Verifies merging real List of Orders and Order Details workbooks."""
-    orders_df = DataLoader.load_orders("List of Orders.xlsx")
-    details_df = DataLoader.load_order_details("Order Details.xlsx")
+    orders_df = DataLoader.load_orders("data/input/List of Orders.xlsx")
+    details_df = DataLoader.load_order_details("data/input/Order Details.xlsx")
 
     merged_df = AnalyticsEngine.merge_orders(orders_df, details_df)
 
@@ -170,8 +170,8 @@ def test_category_performance() -> None:
     - Profit margin % with zero-division safety.
     - Identification of top-performing, highest sales, and lowest/underperforming categories.
     """
-    orders_df = DataLoader.load_orders("List of Orders.xlsx")
-    details_df = DataLoader.load_order_details("Order Details.xlsx")
+    orders_df = DataLoader.load_orders("data/input/List of Orders.xlsx")
+    details_df = DataLoader.load_order_details("data/input/Order Details.xlsx")
 
     # 1. Inner join cardinality verification
     merged_df = AnalyticsEngine.merge_orders(orders_df, details_df)
@@ -480,9 +480,9 @@ def test_furniture_target_mom() -> None:
     - Custom threshold 1.5% flags exactly 3 months with >1.5% growth (Jul-18, Nov-18, Mar-19).
     - Overperforming vs underperforming months correctly segregated.
     """
-    orders_df = DataLoader.load_orders("List of Orders.xlsx")
-    details_df = DataLoader.load_order_details("Order Details.xlsx")
-    targets_df = DataLoader.load_sales_targets("Sales target.xlsx")
+    orders_df = DataLoader.load_orders("data/input/List of Orders.xlsx")
+    details_df = DataLoader.load_order_details("data/input/Order Details.xlsx")
+    targets_df = DataLoader.load_sales_targets("data/input/Sales target.xlsx")
     merged_df = AnalyticsEngine.merge_orders(orders_df, details_df)
 
     records = AnalyticsEngine.compute_furniture_target_mom(targets_df, merged_df)
@@ -916,8 +916,8 @@ def test_top_states_performance() -> None:
     - Helper inspection methods: get_highest_sales_state, get_highest_profit_state,
       get_highest_margin_state, get_lowest_margin_state, get_states_by_quadrant.
     """
-    orders_df = DataLoader.load_orders("List of Orders.xlsx")
-    details_df = DataLoader.load_order_details("Order Details.xlsx")
+    orders_df = DataLoader.load_orders("data/input/List of Orders.xlsx")
+    details_df = DataLoader.load_order_details("data/input/Order Details.xlsx")
     merged_df = AnalyticsEngine.merge_orders(orders_df, details_df)
 
     results = AnalyticsEngine.compute_top_states_performance(orders_df, merged_df, top_n=5)
@@ -1051,8 +1051,8 @@ def test_top_states_performance_distinct_orders_not_inflated_by_lines() -> None:
 
 def test_top_states_performance_custom_benchmarks_and_top_n() -> None:
     """Verifies custom top_n, custom volume and margin benchmarks, and inclusive flag."""
-    orders_df = DataLoader.load_orders("List of Orders.xlsx")
-    details_df = DataLoader.load_order_details("Order Details.xlsx")
+    orders_df = DataLoader.load_orders("data/input/List of Orders.xlsx")
+    details_df = DataLoader.load_order_details("data/input/Order Details.xlsx")
     merged_df = AnalyticsEngine.merge_orders(orders_df, details_df)
 
     # top_n = 3
@@ -1247,8 +1247,8 @@ def test_state_performance_dataclass_validation() -> None:
 
 def test_city_performance_real_dataset_and_helpers() -> None:
     """Verifies city-level performance breakdown, state filtering, and loss-making city identification."""
-    orders_df = DataLoader.load_orders("List of Orders.xlsx")
-    details_df = DataLoader.load_order_details("Order Details.xlsx")
+    orders_df = DataLoader.load_orders("data/input/List of Orders.xlsx")
+    details_df = DataLoader.load_order_details("data/input/Order Details.xlsx")
     merged_df = AnalyticsEngine.merge_orders(orders_df, details_df)
 
     # 1. State-specific city performance: Maharashtra (Mumbai vs Pune)
@@ -1358,8 +1358,8 @@ def test_city_performance_dataclass_validation_and_edge_cases() -> None:
     assert AnalyticsEngine.compute_city_performance(empty_df) == []
 
     # Nonexistent state returns empty list
-    orders_df = DataLoader.load_orders("List of Orders.xlsx")
-    details_df = DataLoader.load_order_details("Order Details.xlsx")
+    orders_df = DataLoader.load_orders("data/input/List of Orders.xlsx")
+    details_df = DataLoader.load_order_details("data/input/Order Details.xlsx")
     merged_df = AnalyticsEngine.merge_orders(orders_df, details_df)
     assert AnalyticsEngine.compute_city_performance(merged_df, state="NonExistentState") == []
 
@@ -1380,7 +1380,7 @@ def test_city_performance_dataclass_validation_and_edge_cases() -> None:
 @pytest.fixture(scope="module")
 def real_q1_inputs() -> Dict[str, Any]:
     """Loads and merges the real workbooks once for the deep-dive tests."""
-    orders_df, details_df, targets_df = DataLoader.load_all(data_dir=".")
+    orders_df, details_df, targets_df = DataLoader.load_all(data_dir="data/input")
     merged_df = AnalyticsEngine.merge_orders(orders_df, details_df)
     return {
         "targets": targets_df,
