@@ -13,6 +13,7 @@ This document records the key architectural, technical, and methodological choic
 - [ADR-005: Quantitative Threshold for Significant Furniture Target Fluctuations](#adr-005-quantitative-threshold-for-significant-furniture-target-fluctuations)
 - [ADR-006: State Ranking Methodology and Regional Profitability Granularity](#adr-006-state-ranking-methodology-and-regional-profitability-granularity)
 - [ADR-007: Visual Design Token System and Soft Pastel Palette](#adr-007-visual-design-token-system-and-soft-pastel-palette)
+- [ADR-008: Dashboard Redesign with a Minimal UI Kit Pastel System](#adr-008-dashboard-redesign-with-a-minimal-ui-kit-pastel-system)
 
 ---
 
@@ -113,7 +114,7 @@ This document records the key architectural, technical, and methodological choic
 
 ## ADR-007: Visual Design Token System and Soft Pastel Palette
 
-- **Status**: Accepted
+- **Status**: Accepted for the PDF and charts; superseded for the dashboard by ADR-008
 - **Context**: Evaluators will assess both the analytical depth and the aesthetic polish of the presentation. A generic default template fails to convey high-effort product craft. We need a cohesive, modern visual language inspired by `minimal-ui-kit/material-kit-react` that works seamlessly across the web dashboard and executive PDF.
 - **Decision**: We created a unified design token system based on a soft pastel palette:
   - **Soft Sage** (`#48BB78`, background tint `#E6FFFA`): Represents profitability, positive variance, and healthy metrics.
@@ -128,3 +129,15 @@ This document records the key architectural, technical, and methodological choic
 - **Consequences**:
   - Both deliverables (web dashboard and PDF report) share an unmistakable, high-polish visual identity.
   - Data visualizations are easy to interpret, pleasant to read, and executive-ready.
+
+---
+
+## ADR-008: Dashboard Redesign with a Minimal UI Kit Pastel System
+
+- **Status**: Accepted (post-M3)
+- **Context**: The first dashboard used stacked top tabs, bordered KPI tiles and the saturated ADR-007 colours, which read as a generic template rather than the Minimal UI Kit look the user asked for.
+- **Decision**: Rebuild `index.html` on Minimal UI Kit grammar: a left sidebar, sticky top bar, white 16px cards, and a pastel palette (lavender, mint, butter, peach, sky) over a grey ramp, with Barlow and DM Sans type. Q1 is split into three parts. `DESIGN.md` is the single source of truth for the tokens.
+- **Scope**: Dashboard only. The PDF and Matplotlib charts keep the ADR-007 palette.
+- **Consequences**:
+  - The dashboard and the PDF no longer share exact colours; both stay pastel.
+  - Design changes are made in `DESIGN.md` first, then in `index.html`.

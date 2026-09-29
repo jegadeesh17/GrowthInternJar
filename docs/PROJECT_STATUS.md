@@ -10,4 +10,5 @@
 - [x] Phase 3.2: M2 built, verified, reviewed and committed
 - [x] Phase 3.3: M3 built, verified, reviewed and committed
 - [x] Phase 4: Final test run and handover
+- [x] Post-M3: Q1 sub-category/city insights, Q3 unit-economics recalibration, dashboard redesign, docs synced
 </Project Status>

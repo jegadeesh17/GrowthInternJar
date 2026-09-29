@@ -65,3 +65,4 @@ Deliver an executive-grade, rigorous Growth Intern assignment submission for Jar
 - **PDF, Question 2:** keep simple: 5 strengths and 5 improvements, with reasoning.
 - **PDF, Question 3:** keep unchanged, with full detail (user decision).
 - **General:** avoid over-engineering. Build to the acceptance criteria and skip extra polish.
+- **Post-M3 additions:** Q1 gained sub-category and city drill-downs (cities to fix or scale) and a shared data-driven narrative. The dashboard was redesigned to the Minimal UI Kit pastel system in `DESIGN.md` (ADR-008). The PDF keeps the ADR-007 palette.

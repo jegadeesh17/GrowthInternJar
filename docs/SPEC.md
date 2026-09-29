@@ -6,6 +6,7 @@
   1. **Sales & Profitability Analytics Engine (Python)**: Robust data pipeline calculating category sales/margins, Furniture target MoM fluctuations, and regional performance across retail datasets.
   2. **Interactive Minimal-UI Web Dashboard (`index.html`)**: Production-ready static web application deployed to GitHub Pages inspired by `minimal-ui-kit/material-kit-react` with a soft pastel color scheme, interactive Chart.js visualizations, and comprehensive teardowns for Questions 1, 2, and 3.
   3. **Executive PDF Submission Document (`Jar_Growth_Intern_Assignment_Submission.pdf`)**: Publication-grade A4 executive report generated via an automated Python PDF pipeline with high-DPI visualizations, structured data tables, and strategic growth frameworks.
+- **Post-spec additions**: sub-category performance, city performance with Fix/Scale city priorities, and a data-driven Q1 narrative (`q1_insights.json`) were added after M3. The dashboard was redesigned; `DESIGN.md` defines its visual system (see ADR-008).
 - **Posture**: **Production**
   - All analytical calculations must be zero-defect, deterministic, typed, and backed by automated unit tests.
   - Codebase adheres to strict modular design (`src/`, `tests/`), PEP 8 standards, and industry naming conventions.
@@ -37,18 +38,18 @@
 
 ### Journey 2: Evaluator Explores Interactive Pastel Web Dashboard (`index.html`)
 1. **Trigger**: Evaluator opens `index.html` locally or visits the deployed GitHub Pages URL.
-2. **Dashboard Overview**: Evaluator lands on a clean, modern dashboard styled in `minimal-ui-kit/material-kit-react` aesthetics featuring a soft pastel palette (soft sage, muted amber/gold, soft lavender, slate blue, warm blush), soft-shadowed cards, and responsive KPI widgets.
-3. **Tab 1 — Analytical Deep-Dive (Question 1)**:
+2. **Dashboard Overview**: Evaluator lands on a clean, modern dashboard styled in `minimal-ui-kit/material-kit-react` aesthetics with the pastel palette defined in `DESIGN.md` (lavender, mint, butter, peach, sky), a left sidebar, soft-shadowed cards, and responsive KPI widgets.
+3. **Q1 — Sales analytics (three parts: Sales & profitability, Target achievement, Regional insights)**:
    - Evaluator inspects interactive KPI metric cards (Total Sales, Total Profit, Overall Margin %, Top State).
    - Evaluator toggles interactive Chart.js charts:
      - Category Sales & Profitability dual-axis bar/line chart.
      - Furniture MoM Target vs. Actual Sales trajectory chart.
      - Top 5 States Regional Performance breakdown chart.
    - Evaluator reviews interactive data tables with search, sorting, and category highlight tags.
-4. **Tab 2 — Jar App UX Teardown (Question 2)**:
+4. **Q2 — Jar App UX Teardown**:
    - Evaluator reviews 5 core UX strengths (Frictionless Round-ups, Sub-₹10 Accessibility, Daily Spin Streaks, Real-time Liquidity, 24K Vault Trust).
    - Evaluator reviews 5 prioritized friction points with root-cause mechanics and actionable solutions (AutoPay failure transparency, buy-sell spread clarity, notification fatigue controls, multi-asset diversification, family vaults).
-5. **Tab 3 — Fintech Growth & Business Expansion Roadmap (Question 3)**:
+5. **Q3 — Fintech Growth & Business Expansion Roadmap**:
    - Evaluator reads strategic growth verticals: Gold-backed Micro-Lending (Jar Cash), Micro-SIPs (Silver & SGBs), Jar Family Vaults, Gold Leasing (Jar Earn 2-3% yield), and B2B Corporate Wellness SDK.
    - Evaluator reviews market opportunity sizing, unit economics impact, and execution feasibility matrices.
 6. **Action**: Evaluator clicks "Download Executive PDF Report" to retrieve the compiled offline report.
@@ -139,8 +140,8 @@
   - **When** `index.html` is rendered in a modern web browser,
   - **Then**:
     1. It loads without external framework build steps (self-contained HTML5/CSS3/JS with Chart.js CDN).
-    2. The visual theme implements `minimal-ui-kit/material-kit-react` styling: soft pastel palette (soft sage `#48BB78`/`#E6FFFA`, muted amber `#D69E2E`/`#FEFCBF`, soft lavender `#805AD5`/`#FAF5FF`, slate blue `#2D3748`/`#4A5568`, warm blush `#E53E3E`/`#FFF5F5`), border radius `12px-16px`, soft elevation shadows, and clean modern typography.
-    3. Includes functional navigation tabs for: Overview & KPIs, Question 1 (Sales Analysis), Question 2 (App Teardown), Question 3 (Product Expansion), and Methodology.
+    2. The visual theme implements `minimal-ui-kit/material-kit-react` styling with the pastel palette, typography and card geometry defined in `DESIGN.md`.
+    3. Includes functional sidebar navigation for: Overview & KPIs, Question 1 (Sales Analysis), Question 2 (App Teardown), Question 3 (Product Expansion), and Methodology.
     4. Renders responsive interactive Chart.js charts for Category Performance, Furniture Target vs Actual, and Top 5 States.
 
 - **AC-4.2: Automated Executive PDF Generation (`Jar_Growth_Intern_Assignment_Submission.pdf`)**

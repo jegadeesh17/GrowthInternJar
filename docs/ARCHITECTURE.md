@@ -52,6 +52,7 @@ flowchart TD
         CatAnalytics["CategoryAnalyzer\n• Sales & Profit totals\n• Order-level avg profit\n• Profit margin %"]
         TargetAnalytics["TargetAnalyzer\n• Furniture target filtering\n• Chronological sorting\n• MoM % change & flagging"]
         StateAnalytics["RegionalAnalyzer\n• Top 5 states ranking\n• Volume & margin metrics\n• Quadrant classification"]
+        DrillDown["Drill-downs (added post-M3)\n• Sub-category performance\n• City performance & Fix/Scale priorities\n• Target alignment\n• build_q1_insights narrative"]
     end
 
     subgraph Export ["Export & Chart Services"]
@@ -60,7 +61,7 @@ flowchart TD
     end
 
     subgraph Presentation ["Presentation & Delivery Layer"]
-        CLI["CLI Entry Points\n• python -m src.main\n• python -m src.generate_pdf"]
+        CLI["CLI Entry Points\n• python -m src.main\n• python -m src.build_dashboard\n• python -m src.generate_pdf"]
         WebDash["Interactive Web Dashboard\n(index.html)\n• Minimal-UI pastel aesthetics\n• Chart.js interactivity\n• Questions 1, 2, and 3"]
         ExecPDF["Executive PDF Submission\n(Jar_Growth_Intern_Assignment_Submission.pdf)\n• fpdf2 vector document\n• Embedded high-DPI charts\n• Full strategy teardowns"]
     end
@@ -78,6 +79,9 @@ flowchart TD
     CatAnalytics --> Exporter
     TargetAnalytics --> Exporter
     StateAnalytics --> Exporter
+    Merger --> DrillDown
+    DrillDown --> Exporter
+    DrillDown --> ExecPDF
 
     Exporter --> ChartGen
     ChartGen --> ExecPDF
@@ -98,10 +102,13 @@ flowchart TD
 - **`CategoryAnalyzer` (`src/analytics_engine.py`)**: Computes category-level total sales, total profit, order-level category average profit, and profit margin percentages.
 - **`TargetAnalyzer` (`src/analytics_engine.py`)**: Evaluates Furniture target sales chronologically, computing MoM percentage fluctuations, flagging $|MoM| \ge 15\%$, and comparing actual achievement.
 - **`RegionalAnalyzer` (`src/analytics_engine.py`)**: Ranks states by order volume, computes state-level profitability metrics, and categorizes states into performance quadrants.
+- **Drill-downs (`src/analytics_engine.py`, added after M3)**: Sub-category performance, city performance, Fix/Scale city priorities, Furniture target alignment, and `build_q1_insights`, which builds the Q1 narrative shared by the PDF and the dashboard.
 - **`ExportService` (`src/export_service.py`)**: Serializes analytical results into clean JSON and CSV formats stored in `data/output/` for dashboard and archival use.
+- **`build_dashboard` (`src/build_dashboard.py`)**: Embeds every `data/output/*.json` file into the `<script id="dashboard-data">` block of `index.html`.
+- **Q2/Q3 content (`src/content/`)**: `ux_teardown.py` and `growth_strategy.py` hold the Jar UX teardown and growth strategy as typed dataclasses, exported to `ux_teardown.json` and `growth_strategy.json`.
 - **`ChartGenerator` (`src/chart_generator.py`)**: Renders publication-grade, pastel-themed chart PNGs at 300 DPI using Matplotlib for automated embedding in the PDF.
 - **`PdfGenerator` (`src/pdf_generator.py`)**: Compiles the comprehensive A4 executive submission PDF (`Jar_Growth_Intern_Assignment_Submission.pdf`) using `fpdf2`.
-- **`Interactive Web Dashboard` (`index.html`)**: Single-page static web application styled with `minimal-ui-kit/material-kit-react` pastel aesthetics, presenting interactive charts and teardowns for Questions 1, 2, and 3.
+- **`Interactive Web Dashboard` (`index.html`)**: Single-page static web application styled with `minimal-ui-kit/material-kit-react` pastel aesthetics (see `DESIGN.md`), presenting interactive charts and teardowns for Questions 1, 2, and 3.
 
 ---
 
@@ -203,6 +210,41 @@ class StatePerformance:
     avg_profit_per_order: float
     profit_margin_pct: float
     quadrant: str               # 'High Volume / High Margin', 'High Volume / Low Margin', etc.
+
+# Added after M3 (validation rules live in __post_init__ in src/analytics_engine.py)
+@dataclass(frozen=True)
+class CityPerformance:
+    state: str
+    city: str
+    distinct_orders: int
+    total_sales: float
+    total_profit: float
+    avg_profit_per_order: float
+    profit_margin_pct: float
+
+@dataclass(frozen=True)
+class SubCategoryPerformance:
+    category: str
+    sub_category: str
+    total_sales: float
+    total_profit: float
+    profit_margin_pct: float
+    distinct_orders: int
+    total_quantity: int
+    avg_order_value: float      # total_sales / distinct_orders
+    avg_profit_per_order: float # total_profit / distinct_orders
+
+@dataclass(frozen=True)
+class CityPriority:
+    action: str                 # 'Fix' or 'Scale'
+    state: str
+    city: str
+    total_sales: float
+    total_profit: float
+    profit_margin_pct: float
+    profit_gap: float           # sales x overall margin - profit (positive = below average)
+    in_top_states: bool
+    reason: str
 ```
 
 ---
@@ -305,6 +347,28 @@ class AnalyticsEngine:
         Ranks top states by distinct order volume and evaluates regional profitability metrics.
         """
         ...
+
+    # Added after M3
+    @staticmethod
+    def compute_city_performance(merged_df: pd.DataFrame, state: Optional[str] = None) -> List[CityPerformance]:
+        """City-level sales, profit and margin, optionally filtered to one state."""
+
+    @staticmethod
+    def compute_subcategory_performance(merged_df: pd.DataFrame) -> List[SubCategoryPerformance]:
+        """Sales, profit, margin and orders per (Category, Sub-Category); loss-makers kept."""
+
+    @staticmethod
+    def compute_target_alignment(furniture_data: List[FurnitureTargetAchievement], window: int = 3) -> Dict[str, Any]:
+        """Half-year split, seasonal re-phasing and rolling-baseline error of the flat target ramp."""
+
+    @staticmethod
+    def compute_city_priorities(merged_df: pd.DataFrame, state_data: List[StatePerformance],
+                                fix_n: int = 4, scale_n: int = 2) -> List[CityPriority]:
+        """Names the cities to fix (largest profit gap) and to scale (high sales, above-average margin)."""
+
+    @staticmethod
+    def build_q1_insights(category_data, subcategory_data, furniture_data, state_data, city_priorities) -> Dict[str, Any]:
+        """Builds the data-driven Q1 narrative shared by the PDF and the dashboard (q1_insights.json)."""
 ```
 
 #### `ChartGenerator` (`src/chart_generator.py`)
@@ -312,18 +376,20 @@ class AnalyticsEngine:
 class ChartGenerator:
     """Generates high-resolution pastel charts using Matplotlib."""
 
-    @staticmethod
+    @classmethod
     def generate_all_charts(
+        cls,
         category_data: List[CategoryPerformance],
         furniture_data: List[FurnitureTargetAchievement],
         state_data: List[StatePerformance],
-        output_dir: Path
+        output_dir: Optional[Union[Path, str]] = None,
+        dpi: int = DPI,
     ) -> Dict[str, Path]:
         """
         Renders and saves 300 DPI chart images:
         1. category_profitability.png
-        2. furniture_target_vs_actual.png
-        3. regional_performance.png
+        2. furniture_target_vs_actual.png (also saved as furniture_target_trajectory.png)
+        3. regional_performance.png (also saved as state_regional_quadrants.png)
         """
         ...
 ```
@@ -333,15 +399,19 @@ class ChartGenerator:
 class PdfGenerator:
     """Compiles the executive PDF submission using fpdf2."""
 
-    def __init__(self, chart_paths: Dict[str, Path]):
+    def __init__(self, chart_paths: Optional[Dict[str, Path]] = None):
         ...
 
     def build_submission_pdf(
         self,
+        output_path: "str | Path",
         category_data: List[CategoryPerformance],
         furniture_data: List[FurnitureTargetAchievement],
         state_data: List[StatePerformance],
-        output_pdf_path: Path
+        charts_dir: Optional[Path] = None,
+        subcategory_data: Optional[List[SubCategoryPerformance]] = None,
+        city_priorities: Optional[List[CityPriority]] = None,
+        q1_insights: Optional[Dict[str, Any]] = None,
     ) -> Path:
         """
         Builds Jar_Growth_Intern_Assignment_Submission.pdf with cover,
@@ -355,6 +425,7 @@ class PdfGenerator:
 | Command | Action | Output Artifacts |
 | :--- | :--- | :--- |
 | `python -m src.main` | Runs ingestion, analytics engine, prints console summaries, and exports data. | `data/output/*.json`, `data/output/*.csv` |
+| `python -m src.build_dashboard` | Embeds every `data/output/*.json` into the `<script id="dashboard-data">` block of `index.html`. Run after `src.main`. | `index.html` (rewritten in place) |
 | `python -m src.generate_pdf` | Renders pastel charts and builds the executive PDF report. | `Jar_Growth_Intern_Assignment_Submission.pdf`, `assets/charts/*.png` |
 | `python -m pytest -v` | Executes complete automated test suite across all units. | Terminal test results report |
 
@@ -370,6 +441,9 @@ GrowthInternJar/
 ├── Sales target.xlsx                      # Raw sales targets dataset
 ├── Jar_Growth_Intern_Assignment_Submission.pdf  # Generated executive PDF deliverable
 ├── index.html                             # Interactive minimal-UI pastel web dashboard
+├── DESIGN.md                              # Dashboard design system (tokens, type, components)
+├── PRODUCT.md                             # Dashboard purpose, audience and constraints
+├── .impeccable/                           # Design-tool metadata for index.html
 ├── .env.example                           # Template environment configuration
 ├── requirements.txt                       # Production & development dependencies
 ├── docs/
@@ -384,21 +458,32 @@ GrowthInternJar/
 │   ├── __init__.py
 │   ├── main.py                            # CLI entry point for analytics pipeline
 │   ├── generate_pdf.py                    # Standalone CLI entry point for PDF generation
+│   ├── build_dashboard.py                 # Embeds data/output/*.json into index.html
 │   ├── data_loader.py                     # Excel ingestion, validation, and date normalization
 │   ├── analytics_engine.py                # Mathematical aggregations for Q1 Parts 1, 2, and 3
 │   ├── export_service.py                  # JSON/CSV serialization service
 │   ├── chart_generator.py                 # Matplotlib pastel chart generation
-│   └── pdf_generator.py                   # fpdf2 PDF compilation engine
+│   ├── pdf_generator.py                   # fpdf2 PDF compilation engine
+│   └── content/
+│       ├── ux_teardown.py                 # Q2 Jar app UX teardown content
+│       └── growth_strategy.py             # Q3 growth and expansion strategy content
 ├── assets/
 │   └── charts/                            # Pre-rendered 300 DPI pastel chart PNGs
 ├── data/
-│   └── output/                            # Calculated JSON and CSV analytical outputs
+│   └── output/                            # JSON/CSV outputs: category_performance, furniture_targets,
+│                                          # state_performance, city_performance, city_priorities,
+│                                          # subcategory_performance, q1_insights, ux_teardown, growth_strategy
 └── tests/
     ├── __init__.py
     ├── conftest.py                        # Pytest fixtures and mock dataset generators
+    ├── test_scaffolding.py                # Repo layout, requirements and .env.example checks
     ├── test_data_loader.py                # Tests for date parsing, missing files, type casting
-    ├── test_analytics_engine.py           # Tests for category margins, MoM targets, state ranking
-    └── test_pdf_generator.py              # Tests for chart generation and PDF compilation
+    ├── test_analytics_engine.py           # Tests for category margins, MoM targets, state ranking, drill-downs
+    ├── test_export_service.py             # Tests for JSON/CSV export
+    ├── test_content.py                    # Tests for Q2/Q3 content integrity
+    ├── test_chart_generator.py            # Tests for chart rendering
+    ├── test_pdf_generator.py              # Tests for PDF compilation
+    └── test_edge_cases.py                 # Spec edge cases AC-E1 to AC-E6
 ```
 
 ---
@@ -435,30 +520,35 @@ FURNITURE_MOM_FLUCTUATION_THRESHOLD=15.0
 
 # Top N States for Regional Performance Analysis
 TOP_STATES_COUNT=5
+
+# Author name shown on the PDF cover (blank uses the built-in default)
+CANDIDATE_NAME=
+
+# Dashboard page that build_dashboard embeds data into
+DASHBOARD_HTML=index.html
 ```
+
+`APP_ENV` is reserved: no code reads it, but `tests/test_scaffolding.py` requires it in `.env.example`.
 
 ---
 
 ## 8. Web Dashboard Architecture (`index.html`)
 
-### Design Token System (Pastel Palette inspired by `minimal-ui-kit`)
-- **Primary / Sage**: Soft Sage Green (`#48BB78`, background tint `#E6FFFA`) representing growth, profit, and health.
-- **Secondary / Amber**: Muted Gold / Amber (`#D69E2E`, background tint `#FEFCBF`) representing digital gold and savings.
-- **Accent / Lavender**: Soft Lavender (`#805AD5`, background tint `#FAF5FF`) representing UX and behavioural design.
-- **Text & Structure / Slate**: Deep Slate (`#2D3748`) and Muted Grey (`#718096`) for typography; Light Slate (`#F7FAFC`) for page canvas.
-- **Highlight / Warm Blush**: Soft Coral Blush (`#E53E3E`, background tint `#FFF5F5`) for negative variance and friction points.
-- **Card Geometry**: Border radius `16px`, subtle border `1px solid rgba(0, 0, 0, 0.06)`, and multi-layer soft shadows (`0 4px 20px -2px rgba(0, 0, 0, 0.05)`).
+The dashboard was redesigned after M3 (see ADR-008). **`DESIGN.md` is the source of truth** for its colours, typography and components; this section only summarises it.
+
+### Visual System
+- **Layout**: Minimal UI Kit grammar: white left sidebar with Q-number labels, blurred sticky top bar, white 16px cards with a two-layer soft shadow.
+- **Palette**: pastel roles lavender (primary), mint, butter, peach and sky over a grey 100-800 ramp. Tints fill surfaces and the darker shade of each hue carries text.
+- **Typography**: Barlow for headings, DM Sans for body text.
+- **PDF and charts**: `pdf_generator.py` and `chart_generator.py` still use the ADR-007 palette (sage, amber, lavender, coral, slate).
 
 ### Web Application Architecture
-- **Single File Self-Contained**: Statically deployable to GitHub Pages with zero build step.
-- **Data Hydration**: Analytical datasets generated by `ExportService` are cleanly embedded as structured JavaScript objects, enabling instant offline interactivity.
-- **Modular Tab Routing**: Tabbed navigation between:
-  1. *Executive Overview & Key Metrics*
-  2. *Q1: Sales, Targets & Regional Analytics*
-  3. *Q2: Jar App UX Teardown (5 Strengths & 5 Frictions)*
-  4. *Q3: Fintech Growth & Vertical Expansion Roadmap*
-  5. *Methodology & Data Hygiene Audit*
-- **Interactive Chart.js Visualizations**:
-  - Dual-axis Category Sales vs. Margin chart.
-  - Chronological Furniture Target vs. Actual achievement trajectory chart.
-  - Top 5 States Volume vs. Profit margin scatter/bar chart.
+- **Single File Self-Contained**: Statically deployable with zero build step; Chart.js loads from a CDN.
+- **Data Hydration**: `python -m src.build_dashboard` embeds every `data/output/*.json` file into the `<script id="dashboard-data">` block. The page must not hand-edit figures.
+- **Sidebar Navigation** between sections:
+  1. *Overview* (headline KPIs, findings timeline, category mix)
+  2. *Q1: Sales analytics*, in three parts: Sales & profitability, Target achievement, Regional insights (including cities to prioritise)
+  3. *Q2: App teardown* (5 strengths, 5 frictions)
+  4. *Q3: Expansion strategy*
+  5. *Methodology* (including in-browser consistency checks)
+- **Download PDF** links to `Jar_Growth_Intern_Assignment_Submission.pdf`, which is gitignored and must be generated first.
