@@ -1564,7 +1564,7 @@ class AnalyticsEngine:
         if ta:
             h1_share = 100 - ta["h2_actual_share_pct"]
             out["part2_diagnosis"] = (
-                f"Targets rise a steady {ta['avg_target_mom_pct']:.1f}% a month "
+                f"Targets rise by an average of {ta['avg_target_mom_pct']:.1f}% a month "
                 f"({_rs(ta['first_target'])} to {_rs(ta['last_target'])}) while actual sales swing "
                 f"from {_rs(ta['low_actual'])} ({ta['low_month']}) to "
                 f"{_rs(ta['high_actual'])} ({ta['high_month']}). Achievement: "

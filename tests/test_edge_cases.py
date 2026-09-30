@@ -1,4 +1,4 @@
-"""Edge-case tests for SPEC acceptance criteria AC-E1 to AC-E6."""
+"""Edge-case tests: mixed dates, negative profits, first-month MoM, missing inputs, zero sales, unmatched IDs."""
 
 import logging
 import math

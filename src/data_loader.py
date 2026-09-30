@@ -9,7 +9,6 @@ and validates records using typed dataclasses.
 
 from dataclasses import dataclass
 from datetime import datetime
-import os
 from pathlib import Path
 import re
 from typing import Any, Dict, List, Optional, Set, Tuple, Union

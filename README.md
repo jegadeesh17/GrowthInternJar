@@ -2,7 +2,7 @@
 
 Submission for the Jar Growth Intern assignment:
 
-- **Q1 - Sales analysis:** category and sub-category performance, the Furniture target month-over-month trend against actual sales, the top states by performance, and the cities to fix or scale. The data comes from `List of Orders.xlsx`, `Order Details.xlsx` and `Sales target.xlsx` in `data/input/`. The assignment brief is `docs/Jar - Growth Intern Assignment.pdf`.
+- **Q1 - Sales analysis:** category and sub-category performance, the Furniture target month-over-month change against actual sales, the top 5 states by order count, and the cities to fix or scale. The data comes from `List of Orders.xlsx`, `Order Details.xlsx` and `Sales target.xlsx` in `data/input/`. The assignment brief is `docs/Jar - Growth Intern Assignment.pdf`.
 - **Q2 - App exploration:** five things the Jar app does well and five areas to improve, each with its reasoning.
 - **Q3 - Product exploration:** new business opportunities for Jar and how each uses its automation, design and credibility.
 
@@ -43,7 +43,7 @@ The CLI prints the Q1, Q2 and Q3 sections and writes JSON/CSV files to `data/out
 python -m src.generate_pdf
 ```
 
-This writes a one-page note to `data/output/Jar_Growth_Intern_Assignment_Submission.pdf` for internal submission. It links to the live dashboard and this repository and maps each question to its dashboard section; it does not repeat the analysis. `DASHBOARD_URL`, `REPO_URL`, `CANDIDATE_NAME` and `OUTPUT_PDF_PATH` override the defaults. The PDF is gitignored and the dashboard does not link to it.
+This writes a one-page note to `data/output/Jar_Growth_Intern_Assignment_Submission.pdf` for internal submission. It links to the live dashboard, the notebook and this repository, and maps each question to its dashboard section; it does not repeat the analysis. `DASHBOARD_URL`, `REPO_URL`, `CANDIDATE_NAME` and `OUTPUT_PDF_PATH` override the defaults. The PDF is gitignored and the dashboard does not link to it.
 
 ## Update and open the dashboard
 
@@ -63,7 +63,7 @@ Open `index.html` in a browser. The data is embedded in the page, and Chart.js l
 python -m pytest -v
 ```
 
-The edge-case tests (spec criteria AC-E1 to AC-E6) are in `tests/test_edge_cases.py`.
+The edge-case tests (mixed date formats, negative profits, the first month's missing MoM value, missing files or columns, zero sales and unmatched order IDs) are in `tests/test_edge_cases.py`.
 
 ## Project layout
 

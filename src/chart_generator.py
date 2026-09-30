@@ -12,12 +12,11 @@ Implements M3-TASK-01 (SPEC AC-4.2, ADR-007):
 - Defensive boundary validations (empty inputs, missing directories, type checks).
 """
 
-from dataclasses import asdict
 import logging
 import os
 from pathlib import Path
 import tempfile
-from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 # Set temporary config dir for matplotlib before import to prevent lock contention / permission issues
 if "MPLCONFIGDIR" not in os.environ:
@@ -211,7 +210,7 @@ class ChartGenerator:
         ax2 = ax1.twinx()
         ax2.set_facecolor("none")
 
-        line = ax2.plot(
+        ax2.plot(
             x_indices,
             margins,
             color=PASTEL_TOKENS["coral"],
@@ -621,7 +620,6 @@ class ChartGenerator:
 
         # Invert order so Rank 1 appears at top
         y_pos = np.arange(len(states))[::-1]
-        inv_states = states
         inv_orders = orders
         inv_margins = margins
         inv_sales = sales

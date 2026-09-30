@@ -17,12 +17,11 @@ import os
 from pathlib import Path
 import sys
 import time
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence
 
 from src.analytics_engine import (
     AnalyticsEngine,
     CategoryPerformance,
-    CityPerformance,
     CityPriority,
     FurnitureTargetAchievement,
     StatePerformance,
@@ -267,7 +266,6 @@ def render_state_performance_section(
     print(format_ascii_table(headers, rows, alignments))
 
     if states:
-        highest_sales = AnalyticsEngine.get_highest_sales_state(states)
         highest_margin = AnalyticsEngine.get_highest_margin_state(states)
         lowest_margin = AnalyticsEngine.get_lowest_margin_state(states)
 
