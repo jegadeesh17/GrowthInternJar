@@ -65,11 +65,9 @@ src/
   main.py               Analytics CLI entry point
   build_dashboard.py    Embeds data/output/*.json into index.html
 tests/                  pytest suite (fixtures in conftest.py)
-docs/                   Spec, architecture, decisions, tasks
+docs/                   Assignment brief
 data/input/             Source Excel files (tracked)
 data/output/            Generated JSON/CSV files and the PDF (gitignored)
 assets/charts/          Chart images from chart_generator (gitignored)
 index.html              Interactive dashboard
-DESIGN.md               Dashboard design system (colours, type, components)
-PRODUCT.md              Dashboard purpose, audience and constraints
 ```

@@ -46,3 +46,10 @@ assets/charts/
 *.pdf
 !Jar - Growth Intern Assignment.pdf
 Jar_Growth_Intern_Assignment_Submission.pdf
+
+# Build-process notes (kept locally, not part of the submission)
+docs/*
+!docs/Jar - Growth Intern Assignment.pdf
+DESIGN.md
+PRODUCT.md
+.impeccable/
