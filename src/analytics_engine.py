@@ -1540,14 +1540,13 @@ class AnalyticsEngine:
             if others:
                 second = min(others, key=lambda s: s.total_profit)
                 peers = [s for s in subs if s.category == second.category and s is not second]
-                top_line = max(subs, key=lambda s: s.profit_margin_pct)
                 if peers:
                     partner = max(peers, key=lambda s: s.profit_margin_pct)
                     recs.append(
                         f"Bundle {second.sub_category} ({second.profit_margin_pct:.1f}%) with "
-                        f"{partner.sub_category} ({partner.profit_margin_pct:.1f}% margin) and push "
-                        f"high-margin add-ons like {top_line.sub_category} "
-                        f"({top_line.profit_margin_pct:.1f}%) to lift basket margin, not volume."
+                        f"{partner.sub_category} ({partner.profit_margin_pct:.1f}% margin), the "
+                        f"highest-margin {second.category} line, so the basket earns a margin "
+                        "instead of adding loss-making volume."
                     )
             out["part1_reasons"] = reasons
             out["part1_recommendations"] = recs

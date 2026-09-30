@@ -21,6 +21,7 @@ from fpdf import FPDF
 DEFAULT_CANDIDATE_NAME = "Jegadeesh D"
 DEFAULT_DASHBOARD_URL = "https://jegadeesh17.github.io/GrowthInternJar/"
 DEFAULT_REPO_URL = "https://github.com/jegadeesh17/GrowthInternJar"
+NOTEBOOK_PATH = "blob/main/Jar_Growth_Intern_Assignment.ipynb"
 MAX_PAGES = 2
 
 # DESIGN.md tokens
@@ -69,14 +70,15 @@ QUESTION_MAP: List[Tuple[str, str, str, str]] = [
 REVIEW_STEPS = [
     "Open the dashboard. The Overview shows the headline numbers and key findings.",
     "Use the sidebar to go through Q1 (three parts), Q2 and Q3 in order.",
-    "Check Methodology to see how each figure was calculated and verified.",
+    "Open the notebook to see the Python code and output behind every figure.",
 ]
 
 BUILD_NOTES = [
     "Every figure is computed in Python (pandas) from the three assignment datasets; "
-    "none are typed in by hand.",
-    "The pipeline writes JSON/CSV outputs, which are embedded into the dashboard page.",
-    "An automated pytest suite checks the calculations and edge cases.",
+    "none are typed in by hand. The notebook recomputes Question 1 step by step and "
+    "checks it against the pipeline.",
+    "The pipeline's outputs are embedded into the dashboard page, and an automated pytest "
+    "suite checks the calculations and edge cases.",
 ]
 
 
@@ -108,6 +110,7 @@ class PdfGenerator:
             dashboard_url or os.getenv("DASHBOARD_URL", "").strip() or DEFAULT_DASHBOARD_URL
         )
         self.repo_url = repo_url or os.getenv("REPO_URL", "").strip() or DEFAULT_REPO_URL
+        self.notebook_url = f"{self.repo_url.rstrip('/')}/{NOTEBOOK_PATH}"
         self.submission_date = submission_date or date.today()
         self.page_count = 0
 
@@ -162,8 +165,8 @@ class PdfGenerator:
         pdf.multi_cell(
             INNER_W,
             5.4,
-            "All three answers are published as an interactive dashboard. This note "
-            "only points to it; the analysis itself is on the dashboard.",
+            "All three answers are published as an interactive dashboard and as a Python "
+            "notebook with the code and its output. This note only points to them.",
             align="L",
             new_x="LMARGIN",
             new_y="NEXT",
@@ -171,20 +174,24 @@ class PdfGenerator:
         pdf.ln(5)
 
     def _links_card(self, pdf: FPDF) -> None:
-        x, y, h = MARGIN, pdf.get_y(), 38
+        x, y, h = MARGIN, pdf.get_y(), 47
         pdf.set_fill_color(*LAV_BG)
         pdf.set_draw_color(*LAV_EDGE)
         pdf.set_line_width(0.3)
         pdf.rect(x, y, INNER_W, h, style="DF", round_corners=True, corner_radius=4)
 
-        pad = 7
+        pad = 6
         pdf.set_xy(x + pad, y + pad)
         self._link_row(pdf, "Live dashboard (start here)", self.dashboard_url, big=True)
         pdf.set_x(x + pad)
-        pdf.ln(3)
+        pdf.ln(1.5)
+        pdf.set_x(x + pad)
+        self._link_row(pdf, "Python notebook (code and output)", self.notebook_url, big=False)
+        pdf.set_x(x + pad)
+        pdf.ln(1.5)
         pdf.set_x(x + pad)
         self._link_row(pdf, "Source code and pipeline", self.repo_url, big=False)
-        pdf.set_y(y + h + 8)
+        pdf.set_y(y + h + 6)
 
     def _link_row(self, pdf: FPDF, label: str, url: str, big: bool) -> None:
         left = pdf.get_x()
@@ -245,7 +252,7 @@ class PdfGenerator:
             bottom = top + height + 2.5
             pdf.line(MARGIN, bottom, MARGIN + INNER_W, bottom)
             pdf.set_y(bottom)
-        pdf.ln(7)
+        pdf.ln(5)
 
     def _numbered(self, pdf: FPDF, items: List[str]) -> None:
         for i, text in enumerate(items, start=1):
@@ -261,7 +268,7 @@ class PdfGenerator:
             pdf.set_text_color(*INK)
             pdf.multi_cell(INNER_W - 8, 5.4, text, align="L", new_x="LMARGIN", new_y="NEXT")
             pdf.ln(1.5)
-        pdf.ln(5)
+        pdf.ln(3)
 
     def _bullets(self, pdf: FPDF, items: List[str]) -> None:
         for text in items:

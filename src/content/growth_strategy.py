@@ -170,13 +170,15 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
             "The same margin Jar earns on gold today, on money that would otherwise be given as cash."
         ),
         illustrative_scale=(
-            "If 200,000 goals each collected ₹7,500, that would be ₹150 Cr of gold saved. Both inputs are my own "
-            "assumptions, not Jar data."
+            "Jar's website says 5 crore+ Indians use it. If 1 in 250 of them (200,000) created a goal that "
+            "collected ₹7,500, which is ₹25 a day for 300 days, that would be ₹150 Cr of gold saved. The 1 in 250 "
+            "and the ₹25 a day are my own assumptions."
         ),
         flywheel_integration=(
-            "It reuses the gold product, the AutoPay set-up and the festival saving flow users already know. Every "
-            "contribution is also an introduction: the relative who adds gold sees how Jar works, from someone "
-            "they trust, and can start saving themselves."
+            "Automation: the owner's daily save can point at the goal, using the AutoPay set-up they already have. "
+            "Design: it is the festival saving flow users already know, with a name and a progress bar. "
+            "Credibility: each relative who contributes meets Jar through someone they trust, and can start "
+            "saving themselves."
         ),
         execution_risks=[
             ExecutionRiskItem(
@@ -237,14 +239,17 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
             "with balances, not transactions."
         ),
         illustrative_scale=(
-            "If 150,000 savers each held ₹6,000 in funds, that would be ₹90 Cr of balances. At an assumed 0.5% "
-            "yearly commission that is about ₹45 lakh a year, so this is a retention product first and a revenue "
-            "line later. All three inputs are my own assumptions."
+            "If 150,000 savers each put ₹500 a month into funds for a year, that would be ₹90 Cr of balances. "
+            "Distributor commission on index and liquid funds is low, so at an assumed 0.2% a year that is about "
+            "₹18 lakh: this is a retention product first and a revenue line later. The saver count, amount and "
+            "rate are my own assumptions."
         ),
         flywheel_integration=(
-            "Users already know the routine: choose an amount once, approve a UPI AutoPay mandate, and saving "
-            "happens on its own. Funds would need their own mandate, because fund money has to go straight from "
-            "the investor's bank to the fund house and not through Jar, but the set-up can look and feel the same."
+            "Automation: the routine users already know, choose an amount once, approve a UPI AutoPay mandate, "
+            "and saving happens on its own. Funds would need their own mandate, because fund money has to go "
+            "from the investor's bank to the fund house and not through Jar. Design: a short list in plain words "
+            "instead of thousands of schemes. Credibility: a SEBI-regulated product inside an app users already "
+            "trust with their savings."
         ),
         execution_risks=[
             ExecutionRiskItem(
@@ -300,12 +305,14 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
         ),
         how_it_earns="A sourcing fee from the partner bank for each deposit booked through Jar.",
         illustrative_scale=(
-            "If 100,000 savers each placed ₹20,000, that would be ₹200 Cr of deposits sourced for partner banks. "
-            "Both inputs are my own assumptions."
+            "If 100,000 savers each placed ₹10,000, that would be ₹100 Cr of deposits sourced for partner banks; "
+            "at an assumed 0.5% sourcing fee that is about ₹50 lakh. The saver count, deposit size and fee are my "
+            "own assumptions."
         ),
         flywheel_integration=(
-            "It builds on the trust Jar has earned with small saves and on its simple design: the offer appears "
-            "at the moment a user goes to withdraw, and booking a deposit takes the same few taps as a gold save."
+            "Automation: a withdrawal can be redirected into a deposit in a couple of taps, and the deposit can "
+            "renew on its own at maturity. Design: booking takes the same few steps as a gold save. Credibility: "
+            "the money sits with an RBI-regulated bank, offered by an app the user already trusts with small saves."
         ),
         execution_risks=[
             ExecutionRiskItem(
@@ -365,12 +372,14 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
             "A monthly fee per active worker paid by the platform, plus Jar's usual margin on the gold bought."
         ),
         illustrative_scale=(
-            "If 100,000 workers each saved ₹800 a month, that would be ₹96 Cr of new saving a year. Both inputs "
-            "are my own assumptions."
+            "A worker paid about ₹20,000 a month who saves 2% puts away ₹400. If 100,000 workers did that, it "
+            "would be ₹48 Cr of new saving a year. The pay level, share and worker count are my own assumptions."
         ),
         flywheel_integration=(
-            "Saving happens when the payout arrives, so it doesn't depend on a bank balance being there for an "
-            "AutoPay debit. Workers get the same app, gold balance and withdrawals as any other Jar user."
+            "Automation: saving happens when the payout arrives, so it doesn't depend on a bank balance being "
+            "there for an AutoPay debit. Design: workers get the same app, gold balance and withdrawals as any "
+            "other Jar user. Credibility: an established savings app is easier for a platform to offer its "
+            "workers than an unknown one."
         ),
         execution_risks=[
             ExecutionRiskItem(

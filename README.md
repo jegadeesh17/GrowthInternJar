@@ -3,14 +3,28 @@
 Submission for the Jar Growth Intern assignment:
 
 - **Q1 - Sales analysis:** category and sub-category performance, the Furniture target month-over-month trend against actual sales, the top states by performance, and the cities to fix or scale. The data comes from `List of Orders.xlsx`, `Order Details.xlsx` and `Sales target.xlsx` in `data/input/`. The assignment brief is `docs/Jar - Growth Intern Assignment.pdf`.
-- **Q2 - App teardown:** a UX teardown of the Jar app.
-- **Q3 - Growth strategy:** a fintech growth and expansion roadmap.
+- **Q2 - App exploration:** five things the Jar app does well and five areas to improve, each with its reasoning.
+- **Q3 - Product exploration:** new business opportunities for Jar and how each uses its automation, design and credibility.
+
+## Where to look
+
+- **Notebook:** [Jar_Growth_Intern_Assignment.ipynb](Jar_Growth_Intern_Assignment.ipynb) answers all three questions in Python, with the code and its output side by side. Start here to see how each figure is calculated.
+- **Dashboard:** https://jegadeesh17.github.io/GrowthInternJar/ shows the same results interactively.
 
 ## Setup
 
 ```bash
 pip install -r requirements.txt
 ```
+
+## Re-run the notebook
+
+```bash
+pip install notebook
+jupyter nbconvert --to notebook --execute --inplace Jar_Growth_Intern_Assignment.ipynb
+```
+
+The notebook reads the Excel files from `data/input/`, recomputes Question 1 in plain pandas and checks the result against the pipeline in `src/`.
 
 ## Run the analytics CLI
 
@@ -70,4 +84,5 @@ data/input/             Source Excel files (tracked)
 data/output/            Generated JSON/CSV files and the PDF (gitignored)
 assets/charts/          Chart images from chart_generator (gitignored)
 index.html              Interactive dashboard
+Jar_Growth_Intern_Assignment.ipynb   All three answers in Python, with code and output
 ```
