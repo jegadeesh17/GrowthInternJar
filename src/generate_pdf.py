@@ -4,7 +4,7 @@ Builds the internal submission note (at most 2 pages) that points reviewers to
 the live dashboard and the source repository. It does not repeat the analysis.
 
 Environment variables:
-    OUTPUT_PDF_PATH   PDF destination (default: <workspace>/data/output/Jar_Growth_Intern_Assignment_Submission.pdf).
+    OUTPUT_PDF_PATH   PDF destination (default: <workspace>/data/output/Jegadeesh_D_Jar_Growth_Intern_Assignment.pdf).
     CANDIDATE_NAME    Name printed under the title.
     DASHBOARD_URL     Live dashboard link (default: the GitHub Pages URL).
     REPO_URL          Source repository link.
@@ -31,7 +31,7 @@ def run() -> int:
     output_path = Path(
         os.getenv(
             "OUTPUT_PDF_PATH",
-            str(workspace / "data" / "output" / "Jar_Growth_Intern_Assignment_Submission.pdf"),
+            str(workspace / "data" / "output" / "Jegadeesh_D_Jar_Growth_Intern_Assignment.pdf"),
         )
     )
     gen = PdfGenerator()

@@ -43,7 +43,7 @@ The CLI prints the Q1, Q2 and Q3 sections and writes JSON/CSV files to `data/out
 python -m src.generate_pdf
 ```
 
-This writes a one-page note to `data/output/Jar_Growth_Intern_Assignment_Submission.pdf` for internal submission. It links to the live dashboard, the notebook and this repository, and maps each question to its dashboard section; it does not repeat the analysis. `DASHBOARD_URL`, `REPO_URL`, `CANDIDATE_NAME` and `OUTPUT_PDF_PATH` override the defaults. The PDF is gitignored and the dashboard does not link to it.
+This writes a one-page note to `data/output/Jegadeesh_D_Jar_Growth_Intern_Assignment.pdf` for internal submission. It links to the live dashboard, the notebook and this repository, and maps each question to its dashboard section; it does not repeat the analysis. `DASHBOARD_URL`, `REPO_URL`, `CANDIDATE_NAME` and `OUTPUT_PDF_PATH` override the defaults. The PDF is gitignored and the dashboard does not link to it.
 
 ## Update and open the dashboard
 

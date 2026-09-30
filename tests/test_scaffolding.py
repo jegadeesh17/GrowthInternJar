@@ -36,7 +36,7 @@ def test_gitignore_exists_and_contains_required_rules():
     assert any("build/" in line or "dist/" in line for line in lines), "Must ignore build artifacts"
     assert any("data/output/" in line for line in lines), "Must ignore data/output/"
     assert any("assets/charts/" in line for line in lines), "Must ignore assets/charts/"
-    assert any("*.pdf" in line or "Jar_Growth_Intern_Assignment_Submission.pdf" in line for line in lines), (
+    assert any("*.pdf" in line or "Jegadeesh_D_Jar_Growth_Intern_Assignment.pdf" in line for line in lines), (
         "Must ignore generated PDFs"
     )
     assert "!Jar - Growth Intern Assignment.pdf" in lines, "Must preserve source assignment brief PDF"

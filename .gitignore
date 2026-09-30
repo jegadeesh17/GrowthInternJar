@@ -45,7 +45,7 @@ assets/charts/
 # Generated PDF Documents (exclude source brief)
 *.pdf
 !Jar - Growth Intern Assignment.pdf
-Jar_Growth_Intern_Assignment_Submission.pdf
+Jegadeesh_D_Jar_Growth_Intern_Assignment.pdf
 
 # Build-process notes (kept locally, not part of the submission)
 docs/*
