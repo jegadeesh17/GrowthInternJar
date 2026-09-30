@@ -394,11 +394,6 @@ def render_growth_strategy_section(report: GrowthStrategyReport) -> None:
     if report.first_moves:
         print(f"  * Where I'd start:             {'; '.join(m['name'] for m in report.first_moves)}")
 
-    high_risks = sum(1 for r in report.execution_risk_matrix if r.severity == "High")
-    med_risks = sum(1 for r in report.execution_risk_matrix if r.severity == "Medium")
-    low_risks = sum(1 for r in report.execution_risk_matrix if r.severity == "Low")
-    print(f"  * Platform Risk Matrix:        {len(report.execution_risk_matrix)} risks identified ({high_risks} High, {med_risks} Medium, {low_risks} Low severity with mitigations)")
-
 
 def render_export_summary(
     artifacts: Dict[str, Dict[str, Path]],

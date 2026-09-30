@@ -1,8 +1,9 @@
 """Question 3: new business opportunities for Jar.
 
 Four ideas that build on Jar's automatic saving habit, UPI AutoPay set-up and
-the trust it has built, each with how it would earn, an illustrative scale,
-KPIs and risks, plus the two I would start with and how to test them.
+the trust it has built. Each has how it would earn, an illustrative scale with
+the reason for every assumption, KPIs and risks, plus the two I would start
+with and how to test them.
 """
 
 from dataclasses import asdict, dataclass, field
@@ -102,7 +103,6 @@ class GrowthStrategyReport:
     """Container report housing the complete Question 3 answer."""
 
     verticals: List[GrowthVerticalItem]
-    execution_risk_matrix: List[ExecutionRiskItem]
     global_flywheel_narrative: str
     strategy_version: str = "September 2026"
     author: str = "Jegadeesh D"
@@ -115,8 +115,6 @@ class GrowthStrategyReport:
         vertical_ids = [v.id for v in self.verticals]
         if len(set(vertical_ids)) != len(vertical_ids):
             raise ValueError("Duplicate vertical IDs detected in GrowthStrategyReport")
-        if not self.execution_risk_matrix:
-            raise ValueError("execution_risk_matrix cannot be empty")
         if not self.global_flywheel_narrative or not self.global_flywheel_narrative.strip():
             raise ValueError("global_flywheel_narrative cannot be empty")
 
@@ -136,7 +134,6 @@ class GrowthStrategyReport:
                 "total_verticals": len(self.verticals),
             },
             "verticals": [v.to_dict() for v in self.verticals],
-            "execution_risk_matrix": [r.to_dict() for r in self.execution_risk_matrix],
             "global_flywheel_narrative": self.global_flywheel_narrative,
             "priority_note": self.priority_note,
             "first_moves": [dict(m) for m in self.first_moves],
@@ -156,63 +153,38 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
         name="Jar Goals",
         tagline="Named goals that family can add to",
         strategic_rationale=(
-            "Jar already has a festival saving option. The bigger things families save gold for, such as a wedding "
-            "or a child's education, work the same way: a name, a target and a date. Jar could let a user create a "
-            "named goal and share a link, so grandparents and relatives add gold to it on birthdays or Diwali "
-            "instead of giving cash shagun. I found no way to create a named goal other than the festival one "
-            "(September 2026)."
+            "Jar has festival saving, but I found no way to create any other named goal (September 2026). Let "
+            "users name a goal such as a wedding or a child's education and share a link, so relatives add gold "
+            "on birthdays or Diwali instead of giving cash."
         ),
-        target_persona=(
-            "Parents (roughly 24-40) saving for their children, and relatives who give cash gifts at festivals and "
-            "family events."
-        ),
-        how_it_earns=(
-            "The same margin Jar earns on gold today, on money that would otherwise be given as cash."
-        ),
+        target_persona="Parents saving for their children, and relatives who give cash gifts.",
+        how_it_earns="Jar's existing margin on gold, on money that would otherwise be given as cash.",
         illustrative_scale=(
-            "Jar's website says 5 crore+ Indians use it. If 1 in 250 of them (200,000) created a goal that "
-            "collected ₹7,500, which is ₹25 a day for 300 days, that would be ₹150 Cr of gold saved. The 1 in 250 "
-            "and the ₹25 a day are my own assumptions."
+            "200,000 goals x ₹7,500 = ₹150 Cr of gold saved. Assumptions and why: 200,000 is 1 in 250 of the "
+            "5 crore+ users on Jar's website, kept small because most users won't set up a goal. ₹7,500 is ₹25 a "
+            "day for 300 days, a little above the ₹10 minimum because a goal also collects gifts."
         ),
         flywheel_integration=(
-            "Automation: the owner's daily save can point at the goal, using the AutoPay set-up they already have. "
-            "Design: it is the festival saving flow users already know, with a name and a progress bar. "
-            "Credibility: each relative who contributes meets Jar through someone they trust, and can start "
-            "saving themselves."
+            "Automation: the daily AutoPay save can point at the goal. Design: the festival saving flow users "
+            "already know. Credibility: relatives meet Jar through someone they trust."
         ),
         execution_risks=[
-            ExecutionRiskItem(
-                risk_title="Goals for minors",
-                risk_category="Regulatory",
-                severity="Medium",
-                mitigation_strategy=(
-                    "Keep the goal under the parent's account and KYC, and give a yearly statement of contributions "
-                    "received for tax records."
-                ),
-            ),
             ExecutionRiskItem(
                 risk_title="Fake contribution links",
                 risk_category="Fraud",
                 severity="Medium",
-                mitigation_strategy=(
-                    "Show the verified goal owner's name on every link and make links expire, so fakes are easy "
-                    "to spot."
-                ),
+                mitigation_strategy="Show the verified goal owner's name on every link and make links expire.",
             ),
             ExecutionRiskItem(
-                risk_title="Early withdrawals",
-                risk_category="Operational",
-                severity="Low",
-                mitigation_strategy=(
-                    "Don't lock the money. Add a short wait and a reminder of the goal before a withdrawal, so it "
-                    "stays available in an emergency."
-                ),
+                risk_title="Goals for minors",
+                risk_category="Regulatory",
+                severity="Medium",
+                mitigation_strategy="Keep the goal under the parent's account and KYC.",
             ),
         ],
         primary_kpis=[
-            "Share of goals that receive a contribution from someone else",
-            "Share of contributors who start saving within 30 days",
-            "Average time money stays in a goal",
+            "Goals that receive a contribution from someone else",
+            "Contributors who start saving within 30 days",
             "Monthly saving of users with a goal vs without",
         ],
     ),
@@ -224,32 +196,22 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
         name="Jar Funds",
         tagline="Simple mutual funds alongside gold",
         strategic_rationale=(
-            "Savers who have built a gold balance eventually want to spread it, and I found no way to save in "
-            "silver or mutual funds in the app (September 2026). Jar could offer a short list of simple mutual funds, for "
-            "example an index fund, a liquid fund, and gold and silver funds, with the same set-once, "
-            "save-automatically flow and no demat account. Mutual funds are SEBI-regulated, which matters because "
-            "digital gold is not: SEBI said so in a caution to investors in November 2025. Silver would come "
-            "through a silver fund, not unregulated digital silver."
+            "Long-term savers want to diversify, and I found no way to save in silver or mutual funds in the app "
+            "(September 2026). Offer a short list of simple funds (index, liquid, gold and silver) with the same "
+            "set-once flow. Funds are SEBI-regulated; digital gold is not, as SEBI cautioned in November 2025."
         ),
-        target_persona=(
-            "Users who have saved in Jar for 6+ months and have a sizeable balance (say ₹15,000 or more)."
-        ),
-        how_it_earns=(
-            "Distribution commission from fund houses, a small yearly percentage of the balance held, so it grows "
-            "with balances, not transactions."
-        ),
+        target_persona="Users who have saved for 6+ months and built a balance.",
+        how_it_earns="Yearly distribution commission from fund houses on the balance held.",
         illustrative_scale=(
-            "If 150,000 savers each put ₹500 a month into funds for a year, that would be ₹90 Cr of balances. "
-            "Distributor commission on index and liquid funds is low, so at an assumed 0.2% a year that is about "
-            "₹18 lakh: this is a retention product first and a revenue line later. The saver count, amount and "
-            "rate are my own assumptions."
+            "150,000 savers x ₹500 a month x 12 = ₹90 Cr of balances; at 0.2% a year that is about ₹18 lakh, so "
+            "this is a retention product first. Assumptions and why: 150,000 is about 1 in 330 of Jar's 5 crore+ "
+            "users, fewer than for goals because funds need full KYC. ₹500 a month is a common minimum SIP. 0.2% "
+            "sits in the 0.05-0.25% range distributors typically earn on index and liquid funds."
         ),
         flywheel_integration=(
-            "Automation: the routine users already know, choose an amount once, approve a UPI AutoPay mandate, "
-            "and saving happens on its own. Funds would need their own mandate, because fund money has to go "
-            "from the investor's bank to the fund house and not through Jar. Design: a short list in plain words "
-            "instead of thousands of schemes. Credibility: a SEBI-regulated product inside an app users already "
-            "trust with their savings."
+            "Automation: the same set-once AutoPay routine, on a separate mandate because fund money must go from "
+            "the investor's bank to the fund house, not through Jar. Design: a short list in plain words. "
+            "Credibility: a regulated product inside an app users already trust."
         ),
         execution_risks=[
             ExecutionRiskItem(
@@ -257,34 +219,21 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
                 risk_category="Regulatory",
                 severity="High",
                 mitigation_strategy=(
-                    "Register as a mutual fund distributor with AMFI. Funds need full KYC with PAN, more than Jar's "
-                    "sign-up asks for, so ask for it only when a user first chooses a fund."
+                    "Register as a distributor with AMFI, and ask for full KYC (PAN) only when a user first "
+                    "picks a fund."
                 ),
             ),
             ExecutionRiskItem(
                 risk_title="Fund minimums above ₹10",
                 risk_category="Operational",
                 severity="Medium",
-                mitigation_strategy=(
-                    "Fund SIP minimums are usually higher than Jar's ₹10 daily save, so start with weekly or "
-                    "monthly fund SIPs for users who already save larger amounts."
-                ),
-            ),
-            ExecutionRiskItem(
-                risk_title="Funds can lose value",
-                risk_category="Market",
-                severity="Medium",
-                mitigation_strategy=(
-                    "Keep the list short, label each fund's risk in plain words, and explain up front that silver "
-                    "and equity move more than gold, so a drop isn't a surprise."
-                ),
+                mitigation_strategy="Daily fund SIPs usually start near ₹100, so begin with weekly or monthly SIPs.",
             ),
         ],
         primary_kpis=[
-            "Share of long-term savers who add a fund",
-            "Balance per user holding both gold and funds",
+            "Long-term savers who add a fund",
             "Churn of long-term savers",
-            "Share of fund users who keep their gold save running",
+            "Fund users who keep their gold save running",
         ],
     ),
     # -----------------------------------------------------------------------
@@ -295,24 +244,22 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
         name="Jar Fixed",
         tagline="Fixed deposits with partner banks",
         strategic_rationale=(
-            "Some savers want a fixed return and no price swings, which gold can't give them. Jar could offer "
-            "fixed deposits from partner banks inside the app, as apps such as Stable Money do. The deposit is "
-            "held by an RBI-regulated bank, not by Jar, and is covered by deposit insurance (DICGC) up to the "
-            "statutory limit. It gives users a safe place for money they would otherwise withdraw from Jar."
+            "Some savers want a fixed return without price swings, which gold can't give, and I found no deposit "
+            "option in the app (September 2026). Offer fixed deposits from partner banks, as apps such as Stable "
+            "Money do. The deposit sits with an RBI-regulated bank, not Jar, and carries deposit insurance (DICGC)."
         ),
-        target_persona=(
-            "Cautious savers, and users about to withdraw a lump sum who have no immediate use for it."
-        ),
-        how_it_earns="A sourcing fee from the partner bank for each deposit booked through Jar.",
+        target_persona="Cautious savers, and users about to withdraw a lump sum.",
+        how_it_earns="A sourcing fee from the partner bank on each deposit.",
         illustrative_scale=(
-            "If 100,000 savers each placed ₹10,000, that would be ₹100 Cr of deposits sourced for partner banks; "
-            "at an assumed 0.5% sourcing fee that is about ₹50 lakh. The saver count, deposit size and fee are my "
-            "own assumptions."
+            "100,000 savers x ₹10,000 = ₹100 Cr of deposits; at a 0.5% fee that is about ₹50 lakh. Assumptions "
+            "and why: 100,000 is 1 in 500 of Jar's 5 crore+ users, the smallest share because a deposit needs a "
+            "lump sum. ₹10,000 is a modest first deposit for a small saver. 0.5% is mid-range of the 0.10-1.25% "
+            "Stable Money pays its own referral partners."
         ),
         flywheel_integration=(
-            "Automation: a withdrawal can be redirected into a deposit in a couple of taps, and the deposit can "
-            "renew on its own at maturity. Design: booking takes the same few steps as a gold save. Credibility: "
-            "the money sits with an RBI-regulated bank, offered by an app the user already trusts with small saves."
+            "Automation: a withdrawal can be redirected into a deposit, which renews on its own at maturity. "
+            "Design: the same few taps as a gold save. Credibility: an RBI-regulated bank behind an app the user "
+            "already trusts."
         ),
         execution_risks=[
             ExecutionRiskItem(
@@ -320,34 +267,20 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
                 risk_category="Regulatory",
                 severity="High",
                 mitigation_strategy=(
-                    "Jar acts only as the bank's sourcing partner: money moves directly between the user's bank "
-                    "account and the partner bank, and the bank does the KYC."
-                ),
-            ),
-            ExecutionRiskItem(
-                risk_title="Partner bank trouble",
-                risk_category="Counterparty",
-                severity="Medium",
-                mitigation_strategy=(
-                    "Choose partner banks carefully, show the deposit insurance limit clearly, and warn users "
-                    "before they go over it with one bank."
+                    "Money moves directly between the user's bank and the partner bank, which also does the KYC."
                 ),
             ),
             ExecutionRiskItem(
                 risk_title="Money moving out of gold",
                 risk_category="Market",
                 severity="Medium",
-                mitigation_strategy=(
-                    "Offer deposits at withdrawal, not in place of the daily gold save, and track whether gold "
-                    "saving drops among users who book one."
-                ),
+                mitigation_strategy="Offer deposits at withdrawal, not in place of the daily gold save.",
             ),
         ],
         primary_kpis=[
-            "Deposits booked (₹ Cr)",
-            "Share of withdrawals redirected into a deposit",
-            "Share of deposits renewed at maturity",
-            "Gold saving of deposit users vs before",
+            "Deposits booked",
+            "Withdrawals redirected into a deposit",
+            "Deposits renewed at maturity",
         ],
     ),
     # -----------------------------------------------------------------------
@@ -358,174 +291,76 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
         name="Jar for Work",
         tagline="Automatic savings for gig workers, through their platform",
         strategic_rationale=(
-            "NITI Aayog estimated about 7.7 million gig workers in India in 2020-21, rising to 23.5 million by "
-            "2029-30, and gig work usually comes without an employer provident fund. Jar could partner with "
-            "delivery and ride platforms so a small share of each payout (1-2%) is saved in gold automatically, "
-            "with the platform optionally adding a match. For the platform, it is a cheap benefit that can help "
-            "keep workers."
+            "NITI Aayog counted 7.7 million gig workers in 2020-21 and projects 23.5 million by 2029-30, usually "
+            "without an employer provident fund. Partner with delivery and ride platforms so 1-2% of each payout "
+            "is saved in gold automatically, with an optional match from the platform."
         ),
-        target_persona=(
-            "Delivery and ride-hailing workers, and the operations or HR teams at those platforms who want to "
-            "reduce worker churn."
-        ),
-        how_it_earns=(
-            "A monthly fee per active worker paid by the platform, plus Jar's usual margin on the gold bought."
-        ),
+        target_persona="Delivery and ride-hailing workers, and the platforms that want to retain them.",
+        how_it_earns="A monthly fee per active worker from the platform, plus Jar's margin on gold.",
         illustrative_scale=(
-            "A worker paid about ₹20,000 a month who saves 2% puts away ₹400. If 100,000 workers did that, it "
-            "would be ₹48 Cr of new saving a year. The pay level, share and worker count are my own assumptions."
+            "100,000 workers x ₹400 a month x 12 = ₹48 Cr a year. Assumptions and why: ₹400 is 2% of about "
+            "₹20,000, near the ₹22,500 average monthly gig earnings in a Primus Partners survey. 100,000 workers "
+            "is just over 1% of the 7.7 million NITI Aayog counted, kept small because it depends on signing platforms."
         ),
         flywheel_integration=(
-            "Automation: saving happens when the payout arrives, so it doesn't depend on a bank balance being "
-            "there for an AutoPay debit. Design: workers get the same app, gold balance and withdrawals as any "
-            "other Jar user. Credibility: an established savings app is easier for a platform to offer its "
-            "workers than an unknown one."
+            "Automation: saving happens at payout, with no AutoPay debit that can fail. Design: the same app and "
+            "withdrawals as any Jar user. Credibility: a known savings app is easier for a platform to offer than "
+            "an unknown one."
         ),
         execution_risks=[
             ExecutionRiskItem(
                 risk_title="Long B2B sales cycles",
                 risk_category="Operational",
                 severity="Medium",
-                mitigation_strategy=(
-                    "Start with one platform and a free 90-day pilot, judged on worker retention."
-                ),
-            ),
-            ExecutionRiskItem(
-                risk_title="Irregular income",
-                risk_category="Financial",
-                severity="Medium",
-                mitigation_strategy=(
-                    "Save a percentage of each payout rather than a fixed amount, skip zero-earning days, and allow "
-                    "a one-tap 'skip today'."
-                ),
+                mitigation_strategy="Start with one platform and a free 90-day pilot.",
             ),
             ExecutionRiskItem(
                 risk_title="Rules on pay deductions",
                 risk_category="Regulatory",
                 severity="Medium",
-                mitigation_strategy=(
-                    "Make it strictly opt-in, with the money withdrawable at any time and no employer lock-in."
-                ),
+                mitigation_strategy="Keep it opt-in and withdrawable at any time.",
             ),
         ],
         primary_kpis=[
             "Partner platforms signed",
-            "Workers enrolled and still saving after 90 days",
-            "Average monthly saving per worker",
-            "Retention of enrolled vs non-enrolled workers",
+            "Workers still saving after 90 days",
+            "Retention of enrolled vs other workers",
         ],
-    ),
-]
-
-
-# ---------------------------------------------------------------------------
-# Content: risks across all four ideas
-# ---------------------------------------------------------------------------
-
-PLATFORM_RISK_MATRIX: List[ExecutionRiskItem] = [
-    ExecutionRiskItem(
-        risk_title="Digital gold is unregulated",
-        risk_category="Regulatory",
-        severity="High",
-        mitigation_strategy=(
-            "Build new products with regulated partners (SEBI-registered fund houses, RBI-regulated banks) and "
-            "label clearly in the app which products are regulated and by whom."
-        ),
-    ),
-    ExecutionRiskItem(
-        risk_title="Handling customer money",
-        risk_category="Regulatory",
-        severity="High",
-        mitigation_strategy=(
-            "For funds and deposits, money goes directly from the user's bank to the fund house or partner bank, "
-            "never through Jar's own accounts."
-        ),
-    ),
-    ExecutionRiskItem(
-        risk_title="KYC drop-off",
-        risk_category="Operational",
-        severity="Medium",
-        mitigation_strategy=(
-            "Funds and deposits need fuller KYC than gold saving, so ask for it only when a user first chooses one."
-        ),
-    ),
-    ExecutionRiskItem(
-        risk_title="New products pulling money out of gold",
-        risk_category="Market",
-        severity="Medium",
-        mitigation_strategy=(
-            "Aim funds and deposits at money that would otherwise leave Jar, and track gold saving per user "
-            "before and after."
-        ),
-    ),
-    ExecutionRiskItem(
-        risk_title="Fake contribution links",
-        risk_category="Fraud",
-        severity="Medium",
-        mitigation_strategy="Show the verified goal owner's name on every link and make links expire.",
-    ),
-    ExecutionRiskItem(
-        risk_title="Slow B2B sales",
-        risk_category="Operational",
-        severity="Low",
-        mitigation_strategy="Start with one platform and a free pilot judged on worker retention.",
     ),
 ]
 
 
 GLOBAL_FLYWHEEL_NARRATIVE: str = (
-    "All four ideas reuse what Jar already has: users with an automatic saving habit, a UPI AutoPay set-up they "
-    "understand, a simple design and the trust built through vault-backed gold.\n\n"
-    "1. New savers: contributions to family goals (Jar Goals) and payout saving (Jar for Work) introduce Jar to "
-    "people through someone they already trust.\n"
-    "2. Bigger balances: named goals give users more reasons to save.\n"
-    "3. Longer retention: funds and fixed deposits give long-term savers a reason to stay instead of moving to "
-    "another app when they want to diversify or withdraw.\n"
-    "4. New revenue: fund commissions, bank sourcing fees and platform fees add income that doesn't depend on the "
-    "gold margin."
+    "All four reuse what Jar already has: a saving habit, a UPI AutoPay set-up users understand, and trust built "
+    "on vault-backed gold. Goals and Jar for Work bring in new savers. Funds and deposits improve retention by "
+    "giving long-term savers a reason to stay. Commissions and fees add income beyond the gold margin."
 )
 
 
 PRIORITY_NOTE: str = (
-    "Jar already has gold saving with a festival option and a jewellery brand, Nek, and its Play Store listing "
-    "advertises personal loans through lending partners (I did not see a loans section in my own app), so I "
-    "left those out. I also dropped one idea I first considered, "
-    "loans against the gold users hold in Jar: RBI's gold-collateral rules, in force since 1 April 2026, don't "
-    "allow lending against primary gold or assets backed by it, which rules out digital gold as collateral. Of the "
-    "four ideas below, I would start with the two that are cheapest to test. The other two need bank partners or "
-    "long B2B sales, so they come later."
+    "Jar already has gold saving with a festival option, a jewellery brand (Nek) and personal loans (listed on "
+    "the Play Store; not visible in my app), so I left those out. I also dropped loans against Jar gold: RBI's "
+    "gold-collateral rules, in force since 1 April 2026, rule out digital gold as collateral. I would start with "
+    "the two ideas that are cheapest to test."
 )
 
 FIRST_MOVES: List[Dict[str, str]] = [
     {
         "name": "Family goals (Jar Goals)",
-        "why": (
-            "It extends the festival saving Jar already has, uses the existing gold product, and every "
-            "contribution introduces Jar to someone new. Diwali and the wedding season are a natural launch window."
-        ),
-        "test": (
-            "Before Diwali, let 5% of users create a named goal with a share link and compare them with a control "
-            "group that doesn't have it."
-        ),
+        "why": "It extends the festival saving Jar already has, and every contribution introduces Jar to someone new.",
+        "test": "Before Diwali, give 5% of users named goals with a share link and compare with a control group.",
         "success": (
-            "Share of goals that receive a contribution from someone else, and how many contributors start saving "
-            "on their own within 30 days."
+            "Share of goals that get a contribution from someone else; contributors who start saving within 30 days."
         ),
     },
     {
         "name": "Mutual funds alongside gold (Jar Funds)",
-        "why": (
-            "Long-term savers have nowhere to diversify inside Jar today, and funds are a regulated product that "
-            "fits the same saving habit."
-        ),
+        "why": "Long-term savers can't diversify inside Jar today, and funds are a regulated product.",
         "test": (
-            "Show a 'Save in funds too' card to users who have saved for 6+ months and count taps and waitlist "
-            "sign-ups before building anything. Then pilot with two or three funds."
+            "Show a 'Save in funds too' card to users who have saved 6+ months and count waitlist sign-ups before "
+            "building anything."
         ),
-        "success": (
-            "Waitlist sign-up rate among long-term savers and, in the pilot, the share of fund users who keep "
-            "their gold save running."
-        ),
+        "success": "Waitlist sign-up rate; in a pilot, the share of fund users who keep their gold save running.",
     },
 ]
 
@@ -533,7 +368,6 @@ FIRST_MOVES: List[Dict[str, str]] = [
 # Global strategy report instance
 GROWTH_STRATEGY_REPORT = GrowthStrategyReport(
     verticals=GROWTH_VERTICALS,
-    execution_risk_matrix=PLATFORM_RISK_MATRIX,
     global_flywheel_narrative=GLOBAL_FLYWHEEL_NARRATIVE,
     strategy_version="September 2026",
     author="Jegadeesh D",
@@ -559,8 +393,3 @@ def get_growth_strategy_report() -> GrowthStrategyReport:
 def get_growth_strategy_data() -> Dict[str, Any]:
     """Returns the full Growth Strategy roadmap serialized as a JSON-compliant dict."""
     return GROWTH_STRATEGY_REPORT.to_dict()
-
-
-def get_risk_matrix() -> List[ExecutionRiskItem]:
-    """Returns the platform-wide execution risk matrix items."""
-    return list(PLATFORM_RISK_MATRIX)

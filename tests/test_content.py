@@ -4,8 +4,8 @@ Question 2: exactly 5 strengths and 5 areas to improve, each with a description,
 the reasoning behind it, a suggested next step and a metric to watch.
 
 Question 3: new business opportunities, each with a rationale, who it is for,
-how it earns, an illustrative scale, how it uses Jar's strengths, risks and KPIs,
-plus a cross-idea risk matrix and two prioritised first moves.
+how it earns, an illustrative scale with the reason for each assumption, how it
+uses Jar's strengths, risks and KPIs, plus two prioritised first moves.
 """
 
 from dataclasses import FrozenInstanceError
@@ -21,11 +21,9 @@ from src.content.growth_strategy import (
     GROWTH_VERTICALS,
     GrowthStrategyReport,
     GrowthVerticalItem,
-    PLATFORM_RISK_MATRIX,
     get_growth_strategy_data,
     get_growth_strategy_report,
     get_growth_verticals,
-    get_risk_matrix,
 )
 from src.content.ux_teardown import (
     UXFrictionItem,
@@ -271,8 +269,12 @@ def test_growth_strategy_completeness() -> None:
         assert len(v.how_it_earns.strip()) >= 30, f"Earnings model too brief for {v.id}"
         assert len(v.flywheel_integration.strip()) >= 100, f"Flywheel integration too brief for {v.id}"
 
-        # Scale figures must be labelled as the author's assumptions, not presented as data
-        assert "assumption" in v.illustrative_scale.lower(), f"Scale not labelled as an assumption in {v.id}"
+        # Scale figures must be labelled as assumptions and give the reason for each
+        assert "assumptions and why" in v.illustrative_scale.lower(), f"Scale assumptions not explained in {v.id}"
+
+        # Each idea names the three strengths the brief asks about
+        for strength in ("Automation:", "Design:", "Credibility:"):
+            assert strength in v.flywheel_integration, f"{strength} missing in {v.id}"
 
         assert len(v.execution_risks) >= 2, f"At least 2 execution risks required for {v.id}"
         for risk in v.execution_risks:
@@ -309,7 +311,6 @@ def test_growth_strategy_priorities_and_context() -> None:
                      + [r.mitigation_strategy for r in v.execution_risks])
             for v in report.verticals
         ]
-        + [r.mitigation_strategy for r in report.execution_risk_matrix]
     ).lower()
 
     assert "rbi" in all_content
@@ -376,28 +377,18 @@ def test_growth_strategy_dataclass_validation() -> None:
     with pytest.raises(ValueError, match="verticals cannot be empty"):
         GrowthStrategyReport(
             verticals=[],
-            execution_risk_matrix=PLATFORM_RISK_MATRIX,
             global_flywheel_narrative="Narrative",
         )
 
     with pytest.raises(ValueError, match="Duplicate vertical IDs"):
         GrowthStrategyReport(
             verticals=[GROWTH_VERTICALS[0]] * 2,
-            execution_risk_matrix=PLATFORM_RISK_MATRIX,
-            global_flywheel_narrative="Narrative",
-        )
-
-    with pytest.raises(ValueError, match="execution_risk_matrix cannot be empty"):
-        GrowthStrategyReport(
-            verticals=GROWTH_VERTICALS,
-            execution_risk_matrix=[],
             global_flywheel_narrative="Narrative",
         )
 
     with pytest.raises(ValueError, match="global_flywheel_narrative cannot be empty"):
         GrowthStrategyReport(
             verticals=GROWTH_VERTICALS,
-            execution_risk_matrix=PLATFORM_RISK_MATRIX,
             global_flywheel_narrative="   ",
         )
 
@@ -406,14 +397,13 @@ def test_growth_strategy_serialization_and_lookups() -> None:
     """Verifies JSON round-tripping, getters and ID-based lookups."""
     data = get_growth_strategy_data()
     assert set(data) == {
-        "metadata", "verticals", "execution_risk_matrix", "global_flywheel_narrative",
+        "metadata", "verticals", "global_flywheel_narrative",
         "priority_note", "first_moves",
     }
     assert data["metadata"]["total_verticals"] == len(GROWTH_VERTICALS)
 
     deserialized = json.loads(json.dumps(data, ensure_ascii=False, indent=2))
     assert len(deserialized["verticals"]) == len(GROWTH_VERTICALS)
-    assert len(deserialized["execution_risk_matrix"]) >= 4
 
     assert len(get_growth_verticals()) == len(GROWTH_VERTICALS)
 
@@ -423,10 +413,9 @@ def test_growth_strategy_serialization_and_lookups() -> None:
     assert v1.name == "Jar Goals"
     assert report.get_vertical("UNKNOWN_ID") is None
 
-    risks = get_risk_matrix()
-    assert len(risks) >= 4
-    for r in risks:
-        assert isinstance(r, ExecutionRiskItem)
+    for v in report.verticals:
+        for r in v.execution_risks:
+            assert isinstance(r, ExecutionRiskItem)
 
 
 # ===========================================================================
@@ -479,7 +468,7 @@ def test_content_exports(tmp_path: Path) -> None:
         strategy_data = json.load(f)
 
     assert set(strategy_data.keys()) == {
-        "metadata", "verticals", "execution_risk_matrix", "global_flywheel_narrative",
+        "metadata", "verticals", "global_flywheel_narrative",
         "priority_note", "first_moves",
     }
     assert strategy_data["metadata"]["total_verticals"] == len(GROWTH_VERTICALS)
@@ -498,7 +487,6 @@ def test_content_exports(tmp_path: Path) -> None:
             assert set(r.keys()) == {"risk_title", "risk_category", "severity", "mitigation_strategy"}
         assert len(item["primary_kpis"]) >= 3
 
-    assert len(strategy_data["execution_risk_matrix"]) >= 4
     assert len(strategy_data["global_flywheel_narrative"]) > 100
 
 
@@ -580,4 +568,3 @@ def test_main_cli_exports_strategy_files(tmp_path: Path) -> None:
     with open(strategy_json, "r", encoding="utf-8") as f:
         strat_data = json.load(f)
     assert len(strat_data["verticals"]) == len(GROWTH_VERTICALS)
-    assert len(strat_data["execution_risk_matrix"]) >= 4
