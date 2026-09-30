@@ -195,7 +195,7 @@ class GrowthStrategyReport:
     execution_risk_matrix: List[ExecutionRiskItem]
     global_flywheel_narrative: str
     strategy_version: str = "2026-Q1"
-    author: str = "Growth Intern Candidate"
+    author: str = "Jegadeesh D"
 
     def __post_init__(self) -> None:
         if len(self.verticals) != 5:
@@ -788,7 +788,7 @@ GROWTH_STRATEGY_REPORT = GrowthStrategyReport(
     execution_risk_matrix=PLATFORM_RISK_MATRIX,
     global_flywheel_narrative=GLOBAL_FLYWHEEL_NARRATIVE,
     strategy_version="2026-Q1",
-    author="Growth Intern Candidate",
+    author="Jegadeesh D",
 )
 
 
