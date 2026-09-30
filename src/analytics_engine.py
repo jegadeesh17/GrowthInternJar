@@ -1530,10 +1530,11 @@ class AnalyticsEngine:
 
             if worst is not None and worst.total_profit < 0:
                 recs.append(
-                    f"Reprice or cap discounts on {worst.sub_category} ({_rs(worst.avg_order_value)} "
-                    f"average order, {_rs(worst.avg_profit_per_order)} lost on each). Break-even "
-                    f"lifts {weak.category} margin from {weak.profit_margin_pct:.1f}% to "
-                    f"{be_margin:.1f}%."
+                    f"Review pricing and costs on {worst.sub_category} ({_rs(worst.avg_order_value)} "
+                    f"average order, {_rs(worst.avg_profit_per_order)} lost on each, across "
+                    f"{worst.distinct_orders} orders). The data has no cost or discount columns, so "
+                    f"the cause needs checking, but break-even would lift {weak.category} margin from "
+                    f"{weak.profit_margin_pct:.1f}% to {be_margin:.1f}%."
                 )
             others = [s for s in subs if s is not worst]
             if others:
@@ -1566,7 +1567,7 @@ class AnalyticsEngine:
             out["part2_diagnosis"] = (
                 f"Targets rise a steady {ta['avg_target_mom_pct']:.1f}% a month "
                 f"({_rs(ta['first_target'])} to {_rs(ta['last_target'])}) while actual sales swing "
-                f"seasonally from {_rs(ta['low_actual'])} ({ta['low_month']}) to "
+                f"from {_rs(ta['low_actual'])} ({ta['low_month']}) to "
                 f"{_rs(ta['high_actual'])} ({ta['high_month']}). Achievement: "
                 f"{ta['h1_achievement_pct']:.0f}% in {ta['h1_label']}, "
                 f"{ta['h2_achievement_pct']:.0f}% in {ta['h2_label']}; target met in "
@@ -1576,13 +1577,14 @@ class AnalyticsEngine:
             q_low = min(qs, key=lambda q: q["achievement_pct"])
             q_high = max(qs, key=lambda q: q["achievement_pct"])
             out["part2_strategies"] = [
-                f"Seasonal targets: {ta['h2_label']} brought {ta['h2_actual_share_pct']:.0f}% of "
+                f"Phase targets by half-year: {ta['h2_label']} brought {ta['h2_actual_share_pct']:.0f}% of "
                 f"actual sales ({_rs(ta['h2_actual'])} vs {_rs(ta['h1_actual'])}) but only "
                 f"{ta['h2_target_share_pct']:.0f}% of the target. Splitting the annual "
                 f"{_rs(ta['annual_target'])} target {h1_share:.0f}/"
                 f"{ta['h2_actual_share_pct']:.0f} gives about "
                 f"{_rs(ta['seasonal_h1_monthly_target'])} a month for {ta['h1_label']} and "
-                f"{_rs(ta['seasonal_h2_monthly_target'])} for {ta['h2_label']}.",
+                f"{_rs(ta['seasonal_h2_monthly_target'])} for {ta['h2_label']}. One year of data "
+                "can't confirm this is seasonal, so treat the split as a starting point.",
                 f"Rolling {ta['rolling_window']}-month baseline: setting each target at the previous "
                 f"{ta['rolling_window']} months' average actual would have missed by "
                 f"{_rs(ta['rolling_mae'])} a month over {ta['rolling_eval_label']}, vs "
@@ -1591,14 +1593,14 @@ class AnalyticsEngine:
                 f"{_rs(ta['last_target'])} target.",
                 f"Quarterly re-forecast: achievement ranged from {q_low['achievement_pct']:.0f}% "
                 f"({q_low['label']}) to {q_high['achievement_pct']:.0f}% ({q_high['label']}). "
-                "Resetting each next quarter's target from the seasonal split and latest run-rate "
+                "Resetting each next quarter's target from the half-year split and latest run-rate "
                 "stops one quarter's miss or windfall distorting the year.",
             ]
             out["exec_part2"] = (
                 f"Furniture targets rise ~{ta['avg_target_mom_pct']:.1f}% a month, but "
                 f"{ta['h2_label']} brings {ta['h2_actual_share_pct']:.0f}% of actual sales "
                 f"({ta['h1_achievement_pct']:.0f}% vs {ta['h2_achievement_pct']:.0f}% achievement "
-                "by half). Set seasonal targets on a rolling 3-month baseline and re-forecast "
+                "by half). Phase targets by half-year on a rolling 3-month baseline and re-forecast "
                 "quarterly."
             )
 

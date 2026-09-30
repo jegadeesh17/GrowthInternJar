@@ -366,53 +366,33 @@ def render_ux_teardown_section(report: UXTeardownReport) -> None:
     print("\n  UX Audit Key Takeaways:")
     print(f"  * Core Strengths Identified:   {len(report.strengths)} foundational growth & retention loops")
     print(f"  * Prioritized Friction Areas: {len(report.frictions)} bottlenecks ({p0_count} Critical P0, {p1_count} High P1, {p2_count} Medium P2)")
-    print("  * Top Operational Priorities: Transparent GST pre-purchase breakdown + AutoPay smart retry engine")
+    print("  * Top Priorities:             GST breakdown open by default + finer notification controls")
 
 
 def render_growth_strategy_section(report: GrowthStrategyReport) -> None:
     """Prints Question 3 Fintech Business & Vertical Expansion Strategy summary."""
     print("\n" + "=" * 114)
     print("  QUESTION 3: FINTECH BUSINESS & VERTICAL EXPANSION STRATEGY")
-    print(f"  Version: {report.strategy_version} | Strategic Scope: 5 High-Impact Business Expansion Verticals")
+    print(f"  Version: {report.strategy_version} | Scope: {len(report.verticals)} new business opportunities")
     print("=" * 114)
 
-    print("\n  [STRATEGIC GROWTH VERTICALS & UNIT ECONOMICS]")
-    headers_v = [
-        "ID",
-        "Vertical Name",
-        "TAM (INR Cr)",
-        "SAM (INR Cr)",
-        "SOM (INR Cr)",
-        "CAC",
-        "LTV",
-        "LTV/CAC",
-        "Payback",
-    ]
-    alignments_v = ["^", "<", ">", ">", ">", ">", ">", ">", ">"]
+    print("\n  [NEW BUSINESS OPPORTUNITIES]")
+    headers_v = ["ID", "Name", "What it is", "Risks", "KPIs"]
+    alignments_v = ["^", "<", "<", ">", ">"]
     rows_v = []
     for v in report.verticals:
         rows_v.append([
             v.id,
             v.name,
-            f"Rs. {v.market_sizing.tam_numeric_cr:,.0f} Cr",
-            f"Rs. {v.market_sizing.sam_numeric_cr:,.0f} Cr",
-            f"Rs. {v.market_sizing.som_numeric_cr:,.0f} Cr",
-            f"Rs. {v.unit_economics.cac_inr:.0f}",
-            f"Rs. {v.unit_economics.ltv_inr:,.0f}",
-            f"{v.unit_economics.ltv_cac_ratio:.1f}x",
-            f"{v.unit_economics.payback_months:.1f} mo",
+            v.tagline,
+            str(len(v.execution_risks)),
+            str(len(v.primary_kpis)),
         ])
     print(format_ascii_table(headers_v, rows_v, alignments_v))
 
-    print("\n  Market Opportunity & Economics Highlights:")
-    print(f"  * Combined Addressable TAM:    Rs. {report.total_tam_cr:,.1f} Cr (~${report.total_tam_cr / 83.33 / 100:.2f}B USD)")
-    print(f"  * Serviceable SAM:             Rs. {report.total_sam_cr:,.1f} Cr (~${report.total_sam_cr / 83.33 / 100:.2f}B USD)")
-    print(f"  * 36-Month Target SOM:         Rs. {report.total_som_cr:,.1f} Cr (~${report.total_som_cr / 83.33 / 100:.2f}B USD)")
-
-    avg_cac = sum(v.unit_economics.cac_inr for v in report.verticals) / len(report.verticals)
-    avg_ltv = sum(v.unit_economics.ltv_inr for v in report.verticals) / len(report.verticals)
-    blended_ratio = avg_ltv / avg_cac if avg_cac > 0 else 0
-    print(f"  * Blended Unit Economics:      {blended_ratio:.1f}x LTV/CAC (Avg CAC: Rs. {avg_cac:.1f}, Avg LTV: Rs. {avg_ltv:,.1f})")
+    print("\n  Highlights:")
+    if report.first_moves:
+        print(f"  * Where I'd start:             {'; '.join(m['name'] for m in report.first_moves)}")
 
     high_risks = sum(1 for r in report.execution_risk_matrix if r.severity == "High")
     med_risks = sum(1 for r in report.execution_risk_matrix if r.severity == "Medium")
@@ -600,7 +580,7 @@ def main(cli_args: Optional[Sequence[str]] = None) -> int:
 
         if not args.quiet:
             print(f"      - Q2 UX Teardown:       {len(ux_report.strengths)} strengths & {len(ux_report.frictions)} friction points loaded")
-            print(f"      - Q3 Growth Strategy:   {len(strategy_report.verticals)} growth verticals loaded (TAM: Rs. {strategy_report.total_tam_cr:,.0f} Cr)")
+            print(f"      - Q3 Growth Strategy:   {len(strategy_report.verticals)} new business opportunities loaded")
 
             # Render Terminal Tables if not in quiet mode
             render_category_section(category_data)

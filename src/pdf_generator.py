@@ -56,7 +56,7 @@ QUESTION_MAP: List[Tuple[str, str, str, str]] = [
         "10 marks",
         "Expansion strategy",
         "New business opportunities for Jar, how each uses its automation, design "
-        "and trust, and the risks to manage.",
+        "and trust, the risks to manage, and the two I would start with.",
     ),
     (
         "Method",
