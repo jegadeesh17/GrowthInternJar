@@ -159,16 +159,15 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
             "Jar already has a festival saving option. The bigger things families save gold for, such as a wedding "
             "or a child's education, work the same way: a name, a target and a date. Jar could let a user create a "
             "named goal and share a link, so grandparents and relatives add gold to it on birthdays or Diwali "
-            "instead of giving cash shagun. When the goal is a wedding, the gold could be taken as jewellery "
-            "through Nek, Jar's own jewellery brand."
+            "instead of giving cash shagun. I found no way to create a named goal other than the festival one "
+            "(September 2026)."
         ),
         target_persona=(
             "Parents (roughly 24-40) saving for their children, and relatives who give cash gifts at festivals and "
             "family events."
         ),
         how_it_earns=(
-            "The same margin Jar earns on gold today, on money that would otherwise be given as cash, plus Nek's "
-            "margin when a goal ends in jewellery."
+            "The same margin Jar earns on gold today, on money that would otherwise be given as cash."
         ),
         illustrative_scale=(
             "If 200,000 goals each collected ₹7,500, that would be ₹150 Cr of gold saved. Both inputs are my own "
@@ -223,8 +222,8 @@ GROWTH_VERTICALS: List[GrowthVerticalItem] = [
         name="Jar Funds",
         tagline="Simple mutual funds alongside gold",
         strategic_rationale=(
-            "Savers who have built a gold balance eventually want to spread it, and I found no silver or mutual "
-            "fund option in the app (September 2026). Jar could offer a short list of simple mutual funds, for "
+            "Savers who have built a gold balance eventually want to spread it, and I found no way to save in "
+            "silver or mutual funds in the app (September 2026). Jar could offer a short list of simple mutual funds, for "
             "example an index fund, a liquid fund, and gold and silver funds, with the same set-once, "
             "save-automatically flow and no demat account. Mutual funds are SEBI-regulated, which matters because "
             "digital gold is not: SEBI said so in a caution to investors in November 2025. Silver would come "
@@ -479,8 +478,9 @@ GLOBAL_FLYWHEEL_NARRATIVE: str = (
 
 
 PRIORITY_NOTE: str = (
-    "Jar already has gold saving with a festival option, personal loans through lending partners (per its Play "
-    "Store listing) and a jewellery brand, Nek, so I left those out. I also dropped one idea I first considered, "
+    "Jar already has gold saving with a festival option and a jewellery brand, Nek, and its Play Store listing "
+    "advertises personal loans through lending partners (I did not see a loans section in my own app), so I "
+    "left those out. I also dropped one idea I first considered, "
     "loans against the gold users hold in Jar: RBI's gold-collateral rules, in force since 1 April 2026, don't "
     "allow lending against primary gold or assets backed by it, which rules out digital gold as collateral. Of the "
     "four ideas below, I would start with the two that are cheapest to test. The other two need bank partners or "

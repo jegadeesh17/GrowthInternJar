@@ -259,8 +259,8 @@ UX_STRENGTHS: List[UXStrengthItem] = [
         title="Fast withdrawals",
         category="Easy exit",
         description=(
-            "When I sold gold, the money reached my bank account in about 3 seconds. First-time investors worry "
-            "about getting stuck, and a withdrawal that fast removes that worry."
+            "When I sold a small test amount of gold, the money reached my bank account in about 3 seconds. "
+            "First-time investors worry about getting stuck, and a withdrawal that fast removes that worry."
         ),
         behavioral_psychology="Knowing you can get out easily makes it easier to put money in.",
         growth_mechanism=(
@@ -268,8 +268,8 @@ UX_STRENGTHS: List[UXStrengthItem] = [
             "is more likely to keep saving."
         ),
         actionable_takeaway=(
-            "Right after a withdrawal, offer a one-tap way to keep or restart the daily save, since a smooth exit "
-            "is a good moment to win the next deposit."
+            "I only tested a small amount. If larger withdrawals are as fast, that speed is worth stating up front "
+            "when a new saver makes a first deposit."
         ),
         primary_impact_metric="Share of users who save again within 30 days of a withdrawal",
     ),
@@ -279,8 +279,8 @@ UX_STRENGTHS: List[UXStrengthItem] = [
         category="Trust and proof",
         description=(
             "Jar says the gold is 24K, stored in Brink's vaults and insured by ICICI Lombard, with independent "
-            "oversight by Vistra, and the app lets you order it as a physical coin. For a first-time investor, "
-            "being able to hold the coin makes digital gold feel real."
+            "oversight by Vistra, and the app offers delivery of gold coins. For a first-time investor, being "
+            "able to hold the coin makes digital gold feel real."
         ),
         behavioral_psychology=(
             "Gold is already trusted in Indian households; vault details and coin delivery carry that trust over "
@@ -319,9 +319,8 @@ UX_FRICTIONS: List[UXFrictionItem] = [
         ),
         actionable_solution=(
             "1. Open the GST breakdown by default on a user's first purchase instead of hiding it in a dropdown.\n"
-            "2. Next to the balance, show how gold has done over several years, so the short-term dip is in "
-            "context.\n"
-            "3. Explain the buy/sell difference in one line the first time a user opens the sell screen."
+            "2. On the same screen, show in one line what the gold would fetch if sold today, so the gap is seen "
+            "before paying, not after."
         ),
         primary_impact_metric="First-week withdrawals by new users; reviews and tickets mentioning 'loss' or 'deduction'",
         implementation_effort="Low",
@@ -394,7 +393,8 @@ UX_FRICTIONS: List[UXFrictionItem] = [
         title="Nothing beyond gold for savers who want to diversify",
         priority="P2 - Medium",
         description=(
-            "I found no silver or mutual fund option in the app (September 2026). Someone who has saved for a year "
+            "The app sells silver jewellery, but I found no way to save in silver or in mutual funds "
+            "(September 2026). Someone who has saved for a year "
             "and wants to spread their money has to open another app such as Groww or Zerodha to do it."
         ),
         behavioral_friction=(
